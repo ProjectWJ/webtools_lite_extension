@@ -1,0 +1,29 @@
+{
+  "manifest_version": 3,
+  "name": "Simple Tools Extension",
+  "version": "1.0",
+  "description": "글자수 세기, 대소문자 변환 등 간단한 도구 모음",
+  "permissions": [
+    "contextMenus",
+    "scripting",
+    "activeTab",
+    "storage",
+    "notifications"
+  ],
+  "host_permissions": ["<all_urls>"],
+  "action": {
+    "default_popup": "src/popup/popup.html"
+  },
+  "background": {
+    "service_worker": "src/background.ts"
+  },
+  "commands": {
+    "count-chars": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+Y"
+      },
+      "description": "글자 수 세기 실행"
+    }
+  },
+  "options_page": "src/options.html"
+}
