@@ -14,13 +14,6 @@ export default defineConfig({
         entryFileNames: "src/[name].js", // 파일명 유지하기
       },
     },
-    minify: "terser",
-    terserOptions: {
-      compress: {
-        drop_console: true, // console.log 지우기
-        drop_debugger: true,
-      },
-    },
   },
   plugins: [
     viteStaticCopy({
