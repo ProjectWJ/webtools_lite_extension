@@ -17,6 +17,9 @@
   "background": {
     "service_worker": "src/background.js"
   },
+  "icons": {
+    "16": "Ticon16.png"
+  },
   "commands": {
     "count-chars": {
       "suggested_key": {
@@ -25,5 +28,5 @@
       "description": "글자 수 세기 실행"
     }
   },
-  "options_page": "src/options.html"
+  "options_page": "src/options/options.html"
 }
