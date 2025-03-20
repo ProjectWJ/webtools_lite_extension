@@ -50,15 +50,18 @@ function showModal(selectedText: string, textWithoutSpaces: string): void {
     modal.style.left = `${rect.left + window.scrollX}px`;
 
     // 모달 내용 추가
-    modal.textContent =
-      `공백 포함 ${selectedText.length} 자 | ${byteCounter(
+    modal.innerHTML = `공백 포함 ${selectedText.length} 자 | ? Byte<br>
+      공백 미포함 ${textWithoutSpaces.length} 자 | ? Byte`;
+
+    /*       modal.textContent =
+      `공백 포함 ${selectedText.length} 자 | ${byteCounter2(
         selectedText,
         1
       )} Byte<br>` +
-      `공백 미포함 ${textWithoutSpaces.length} 자 | ${byteCounter(
+      `공백 미포함 ${textWithoutSpaces.length} 자 | ${byteCounter2(
         textWithoutSpaces,
         0
-      )} Byte`;
+      )} Byte`; */
 
     // 모달을 body에 추가
     document.body.appendChild(modal);
@@ -88,7 +91,7 @@ function showModal(selectedText: string, textWithoutSpaces: string): void {
 } 유니코드 기준 UTF-8 인코딩 바이트 수를 구해줌
  옵션 선택형 UI로 구현할 수도 있음. 클래스 토글 구현 방법 채팅 참조
 */
-function byteCounter(text: string, blank: number = 0): number {
+/* function byteCounter2(text: string, blank: number = 0): number {
   let byte: number = 0;
 
   if (blank === 0) {
@@ -110,3 +113,4 @@ function byteCounter(text: string, blank: number = 0): number {
   }
   return byte;
 }
+ */
