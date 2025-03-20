@@ -16,3 +16,8 @@ https://medium.com/@vagabond95/%EA%B8%80%EC%9E%90%EC%88%98%EB%A5%BC-%EC%84%B8%EB
 
 토스트 메시지
 https://www.google.com/search?newwindow=1&sca_esv=94c092591444690d&q=%ED%86%A0%EC%8A%A4%ED%8A%B8+%EB%A9%94%EC%8B%9C%EC%A7%80&udm=2&fbs=ABzOT_CZsxZeNKUEEOfuRMhc2yCI6hbTw9MNVwGCzBkHjFwaK53DgNHTMxn53_XGiUHS2MvCJOyRBFAs1hn9fBmZ19LYQ9yir0OaCtXuvoNzG8-dHmcRTmmsRqZ5k2cSbGmqEOzbPeKK3_yeEwDTB0-yQ8hPn4ZIpFFaP5lIIYo78XEtUm4eOu_MLKQQKyyvx_AVHgdb7Sce9eZwaQ0p6CoLuRlZrqo34A&sa=X&ved=2ahUKEwjBtbHgn5iMAxXf3zQHHVGVFOQQtKgLegQIFBAB&biw=1270&bih=1354&dpr=1.5
+
+
+타입스크립트 서버 재시작
+Cmd+Shift+P (Ctrl+Shift+P)
+> TypeScript: Restart TS server

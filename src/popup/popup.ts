@@ -79,13 +79,13 @@ function characterCountAction() {
     const textValue: string = textArea.value;
     const textWithoutSpaces: string = textValue.replace(/\s+/g, "");
 
-    blankInclude.innerText = `공백 포함 ${textValue.length} 자 | ${byteCounter(
+    blankInclude.innerText = `공백 포함 ${textValue.length} 자 | ${byteCounter2(
       textValue,
       1
     )} Byte`;
     blankIgnore.innerText = `공백 미포함 ${
       textWithoutSpaces.length
-    } 자 | ${byteCounter(textWithoutSpaces, 0)} Byte`;
+    } 자 | ${byteCounter2(textWithoutSpaces, 0)} Byte`;
   }
 }
 
@@ -97,7 +97,7 @@ function characterCountAction() {
 } 유니코드 기준 UTF-8 인코딩 바이트 수를 구해줌
  옵션 선택형 UI로 구현할 수도 있음. 클래스 토글 구현 방법 채팅 참조
 */
-function byteCounter(text: string, blank: number = 0) {
+function byteCounter2(text: string, blank: number = 0) {
   let byte: number = 0;
 
   if (blank === 0) {
