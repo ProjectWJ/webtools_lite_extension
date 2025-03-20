@@ -15,14 +15,13 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
     const selectedText = info.selectionText;
     const charCount = selectedText?.length;
 
-    if (tab?.id) {
-      chrome.scripting.executeScript({
-        target: { tabId: tab.id },
-        func: (count) => {
-          alert(`${count}자입니다.`);
-        },
-        args: [charCount],
-      });
-    }
+    /*     // 알림 생성
+    // 브라우저가 윈도우에 알림 전송하고 윈도우가 띄우는 방식이었음
+    chrome.notifications.create({
+      type: "basic",
+      iconUrl: chrome.runtime.getURL("Ticon48.png"),
+      title: "글자 수 세기",
+      message: `${charCount}자입니다.`,
+    }); */
   }
 });

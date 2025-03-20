@@ -7,3 +7,12 @@ issue
 
 suggest
 - 사용법 설명하는 페이지 만들기(굳이 페이지 아니더라도 간단하게 안내하는 것도 괜찮음)
+
+
+Reference
+- 글자수 세는 방법
+https://medium.com/@vagabond95/%EA%B8%80%EC%9E%90%EC%88%98%EB%A5%BC-%EC%84%B8%EB%8A%94-%EB%B0%A9%EB%B2%95-4e35b37ad90f
+
+
+토스트 메시지
+https://www.google.com/search?newwindow=1&sca_esv=94c092591444690d&q=%ED%86%A0%EC%8A%A4%ED%8A%B8+%EB%A9%94%EC%8B%9C%EC%A7%80&udm=2&fbs=ABzOT_CZsxZeNKUEEOfuRMhc2yCI6hbTw9MNVwGCzBkHjFwaK53DgNHTMxn53_XGiUHS2MvCJOyRBFAs1hn9fBmZ19LYQ9yir0OaCtXuvoNzG8-dHmcRTmmsRqZ5k2cSbGmqEOzbPeKK3_yeEwDTB0-yQ8hPn4ZIpFFaP5lIIYo78XEtUm4eOu_MLKQQKyyvx_AVHgdb7Sce9eZwaQ0p6CoLuRlZrqo34A&sa=X&ved=2ahUKEwjBtbHgn5iMAxXf3zQHHVGVFOQQtKgLegQIFBAB&biw=1270&bih=1354&dpr=1.5

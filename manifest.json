@@ -18,7 +18,9 @@
     "service_worker": "src/background.js"
   },
   "icons": {
-    "16": "Ticon16.png"
+    "16": "Ticon16.png",
+    "48": "Ticon48.png",
+    "128": "Ticon128.png"
   },
   "commands": {
     "count-chars": {

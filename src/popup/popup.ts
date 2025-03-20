@@ -98,7 +98,7 @@ function characterCountAction() {
  옵션 선택형 UI로 구현할 수도 있음. 클래스 토글 구현 방법 채팅 참조
 */
 function byteCounter(text: string, blank: number = 0) {
-  let byte = 0;
+  let byte: number = 0;
 
   if (blank === 0) {
     // 공백이 미포함이면 미리 줄바꿈과 공백을 빈칸으로 처리
