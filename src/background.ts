@@ -10,18 +10,41 @@ chrome.runtime.onInstalled.addListener(() => {
 
 chrome.contextMenus.onClicked.addListener(
   (info: chrome.contextMenus.OnClickData, tab: chrome.tabs.Tab | undefined) => {
-    // 선택한 메뉴 항목이 "characterCount"일 경우
-    if (info.menuItemId === "characterCount" && info.selectionText) {
-      const selectedText: string = info.selectionText;
-      const textWithoutSpaces: string = selectedText.replace(/\s+/g, "");
-
-      if (tab?.id) {
-        chrome.scripting.executeScript({
+    if (info.menuItemId === "characterCount" && tab?.id) {
+      chrome.scripting.executeScript(
+        {
           target: { tabId: tab.id },
-          func: showModal,
-          args: [selectedText, textWithoutSpaces],
-        });
-      }
+          func: () => {
+            const selection: Selection | null = window.getSelection();
+            if (!selection || selection.rangeCount === 0) return "";
+
+            const range: Range = selection.getRangeAt(0);
+            const fragment: DocumentFragment = range.cloneContents();
+            const div: HTMLDivElement = document.createElement("div");
+            div.appendChild(fragment);
+
+            // 선택된 텍스트의 끝 공백까지 포함한 정확한 값
+            return div.textContent || "";
+          },
+        },
+        (injectionResults) => {
+          if (chrome.runtime.lastError) {
+            console.error(chrome.runtime.lastError.message);
+            return;
+          }
+
+          const accurateText: string = injectionResults?.[0]?.result || "";
+          const textWithoutSpaces: string = accurateText.replace(/\s+/g, "");
+
+          if (tab?.id) {
+            chrome.scripting.executeScript({
+              target: { tabId: tab.id },
+              func: showModal,
+              args: [accurateText, textWithoutSpaces],
+            });
+          }
+        }
+      );
     }
   }
 );

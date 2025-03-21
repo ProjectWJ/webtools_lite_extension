@@ -1,9 +1,27 @@
 issue
+문제:
+background.ts에서 드래그한 문자열의 글자 수와 바이트를 계산할 때 맨 끝의 공백이
+selectionText에서 trim되는 것처럼 보이는 문제. "홍길동 "을 드래그하면 아무 처리도 안 했는데 "홍길동"으로 나옴
+원인:
+selectionText가 문자열을 가져올 때 드래그한 텍스트 끝에 공백이 있어도
+렌더링상으로 보이지 않으면 브라우저가 자동으로 잘라내서 넘겨주기 때문이다.
+이것이 Selection 객체에서 텍스트를 반환할 때 trim되는 것처럼 보이는 현상의 원인이다.
+드래그가 inline 요소 사이거나 마지막에 공백이 있으면 정확히 일치하지 않을 수 있다.
+해결법:
+window.getSelection()을 사용해 드래그된 원본 값을 직접 가져온 다음
+getRangeAt(0)으로 첫 번째 Range 객체를 가져와서 정확한 위치와 내용을 다룰 수 있게 한다.
+Range는 실제로 사용자가 어디서부터 어디까지 드래그했는지 정확히 표현해주는데
+이후 range.cloneContents()로 사용자가 선택한 DOM 조각을 복사하고
+임시로 div 객체를 만들어 넣은 뒤 div.textContent로 텍스트만 뽑아내면 된다.
+이 과정을 chrome.scripting.executeScript({})로 감싸고
+두 번째 인자에 스크립트 실행 결과를 처리하는 콜백 함수를 작성해 후처리한다.
 
-utils/
-
-
-
+문제:
+background.ts, popup.ts에서 동일한 함수 byteCounter를 사용함
+utils/byteCounter.ts로 빼서 export시키고 각각 필요한 곳에서 import해서 사용하려 했는데
+vite 번들링 설정과 tsconfig 설정에서 충돌하는 현상
+원인:
+해결법:
 
 
 suggest
@@ -14,10 +32,8 @@ Reference
 - 글자수 세는 방법
 https://medium.com/@vagabond95/%EA%B8%80%EC%9E%90%EC%88%98%EB%A5%BC-%EC%84%B8%EB%8A%94-%EB%B0%A9%EB%B2%95-4e35b37ad90f
 
-
-토스트 메시지
+- 토스트 메시지
 https://www.google.com/search?newwindow=1&sca_esv=94c092591444690d&q=%ED%86%A0%EC%8A%A4%ED%8A%B8+%EB%A9%94%EC%8B%9C%EC%A7%80&udm=2&fbs=ABzOT_CZsxZeNKUEEOfuRMhc2yCI6hbTw9MNVwGCzBkHjFwaK53DgNHTMxn53_XGiUHS2MvCJOyRBFAs1hn9fBmZ19LYQ9yir0OaCtXuvoNzG8-dHmcRTmmsRqZ5k2cSbGmqEOzbPeKK3_yeEwDTB0-yQ8hPn4ZIpFFaP5lIIYo78XEtUm4eOu_MLKQQKyyvx_AVHgdb7Sce9eZwaQ0p6CoLuRlZrqo34A&sa=X&ved=2ahUKEwjBtbHgn5iMAxXf3zQHHVGVFOQQtKgLegQIFBAB&biw=1270&bih=1354&dpr=1.5
-
 
 타입스크립트 서버 재시작
 Cmd+Shift+P (Ctrl+Shift+P)
