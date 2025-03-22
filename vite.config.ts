@@ -3,6 +3,7 @@ import { viteStaticCopy } from "vite-plugin-static-copy";
 
 export default defineConfig({
   build: {
+    target: "esnext",
     outDir: "dist", // 최종 결과물이 들어가는 폴더
     emptyOutDir: true, // 빌드할 때 dist 비워주기
     rollupOptions: {

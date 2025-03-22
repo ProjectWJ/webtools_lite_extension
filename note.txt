@@ -9,7 +9,8 @@ selectionText가 문자열을 가져올 때 드래그한 텍스트 끝에 공백
 드래그가 inline 요소 사이거나 마지막에 공백이 있으면 정확히 일치하지 않을 수 있다.
 해결법:
 window.getSelection()을 사용해 드래그된 원본 값을 직접 가져온 다음
-getRangeAt(0)으로 첫 번째 Range 객체를 가져와서 정확한 위치와 내용을 다룰 수 있게 한다.
+getRangeAt(0)으로 첫 번째 Range 객체를 가져와 정확한 위치와 내용을 다룰 수 있게 한다.
+비고:
 Range는 실제로 사용자가 어디서부터 어디까지 드래그했는지 정확히 표현해주는데
 이후 range.cloneContents()로 사용자가 선택한 DOM 조각을 복사하고
 임시로 div 객체를 만들어 넣은 뒤 div.textContent로 텍스트만 뽑아내면 된다.
@@ -17,12 +18,51 @@ Range는 실제로 사용자가 어디서부터 어디까지 드래그했는지 
 두 번째 인자에 스크립트 실행 결과를 처리하는 콜백 함수를 작성해 후처리한다.
 
 문제:
-background.ts, popup.ts에서 동일한 함수 byteCounter를 사용함
-utils/byteCounter.ts로 빼서 export시키고 각각 필요한 곳에서 import해서 사용하려 했는데
-vite 번들링 설정과 tsconfig 설정에서 충돌하는 현상
+background.ts, popup.ts에서 동일한 함수 byteCounter를 사용해야 함
+utils/byteCounter.ts로 빼서 export시키고 각각 import해서 사용하려 했는데
+크롬에서 Service worker registration failed. Status code: 15 오류와
+Uncaught SyntaxError: Cannot use import statement outside a module 오류를 내는 문제
+manifest.json에서 "service_worker": "src/background.js"를 제대로 인식하지 못함
+popup.ts에서는 정상 작동
+요약 - background.ts에서 import문을 사용한 byteCounter 모듈 불러오기가 작동하지 않음
 원인:
+manifest.json의 background 부분에 type: "module" 설정을 하지 않았기 때문이다.
+이 설정을 해야 ESM으로 인식해 ES6+ 모듈이 활성화되어 import, export사용이 가능하다.
 해결법:
+manifest.json에서 type: "module"을 추가했다.
+비고:
+type: "module"설정을 했을 때 생기는 변화
+1. import / export 사용 가능
+2. 모듈 스코프(엄격 모드)
+기본적으로 모듈 스코프를 가지기 때문에 var같은 전역 오염이 안 된다.
+또 자동으로 use strict가 적용되어 엄격 모드가 강제된다.
+this의 경우 undefined로 평가되어 전역 객체가 아니다.(window나 globalThis를 직접 써야 함)
+3. 지연 로딩
+모듈은 지연 로딩을 기본으로 한다. DOMContentLoaded 이전에 실행되지 않고 HTML이 파싱된 이후 실행
+단, 크롬 확장의 service_worker에서는 바로 실행
+4. import.meta 지원
+import.meta.url로 현재 모듈의 절대경로를 가져올 수 있다.
+5. MIME 타입이 text/javascript로 강제됨
+모듈 스크립트는 명시적으로 MIME 타입이 text/javascript여야만 실행이 가능하다.
+이 타입이 아닌 파일은 브라우저가 차단함
+6. chrome.runtime.getBackgroundPage() 사용 불가능
+대신 chrome.runtime.sendMessage()나 chrome.runtime.connect()같은 메시징 API를 사용하면 된다.
 
+문제:
+background.js에서 import는 정상적으로 되지만, 사용이 불가능한 문제
+전역 컨텍스트에서 console.log에 찍으면 가능하나, 본격적인 코드 내부에선 작동하지 않음
+원인:
+chrome.scripting.executeScript 내부에서 import된 함수가 필요한데
+이 내부에서는 백그라운드에서 실행한 함수를 가져가는 것이 아니다.
+func: a는 그 탭의 컨텍스트에서 실행되는 함수라서 외부에서 정의된 변수나 함수는 정의되어있지 않다.
+요약하면 별도 컨텍스트라서 외부 변수나 함수를 쓰지 못한다.
+해결법:
+1. 함수 구문을 executeScript 안에 복사하기. 유지보수성을 좀 희생하지만 가장 간단하고 직관적이다.
+2. content.js로 내용을 빼기. content는 브라우저 탭의 dom과 항상 연결되어있고 관리하기 좋다.
+
+
+todo
+- content.ts에 background.ts 작업 이관 or background.ts에 함수 복사
 
 suggest
 - 사용법 설명하는 페이지 만들기(굳이 페이지 아니더라도 간단하게 안내하는 것도 괜찮음)
