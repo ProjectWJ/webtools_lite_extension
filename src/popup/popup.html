@@ -7,57 +7,94 @@
     <title>Document</title>
   </head>
   <body>
-    <div id="tabPanel">
+    <div id="tab-panel">
       <h2>WebTools Lite Extension</h2>
-      <button id="characterCount" type="button">글자 수 세기</button>
-      <button id="capitalSmallConvert" type="button">대소문자 변환</button>
-      <button id="unitConvert" type="button">단위 변환</button>
-      <button id="unmeralConvert" type="button">진수 변환</button>
-      <button id="korEngConvert" type="button">한글 영타 변환</button>
-      <button id="exchangeRateCalculate" type="button">환율 계산</button>
-      <button id="dateCalculate" type="button">날짜 계산</button>
-      <button id="addressConvert" type="button">도로명주소 변환</button>
-      <button id="optionsBtn" type="button">설정</button>
+      <button id="character-count" type="button">글자 수 세기</button>
+      <button id="capital-lower-convert" type="button">대소문자 변환</button>
+      <button id="unit-convert" type="button">단위 변환</button>
+      <button id="unmeral-convert" type="button">진수 변환</button>
+      <button id="kor-eng-convert" type="button">한영타 변환</button>
+      <button id="exchange-rate-calculate" type="button">환율 계산</button>
+      <button id="date-calculate" type="button">날짜 계산</button>
+      <button id="options-btn" type="button">설정</button>
     </div>
-    <div id="characterCountPanel" class="blind">
+
+    <div id="character-count-panel" class="blind">
       <p>글자 수 세기</p>
       <textarea
-        id="characterCountTextarea"
+        id="character-count-textarea"
         placeholder="내용을 입력해주세요."
       ></textarea>
       <p>영문자, 숫자, 기호: 1Byte | 한글, 일본어, 한자: 2Byte로 계산</p>
-      <p id="blankInclude">공백 포함 0 자 | 0 byte</p>
-      <p id="blankIgnore">공백 제외 0 자 | 0 byte</p>
-      <button class="backBtn" type="button">돌아가기</button>
+      <p id="blank-include">공백 포함 0 자 | 0 byte</p>
+      <p id="blank-ignore">공백 제외 0 자 | 0 byte</p>
+      <button class="back-btn" type="button">돌아가기</button>
     </div>
-    <div id="capitalSmallConvertPanel" class="blind">
+
+    <div id="capital-lower-convert-panel" class="blind">
       <p>대소문자 변환</p>
-      <button class="backBtn" type="button">돌아가기</button>
+      <textarea
+        id="capital-lower-convert-textarea-input"
+        placeholder="내용을 입력해주세요."
+      ></textarea>
+      <select id="capital-lower-convert-select" aria-label="대소문자 선택">
+        <option value="capital">대문자</option>
+        <option value="lower">소문자</option>
+      </select>
+      <textarea
+        id="capital-lower-convert-textarea-output"
+        placeholder="이곳에 결과가 표시됩니다."
+        readonly
+      ></textarea>
+      <button class="back-btn" type="button">돌아가기</button>
     </div>
-    <div id="unitConvertPanel" class="blind">
+
+    <div id="unit-convert-panel" class="blind">
       <p>단위 변환</p>
-      <button class="backBtn" type="button">돌아가기</button>
+      <select id="unit-convert-select" aria-label="단위 선택">
+        <option value="length">길이</option>
+        <option value="area">면적</option>
+        <option value="volume">부피</option>
+        <option value="speed">속도</option>
+        <option value="time">시간</option>
+        <option value="pressure">압력</option>
+        <option value="energy">에너지</option>
+        <option value="fuel-efficiency">연비</option>
+        <option value="temperature">온도</option>
+        <option value="frequency">주파수</option>
+        <option value="mass">질량</option>
+        <option value="angle">평면각</option>
+        <option value="data-size">데이터 크기</option>
+        <option value="data-transfer-rate">데이터 전송 속도</option>
+      </select>
+      <button class="back-btn" type="button">돌아가기</button>
     </div>
-    <div id="unmeralConvertPanel" class="blind">
+
+    <div id="unmeral-convert-panel" class="blind">
       <p>진수 변환</p>
-      <button class="backBtn" type="button">돌아가기</button>
+      <button class="back-btn" type="button">돌아가기</button>
     </div>
-    <div id="korEngConvertPanel" class="blind">
-      <p>한글 영타 변환</p>
-      <button class="backBtn" type="button">돌아가기</button>
+
+    <div id="kor-eng-convert-panel" class="blind">
+      <p>한영타 변환</p>
+      <button class="back-btn" type="button">돌아가기</button>
     </div>
-    <div id="exchangeRateCalculatePanel" class="blind">
+
+    <div id="exchange-rate-calculate-panel" class="blind">
       <p>환율 계산</p>
-      <button class="backBtn" type="button">돌아가기</button>
+      <button class="back-btn" type="button">돌아가기</button>
     </div>
-    <div id="dateCalculatePanel" class="blind">
+
+    <div id="date-calculate-panel" class="blind">
       <p>날짜 계산</p>
-      <button class="backBtn" type="button">돌아가기</button>
+      <button class="back-btn" type="button">돌아가기</button>
     </div>
-    <div id="addressConvertPanel" class="blind">
-      <p>도로명주소 변환</p>
-      <button class="backBtn" type="button">돌아가기</button>
+
+    <div id="address-convert-panel" class="blind">
+      <p>도로명-지번 변환</p>
+      <button class="back-btn" type="button">돌아가기</button>
     </div>
   </body>
+
   <script type="module" src="popup.ts"></script>
 </html>

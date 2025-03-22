@@ -1,42 +1,42 @@
 /** 웹툴 버튼(글자 수 세기, 대소문자 변환, 단위 변환...) */
-document.getElementById("characterCount")?.addEventListener("click", () => {
-  panelToggle("characterCountPanel");
+document.getElementById("character-count")?.addEventListener("click", () => {
+  panelToggle("character-count-panel");
 });
 document
-  .getElementById("capitalSmallConvert")
+  .getElementById("capital-lower-convert")
   ?.addEventListener("click", () => {
-    panelToggle("capitalSmallConvertPanel");
+    panelToggle("capital-lower-convert-panel");
   });
-document.getElementById("unitConvert")?.addEventListener("click", () => {
-  panelToggle("unitConvertPanel");
+document.getElementById("unit-convert")?.addEventListener("click", () => {
+  panelToggle("unit-convert-panel");
 });
-document.getElementById("unmeralConvert")?.addEventListener("click", () => {
-  panelToggle("unmeralConvertPanel");
+document.getElementById("unmeral-convert")?.addEventListener("click", () => {
+  panelToggle("unmeral-convert-panel");
 });
-document.getElementById("korEngConvert")?.addEventListener("click", () => {
-  panelToggle("korEngConvertPanel");
+document.getElementById("kor-eng-convert")?.addEventListener("click", () => {
+  panelToggle("kor-eng-convert-panel");
 });
 document
-  .getElementById("exchangeRateCalculate")
+  .getElementById("exchange-rate-calculate")
   ?.addEventListener("click", () => {
-    panelToggle("exchangeRateCalculatePanel");
+    panelToggle("exchange-rate-calculate-panel");
   });
-document.getElementById("dateCalculate")?.addEventListener("click", () => {
-  panelToggle("dateCalculatePanel");
+document.getElementById("date-calculate")?.addEventListener("click", () => {
+  panelToggle("date-calculate-panel");
 });
-document.getElementById("addressConvert")?.addEventListener("click", () => {
-  panelToggle("addressConvertPanel");
+document.getElementById("address-convert")?.addEventListener("click", () => {
+  panelToggle("address-convert-panel");
 });
 
 /** 돌아가기 버튼 */
-document.querySelectorAll(".backBtn").forEach((button) => {
+document.querySelectorAll(".back-btn").forEach((button) => {
   button.addEventListener("click", () => {
-    panelToggle("tabPanel");
+    panelToggle("tab-panel");
   });
 });
 
 /** 버튼 이벤트 토글 */
-const panels = document.querySelectorAll("[id$=Panel]"); // Panel로 끝나는 단어 검색 $
+const panels = document.querySelectorAll("[id$=-panel]"); // -panel로 끝나는 단어 검색 $
 
 function panelToggle(id: string) {
   panels.forEach((panel) => {
@@ -49,7 +49,7 @@ function panelToggle(id: string) {
 }
 
 /** 옵션 */
-const optionsBtn = document.getElementById("optionsBtn");
+const optionsBtn = document.getElementById("options-btn");
 
 if (optionsBtn) {
   optionsBtn.addEventListener("click", () => {
@@ -64,16 +64,16 @@ if (optionsBtn) {
 
 /** 글자 수 세기 */
 document
-  .getElementById("characterCountTextarea")
+  .getElementById("character-count-textarea")
   ?.addEventListener("input", characterCountAction);
 function characterCountAction() {
   const textArea: HTMLTextAreaElement = document.getElementById(
-    "characterCountTextarea"
+    "character-count-textarea"
   ) as HTMLTextAreaElement;
   const blankInclude: HTMLElement | null =
-    document.getElementById("blankInclude");
+    document.getElementById("blank-include");
   const blankIgnore: HTMLElement | null =
-    document.getElementById("blankIgnore");
+    document.getElementById("blank-ignore");
 
   if (textArea && blankInclude && blankIgnore) {
     const textValue: string = textArea.value;
@@ -111,3 +111,32 @@ function byteCounter(text: string, blank: number = 0) {
   }
   return byte;
 }
+
+/** 대소문자 변환 */
+document
+  .getElementById("capital-lower-convert-textarea-input")
+  ?.addEventListener("input", capitalLowerConvertAction);
+document
+  .getElementById("capital-lower-convert-select")
+  ?.addEventListener("change", capitalLowerConvertAction);
+function capitalLowerConvertAction() {
+  const textAreaInput: HTMLTextAreaElement = document.getElementById(
+    "capital-lower-convert-textarea-input"
+  ) as HTMLTextAreaElement;
+  const textAreaOutput: HTMLTextAreaElement = document.getElementById(
+    "capital-lower-convert-textarea-output"
+  ) as HTMLTextAreaElement;
+
+  // 대문자, 소문자 선택
+  const selectCapitalLower: HTMLElement | null = document.getElementById(
+    "capital-lower-convert-select"
+  );
+
+  if ((selectCapitalLower as HTMLSelectElement)?.value === "capital") {
+    textAreaOutput.innerHTML = textAreaInput.value.toUpperCase();
+  } else {
+    textAreaOutput.innerHTML = textAreaInput.value.toLowerCase();
+  }
+}
+
+/** 단위 변환 */

@@ -1,6 +1,6 @@
 chrome.runtime.onInstalled.addListener(() => {
   chrome.contextMenus.create({
-    id: "characterCount",
+    id: "character-count",
     title: "글자 수 세기",
     contexts: ["selection", "image"], // 사용자가 텍스트를 선택했을 때만 보이게
   });
@@ -8,7 +8,7 @@ chrome.runtime.onInstalled.addListener(() => {
 
 chrome.contextMenus.onClicked.addListener(
   (info: chrome.contextMenus.OnClickData, tab: chrome.tabs.Tab | undefined) => {
-    if (info.menuItemId === "characterCount" && tab?.id) {
+    if (info.menuItemId === "character-count" && tab?.id) {
       chrome.scripting.executeScript(
         {
           target: { tabId: tab.id },
