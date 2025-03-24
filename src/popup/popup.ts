@@ -140,3 +140,58 @@ function capitalLowerConvertAction() {
 }
 
 /** 단위 변환 */
+const unitConvertCategory: string[] = [
+  "길이",
+  "면적",
+  "부피",
+  "속도",
+  "시간",
+  "압력",
+  "에너지",
+  "연비",
+  "온도",
+  "주파수",
+  "질량",
+  "평면각",
+  "데이터 크기",
+  "데이터 전송 속도",
+];
+document
+  .getElementById("unit-convert-selectbox")
+  ?.addEventListener("mousedown", unitConvertSelectBoxToggle);
+document.addEventListener("mousedown", unitConvertSearchboxOutsideClick);
+document.getElementById("unit-convert-input-left");
+document.getElementById("unit-convert-select-left");
+document.getElementById("unit-convert-input-right");
+document.getElementById("unit-convert-select-right");
+
+// 드롭다운 메뉴 토글
+function unitConvertSelectBoxToggle() {
+  const unitConvertSearchbox: HTMLElement = document.getElementById(
+    "unit-convert-searchbox"
+  ) as HTMLElement;
+
+  if (unitConvertSearchbox.classList.contains("blind")) {
+    unitConvertSearchbox.classList.remove("blind");
+  } else {
+    unitConvertSearchbox.classList.add("blind");
+  }
+}
+function unitConvertSearchboxOutsideClick(event: MouseEvent) {
+  const selectBox = document.getElementById("unit-convert-selectbox");
+  const searchBox = document.getElementById("unit-convert-searchbox");
+
+  // 클릭된 요소가 selectBox나 searchBox 내부인지 확인
+  if (
+    selectBox?.contains(event.target as Node) ||
+    searchBox?.contains(event.target as Node)
+  ) {
+    // 내부 클릭은 무시하고 함수 종료
+    return;
+  }
+
+  // 외부 클릭이라면 searchBox를 닫기
+  if (searchBox && !searchBox.classList.contains("blind")) {
+    searchBox.classList.add("blind");
+  }
+}

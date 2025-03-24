@@ -70,11 +70,11 @@ content_scripts는 아직 해당 사항이 없다.
 번들링을 해서 import를 없애거나, 그냥 import할 구문을 그 위치에 작성해야 한다.
 
 todo
-- content.ts에 background.ts 작업 이관 or background.ts에 함수 복사
+- 단위 변환기 구현하기
 
 suggest
 - 사용법 설명하는 페이지 만들기(굳이 페이지 아니더라도 간단하게 안내하는 것도 괜찮음)
-
+- 드롭다운 박스에 검색 기능이 추가된 select2를 사용할 수 있음(https://select2.org/)
 
 Reference
 - 글자수 세는 방법

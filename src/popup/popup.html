@@ -51,22 +51,17 @@
 
     <div id="unit-convert-panel" class="blind">
       <p>단위 변환</p>
-      <select id="unit-convert-select" aria-label="단위 선택">
-        <option value="length">길이</option>
-        <option value="area">면적</option>
-        <option value="volume">부피</option>
-        <option value="speed">속도</option>
-        <option value="time">시간</option>
-        <option value="pressure">압력</option>
-        <option value="energy">에너지</option>
-        <option value="fuel-efficiency">연비</option>
-        <option value="temperature">온도</option>
-        <option value="frequency">주파수</option>
-        <option value="mass">질량</option>
-        <option value="angle">평면각</option>
-        <option value="data-size">데이터 크기</option>
-        <option value="data-transfer-rate">데이터 전송 속도</option>
-      </select>
+      <div id="unit-convert-selectbox">
+        <span>단위를 선택해주세요</span>
+        <span class="material-icons">expand_more</span>
+      </div>
+      <!-- 검색 박스 -->
+      <div id="unit-convert-searchbox" class="blind">
+        <span class="material-icons">search</span>
+        <input id="unit-filter" type="text" placeholder="검색" />
+      </div>
+      <ul class="options"></ul>
+
       <button class="back-btn" type="button">돌아가기</button>
     </div>
 
@@ -95,6 +90,10 @@
       <button class="back-btn" type="button">돌아가기</button>
     </div>
   </body>
-
+  <!-- 검색 아이콘 -->
+  <link
+    href="https://fonts.googleapis.com/icon?family=Material+Icons"
+    rel="stylesheet"
+  />
   <script type="module" src="popup.ts"></script>
 </html>
