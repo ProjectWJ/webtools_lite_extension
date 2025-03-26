@@ -220,7 +220,7 @@ function filterAction(this: HTMLElement, e: Event) {
   }
 
   const listItems: string = newUnitCategory
-    .map((data: string) => `<li>${data}</li>`)
+    .map((data: string) => `<li class="unit-option-item">${data}</li>`)
     .join("");
   unitOptions.innerHTML = listItems;
 }
@@ -245,16 +245,21 @@ function changeClickedName(selectedText: string) {
 // 모든 카테고리 보여주기
 function allUnitCategoryShow() {
   unitOptions.innerHTML = unitConvertCategory
-    .map((unit: string) => `<li>${unit}</li>`)
+    .map((unit: string) => `<li class="unit-option-item">${unit}</li>`)
     .join("");
 }
 
 // 이벤트 위임을 통한 클릭 이벤트 처리
 unitOptions.addEventListener("click", (event) => {
   const target = event.target as HTMLElement;
-  if (target.tagName === "LI") {
+
+  // unit-option-item을 가진 li 요소만 선택되도록
+  if (
+    target.tagName === "LI" &&
+    unitOptions.contains(target) &&
+    target.classList.contains("unit-option-item")
+  ) {
     changeClickedName(target.textContent || "");
   }
 });
-
 allUnitCategoryShow();
