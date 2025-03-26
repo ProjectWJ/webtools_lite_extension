@@ -157,18 +157,203 @@ const unitConvertCategory: string[] = [
   "데이터 크기",
   "데이터 전송 속도",
 ];
+// 길이
+const lengthCategory: string[] = [
+  "킬로미터",
+  "미터",
+  "센티미터",
+  "밀리미터",
+  "마이크로미터",
+  "나노미터",
+  "마일",
+  "야드",
+  "피트",
+  "인치",
+  "해리",
+];
+// 면적
+const areaCategory: string[] = [
+  "제곱킬로미터",
+  "제곱미터",
+  "제곱마일",
+  "제곱야드",
+  "제곱피트",
+  "제곱인치",
+  "헥타르",
+  "에이커",
+];
+// 부피
+const volumeCategory: string[] = [
+  "미국 액량 갤런",
+  "미국 액량 쿼트",
+  "미국 액량 파인트",
+  "미국 컵",
+  "미국 플루이드 온스",
+  "미국 테이블스푼",
+  "미국 티스푼",
+  "세제곱미터",
+  "리터",
+  "밀리리터",
+  "영국 갤런",
+  "영국 쿼트",
+  "영국 파인트",
+  "영국 컵",
+  "영국 플루이드 온스",
+  "영국 테이블스푼",
+  "영국 티",
+  "세제곱피트",
+  "세제곱인치",
+];
+// 속도
+const speedCategory: string[] = [
+  "시간당 마일",
+  "초당 피트",
+  "미터 매 초",
+  "킬로미터 매 시",
+  "노트",
+];
+// 시간
+const timeCategory: string[] = [
+  "나노초",
+  "마이크로초",
+  "밀리초",
+  "초",
+  "분",
+  "시간",
+  "일",
+  "주",
+  "개월",
+  "역년",
+  "연대",
+  "세기",
+];
+// 압력
+const pressureCategory: string[] = [
+  "기압",
+  "바",
+  "제곱인치 당 파운드힘",
+  "토르",
+  "파스칼",
+];
+// 에너지
+const energyCategory: string[] = [
+  "줄",
+  "킬로줄",
+  "그램칼로리",
+  "킬로칼로리",
+  "와트시",
+  "킬로와트시",
+  "전자볼트",
+  "영국 열 단위",
+  "섬",
+  "풋파운드",
+];
+// 연비
+const fuelEfficiencyCategory: string[] = [
+  "갤런 당 마일",
+  "영국 갤런 당 마일",
+  "리터 당 킬로미터",
+  "100 킬로미터 당 리터",
+];
+// 온도
+const temperatureCategory: string[] = ["섭씨", "화씨", "켈빈"];
+// 주파수
+const frequencyCategory: string[] = [
+  "헤르츠",
+  "킬로헤르츠",
+  "메가헤르츠",
+  "기가헤르츠",
+];
+// 질량
+const massCategory: string[] = [
+  "메트릭 톤",
+  "킬로그램",
+  "그램",
+  "밀리그램",
+  "마이크로그램",
+  "롱톤",
+  "미국 톤",
+  "스톤",
+  "파운드",
+  "온스",
+];
+// 평면각
+const angleCategory: string[] = [
+  "그레이드",
+  "도",
+  "라디안",
+  "밀리라디안",
+  "분각",
+  "초",
+];
+// 데이터 크기
+const dataSizeCategory: string[] = [
+  "비트",
+  "킬로비트",
+  "키비미트",
+  "메가비트",
+  "메비비트",
+  "기가비트",
+  "기비비트",
+  "테라비트",
+  "테비비트",
+  "페타비트",
+  "페비비트",
+  "바이트",
+  "킬로바이트",
+  "키비바이트",
+  "메가바이트",
+  "메비바이트",
+  "기가바이트",
+  "기비바이트",
+  "테라바이트",
+  "테비바이트",
+  "페타바이트",
+  "페비바이트",
+];
+// 데이터 전송 속도
+const dataTransferRateCategory: string[] = [
+  "초당 비트",
+  "초당 킬로비트",
+  "초당 킬로바이트",
+  "초당 키비비트",
+  "초당 메가비트",
+  "초당 메가바이트",
+  "초당 메비비트",
+  "초당 기가비트",
+  "초당 기가바이트",
+  "초당 기비비트",
+  "초당 테라비트",
+  "초당 테라바이트",
+  "초당 테비비트",
+];
+
 const unitOptions: HTMLElement = document.getElementById(
   "unit-options"
+) as HTMLElement;
+const unitDetailOptionsLeft: HTMLElement = document.getElementById(
+  "unit-detail-options-left"
+) as HTMLElement;
+const unitDetailOptionsRight: HTMLElement = document.getElementById(
+  "unit-detail-options-right"
 ) as HTMLElement;
 document
   .getElementById("unit-convert-selectbox")
   ?.addEventListener("mousedown", unitConvertSelectBoxToggle);
 document.addEventListener("mousedown", unitConvertSearchboxOutsideClick);
 document.getElementById("unit-filter")?.addEventListener("input", filterAction);
-document.getElementById("unit-convert-input-left");
-document.getElementById("unit-convert-select-left");
-document.getElementById("unit-convert-input-right");
-document.getElementById("unit-convert-select-right");
+const unitLeftInput: HTMLElement | null = document.getElementById(
+  "unit-convert-detail-input-left"
+);
+const unitLeftSelect: HTMLElement | null = document.getElementById(
+  "unit-convert-detail-select-left"
+);
+const unitRightInput: HTMLElement | null = document.getElementById(
+  "unit-convert-detail-input-right"
+);
+const unitRightSelect: HTMLElement | null = document.getElementById(
+  "unit-convert-detail-select-right"
+);
 
 // 드롭다운 메뉴 토글
 function unitConvertSelectBoxToggle() {
@@ -225,21 +410,83 @@ function filterAction(this: HTMLElement, e: Event) {
   unitOptions.innerHTML = listItems;
 }
 
-// 선택 시 실행할 함수
+// 단위 선택 시 처리해야 할 작업
 function changeClickedName(selectedText: string) {
+  // 검색창 비우기
   const unitFilter: HTMLElement | null = document.getElementById("unit-filter");
   if (unitFilter) {
     (unitFilter as HTMLInputElement).value = "";
   }
-  allUnitCategoryShow();
+  // 목록 닫기
   unitConvertSelectBoxToggle();
 
+  // 선택한 단위 표시하기
   const selectUnit: HTMLElement | null = document.getElementById(
     "unit-convert-select-unit"
   );
   if (selectUnit) {
     selectUnit.innerHTML = selectedText;
   }
+
+  // detail 초기 세팅하기
+  let settingArr: string[];
+
+  switch (selectedText) {
+    case "길이":
+      settingArr = lengthCategory;
+      break;
+    case "면적":
+      settingArr = areaCategory;
+      break;
+    case "부피":
+      settingArr = volumeCategory;
+      break;
+    case "속도":
+      settingArr = speedCategory;
+      break;
+    case "시간":
+      settingArr = timeCategory;
+      break;
+    case "압력":
+      settingArr = pressureCategory;
+      break;
+    case "에너지":
+      settingArr = energyCategory;
+      break;
+    case "연비":
+      settingArr = fuelEfficiencyCategory;
+      break;
+    case "온도":
+      settingArr = temperatureCategory;
+      break;
+    case "주파수":
+      settingArr = frequencyCategory;
+      break;
+    case "질량":
+      settingArr = massCategory;
+      break;
+    case "평면각":
+      settingArr = angleCategory;
+      break;
+    case "데이터 크기":
+      settingArr = dataSizeCategory;
+      break;
+    case "데이터 전송 속도":
+      settingArr = dataTransferRateCategory;
+      break;
+    default:
+      console.error(
+        "settingArr 세팅 실패. selectedText case를 찾을 수 없습니다."
+      );
+      return;
+  }
+
+  if (unitLeftSelect) unitLeftSelect.innerHTML = settingArr[0];
+  if (unitRightSelect) unitRightSelect.innerHTML = settingArr[1];
+  const unitLeftInput = document.getElementById(
+    "unit-convert-detail-input-left"
+  ) as HTMLInputElement | null;
+  if (unitLeftInput) unitLeftInput.value = "1";
 }
 
 // 모든 카테고리 보여주기
@@ -251,7 +498,7 @@ function allUnitCategoryShow() {
 
 // 이벤트 위임을 통한 클릭 이벤트 처리
 unitOptions.addEventListener("click", (event) => {
-  const target = event.target as HTMLElement;
+  const target: HTMLElement = event.target as HTMLElement;
 
   // unit-option-item을 가진 li 요소만 선택되도록
   if (
@@ -263,3 +510,24 @@ unitOptions.addEventListener("click", (event) => {
   }
 });
 allUnitCategoryShow();
+
+// 계산 과정
+
+// 선택된 두 세부단위에 따른 공식 설명
+// 근삿값인지, 카테고리는 무엇인지, 어떤 연산을 해야 하는지(곱셈, 나눗셈 등), 어느 정도의 값을 연산해야 하는지
+function fomulaSetting(
+  approximation: boolean,
+  category: string,
+  calType: string,
+  calValue: string
+) {
+  const formulaDOM: HTMLElement = document.getElementById(
+    "unit-convert-formula"
+  ) as HTMLElement;
+
+  let result = "";
+
+  // 공식 문단 작성하는 곳
+
+  formulaDOM.innerHTML = result;
+}
