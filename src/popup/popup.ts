@@ -342,6 +342,9 @@ document
   ?.addEventListener("mousedown", unitConvertSelectBoxToggle);
 document.addEventListener("mousedown", unitConvertSearchboxOutsideClick);
 document.getElementById("unit-filter")?.addEventListener("input", filterAction);
+document
+  .getElementById("unit-filter")
+  ?.addEventListener("keydown", filterEnterAction);
 const unitLeftInput: HTMLElement | null = document.getElementById(
   "unit-convert-detail-input-left"
 );
@@ -409,7 +412,18 @@ function filterAction(this: HTMLElement, e: Event) {
     .join("");
   unitOptions.innerHTML = listItems;
 }
+// unit-filter에서 엔터키 눌렀을 때
+function filterEnterAction(e: KeyboardEvent) {
+  if (e.key === "Enter") {
+    const inputValue: string = (
+      document.getElementById("unit-filter") as HTMLInputElement
+    ).value;
 
+    if (unitConvertCategory.includes(inputValue)) {
+      changeClickedName(inputValue);
+    }
+  }
+}
 // 단위 선택 시 처리해야 할 작업
 function changeClickedName(selectedText: string) {
   // 검색창 비우기
@@ -417,7 +431,8 @@ function changeClickedName(selectedText: string) {
   if (unitFilter) {
     (unitFilter as HTMLInputElement).value = "";
   }
-  // 목록 닫기
+  // 카테고리 초기화 및 목록 닫기
+  allUnitCategoryShow();
   unitConvertSelectBoxToggle();
 
   // 선택한 단위 표시하기
@@ -489,7 +504,7 @@ function changeClickedName(selectedText: string) {
   if (unitLeftInput) unitLeftInput.value = "1";
 }
 
-// 모든 카테고리 보여주기
+// 모든 카테고리 초기화
 function allUnitCategoryShow() {
   unitOptions.innerHTML = unitConvertCategory
     .map((unit: string) => `<li class="unit-option-item">${unit}</li>`)
@@ -512,6 +527,8 @@ unitOptions.addEventListener("click", (event) => {
 allUnitCategoryShow();
 
 // 계산 과정
+// 엔터키 누르면 검색한 거 입력필드에 넣기
+// 초성 관련 문제. ㄱ에서도 기에서도 길ㅇ에서도 "길이"가 나오도록 하기?
 
 // 선택된 두 세부단위에 따른 공식 설명
 // 근삿값인지, 카테고리는 무엇인지, 어떤 연산을 해야 하는지(곱셈, 나눗셈 등), 어느 정도의 값을 연산해야 하는지
