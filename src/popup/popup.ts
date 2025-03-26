@@ -140,6 +140,7 @@ function capitalLowerConvertAction() {
 }
 
 /** 단위 변환 */
+// https://stickode.tistory.com/675 참조
 const unitConvertCategory: string[] = [
   "길이",
   "면적",
@@ -156,10 +157,14 @@ const unitConvertCategory: string[] = [
   "데이터 크기",
   "데이터 전송 속도",
 ];
+const unitOptions: HTMLElement = document.getElementById(
+  "unit-options"
+) as HTMLElement;
 document
   .getElementById("unit-convert-selectbox")
   ?.addEventListener("mousedown", unitConvertSelectBoxToggle);
 document.addEventListener("mousedown", unitConvertSearchboxOutsideClick);
+document.getElementById("unit-filter")?.addEventListener("input", filterAction);
 document.getElementById("unit-convert-input-left");
 document.getElementById("unit-convert-select-left");
 document.getElementById("unit-convert-input-right");
@@ -177,9 +182,14 @@ function unitConvertSelectBoxToggle() {
     unitConvertSearchbox.classList.add("blind");
   }
 }
+// 외부 클릭 시 닫기
 function unitConvertSearchboxOutsideClick(event: MouseEvent) {
-  const selectBox = document.getElementById("unit-convert-selectbox");
-  const searchBox = document.getElementById("unit-convert-searchbox");
+  const selectBox: HTMLElement | null = document.getElementById(
+    "unit-convert-selectbox"
+  );
+  const searchBox: HTMLElement | null = document.getElementById(
+    "unit-convert-searchbox"
+  );
 
   // 클릭된 요소가 selectBox나 searchBox 내부인지 확인
   if (
@@ -195,3 +205,56 @@ function unitConvertSearchboxOutsideClick(event: MouseEvent) {
     searchBox.classList.add("blind");
   }
 }
+// 검색창에 입력 시 필터링
+function filterAction(this: HTMLElement, e: Event) {
+  let newUnitCategory: string[] = [];
+  let searchWord: string = (e.target as HTMLInputElement)?.value;
+  unitOptions.innerHTML = ""; // 기존 목록 초기화
+
+  if (searchWord.length > 0) {
+    newUnitCategory = unitConvertCategory.filter((data: string) =>
+      data.startsWith(searchWord)
+    );
+  } else {
+    newUnitCategory = unitConvertCategory;
+  }
+
+  const listItems: string = newUnitCategory
+    .map((data: string) => `<li>${data}</li>`)
+    .join("");
+  unitOptions.innerHTML = listItems;
+}
+
+// 선택 시 실행할 함수
+function changeClickedName(selectedText: string) {
+  const unitFilter: HTMLElement | null = document.getElementById("unit-filter");
+  if (unitFilter) {
+    (unitFilter as HTMLInputElement).value = "";
+  }
+  allUnitCategoryShow();
+  unitConvertSelectBoxToggle();
+
+  const selectUnit: HTMLElement | null = document.getElementById(
+    "unit-convert-select-unit"
+  );
+  if (selectUnit) {
+    selectUnit.innerHTML = selectedText;
+  }
+}
+
+// 모든 카테고리 보여주기
+function allUnitCategoryShow() {
+  unitOptions.innerHTML = unitConvertCategory
+    .map((unit: string) => `<li>${unit}</li>`)
+    .join("");
+}
+
+// 이벤트 위임을 통한 클릭 이벤트 처리
+unitOptions.addEventListener("click", (event) => {
+  const target = event.target as HTMLElement;
+  if (target.tagName === "LI") {
+    changeClickedName(target.textContent || "");
+  }
+});
+
+allUnitCategoryShow();
