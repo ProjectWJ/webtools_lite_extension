@@ -139,6 +139,8 @@ function capitalLowerConvertAction() {
   }
 }
 
+type conversionRecord = Record<string, number>;
+
 /** 단위 변환 */
 // https://stickode.tistory.com/675 참조
 const unitConvertCategory: string[] = [
@@ -157,176 +159,160 @@ const unitConvertCategory: string[] = [
   "데이터 크기",
   "데이터 전송 속도",
 ];
-// 길이
-const lengthCategory: string[] = [
-  "킬로미터",
-  "미터",
-  "센티미터",
-  "밀리미터",
-  "마이크로미터",
-  "나노미터",
-  "마일",
-  "야드",
-  "피트",
-  "인치",
-  "해리",
-];
-// 면적
-const areaCategory: string[] = [
-  "제곱킬로미터",
-  "제곱미터",
-  "제곱마일",
-  "제곱야드",
-  "제곱피트",
-  "제곱인치",
-  "헥타르",
-  "에이커",
-];
-// 부피
-const volumeCategory: string[] = [
-  "미국 액량 갤런",
-  "미국 액량 쿼트",
-  "미국 액량 파인트",
-  "미국 컵",
-  "미국 플루이드 온스",
-  "미국 테이블스푼",
-  "미국 티스푼",
-  "세제곱미터",
-  "리터",
-  "밀리리터",
-  "영국 갤런",
-  "영국 쿼트",
-  "영국 파인트",
-  "영국 컵",
-  "영국 플루이드 온스",
-  "영국 테이블스푼",
-  "영국 티",
-  "세제곱피트",
-  "세제곱인치",
-];
-// 속도
-const speedCategory: string[] = [
-  "시간당 마일",
-  "초당 피트",
-  "미터 매 초",
-  "킬로미터 매 시",
-  "노트",
-];
-// 시간
-const timeCategory: string[] = [
-  "나노초",
-  "마이크로초",
-  "밀리초",
-  "초",
-  "분",
-  "시간",
-  "일",
-  "주",
-  "개월",
-  "역년",
-  "연대",
-  "세기",
-];
-// 압력
-const pressureCategory: string[] = [
-  "기압",
-  "바",
-  "제곱인치 당 파운드힘",
-  "토르",
-  "파스칼",
-];
-// 에너지
-const energyCategory: string[] = [
-  "줄",
-  "킬로줄",
-  "그램칼로리",
-  "킬로칼로리",
-  "와트시",
-  "킬로와트시",
-  "전자볼트",
-  "영국 열 단위",
-  "섬",
-  "풋파운드",
-];
+// 길이(미터 기준)
+const lengthConversion: conversionRecord = {
+  킬로미터: 1000,
+  미터: 1,
+  센티미터: 0.01,
+  밀리미터: 0.001,
+  마이크로미터: 0.000001,
+  나노미터: 0.000000001,
+  마일: 1609.34,
+  야드: 0.9144,
+  피트: 0.3048,
+  인치: 0.0254,
+  해리: 1852,
+};
+// 면적(제곱미터 기준)
+const areaConversion: conversionRecord = {
+  제곱킬로미터: 1_000_000,
+  제곱미터: 1,
+  제곱마일: 2_589_988.11,
+  제곱야드: 0.836127,
+  제곱피트: 0.092903,
+  제곱인치: 0.00064516,
+  헥타르: 10_000,
+  에이커: 4046.86,
+};
+// 부피(리터 기준)
+const volumeConversion: conversionRecord = {
+  "미국 액량 갤런": 3.78541,
+  "미국 액량 쿼트": 0.946353,
+  "미국 액량 파인트": 0.473176,
+  "미국 컵": 0.24,
+  "미국 플루이드 온스": 0.0295735,
+  "미국 테이블스푼": 0.0147868,
+  "미국 티스푼": 0.00492892,
+  세제곱미터: 1000,
+  리터: 1,
+  밀리리터: 0.001,
+  "영국 갤런": 4.54609,
+  "영국 쿼트": 1.13652,
+  "영국 파인트": 0.568261,
+  "영국 컵": 0.284131,
+  "영국 플루이드 온스": 0.0284131,
+  "영국 테이블스푼": 0.0177582,
+  "영국 티스푼": 0.00591939,
+  세제곱피트: 28.3168,
+  세제곱인치: 0.0163871,
+};
+// 속도(미터/초 기준)
+const speedConversion: conversionRecord = {
+  "시간당 마일": 0.44704,
+  "초당 피트": 0.3048,
+  "미터 매 초": 1,
+  "킬로미터 매 시": 0.277778,
+  노트: 0.514444,
+};
+// 시간(초 기준)
+const timeConversion: conversionRecord = {
+  나노초: 0.000000001,
+  마이크로초: 0.000001,
+  밀리초: 0.001,
+  초: 1,
+  분: 60,
+  시간: 3600,
+  일: 86400,
+  주: 604800,
+  개월: 2_629_746, // 평균 30.44일
+  역년: 31_556_952, // 평균 365.2425일
+  연대: 315_569_520, // 10년
+  세기: 3_155_695_200, // 100년
+};
+// 압력(파스칼 기준)
+const pressureConversion: conversionRecord = {
+  기압: 101325,
+  바: 100000,
+  "제곱인치 당 파운드힘": 6894.76,
+  토르: 133.322,
+  파스칼: 1,
+};
+// 에너지(줄 기준)
+const energyConversion: conversionRecord = {
+  줄: 1,
+  킬로줄: 1000,
+  그램칼로리: 4.184,
+  킬로칼로리: 4184,
+  와트시: 3600,
+  킬로와트시: 3_600_000,
+  전자볼트: 1.60218e-19,
+  "영국 열 단위": 1055.06,
+  섬: 1055055852.62,
+  풋파운드: 1.35582,
+};
 // 연비
-const fuelEfficiencyCategory: string[] = [
-  "갤런 당 마일",
-  "영국 갤런 당 마일",
-  "리터 당 킬로미터",
-  "100 킬로미터 당 리터",
-];
-// 온도
-const temperatureCategory: string[] = ["섭씨", "화씨", "켈빈"];
-// 주파수
-const frequencyCategory: string[] = [
-  "헤르츠",
-  "킬로헤르츠",
-  "메가헤르츠",
-  "기가헤르츠",
-];
-// 질량
-const massCategory: string[] = [
-  "메트릭 톤",
-  "킬로그램",
-  "그램",
-  "밀리그램",
-  "마이크로그램",
-  "롱톤",
-  "미국 톤",
-  "스톤",
-  "파운드",
-  "온스",
-];
-// 평면각
-const angleCategory: string[] = [
-  "그레이드",
-  "도",
-  "라디안",
-  "밀리라디안",
-  "분각",
-  "초",
-];
-// 데이터 크기
-const dataSizeCategory: string[] = [
-  "비트",
-  "킬로비트",
-  "키비미트",
-  "메가비트",
-  "메비비트",
-  "기가비트",
-  "기비비트",
-  "테라비트",
-  "테비비트",
-  "페타비트",
-  "페비비트",
-  "바이트",
-  "킬로바이트",
-  "키비바이트",
-  "메가바이트",
-  "메비바이트",
-  "기가바이트",
-  "기비바이트",
-  "테라바이트",
-  "테비바이트",
-  "페타바이트",
-  "페비바이트",
-];
-// 데이터 전송 속도
-const dataTransferRateCategory: string[] = [
-  "초당 비트",
-  "초당 킬로비트",
-  "초당 킬로바이트",
-  "초당 키비비트",
-  "초당 메가비트",
-  "초당 메가바이트",
-  "초당 메비비트",
-  "초당 기가비트",
-  "초당 기가바이트",
-  "초당 기비비트",
-  "초당 테라비트",
-  "초당 테라바이트",
-  "초당 테비비트",
-];
+const fuelEfficiencyConversion: conversionRecord = {
+  "갤런 당 마일": 0.425144,
+  "영국 갤런 당 마일": 0.354006,
+  "리터 당 킬로미터": 1,
+  "100 킬로미터 당 리터": 100,
+};
+// 온도(비율 전환 불가. 따로 함수 사용해야 함)
+const temperatureConversion: string[] = ["섭씨", "화씨", "켈빈"];
+// 주파수(헤르츠 기준)
+const frequencyConversion: conversionRecord = {
+  헤르츠: 1,
+  킬로헤르츠: 1000,
+  메가헤르츠: 1_000_000,
+  기가헤르츠: 1_000_000_000,
+};
+// 질량(킬로그램 기준)
+const massConversion: conversionRecord = {
+  "메트릭 톤": 1000,
+  킬로그램: 1,
+  그램: 0.001,
+  밀리그램: 0.000001,
+  마이크로그램: 0.000000001,
+  롱톤: 1016.05,
+  "미국 톤": 907.184,
+  스톤: 6.35029,
+  파운드: 0.453592,
+  온스: 0.0283495,
+};
+// 평면각(라디안 기준)
+const angleConversion: conversionRecord = {
+  그레이드: 0.015708,
+  도: Math.PI / 180,
+  라디안: 1,
+  밀리라디안: 0.001,
+  분각: Math.PI / 10800,
+  초: Math.PI / 648000,
+};
+// 데이터 크기(바이트 기준)
+const dataSizeConversion: conversionRecord = {
+  비트: 0.125,
+  바이트: 1,
+  킬로바이트: 1000,
+  메가바이트: 1_000_000,
+  기가바이트: 1_000_000_000,
+  테라바이트: 1_000_000_000_000,
+};
+// 데이터 전송 속도(초당 비트 기준)
+const dataTransferRateConversion: conversionRecord = {
+  "초당 비트": 1,
+  "초당 킬로비트": 1_000,
+  "초당 킬로바이트": 8_000,
+  "초당 키비비트": 1_024,
+  "초당 메가비트": 1_000_000,
+  "초당 메가바이트": 8_000_000,
+  "초당 메비비트": 1_048_576, // 1024^2
+  "초당 기가비트": 1_000_000_000,
+  "초당 기가바이트": 8_000_000_000,
+  "초당 기비비트": 1_073_741_824, // 1024^3
+  "초당 테라비트": 1_000_000_000_000,
+  "초당 테라바이트": 8_000_000_000_000,
+  "초당 테비비트": 1_099_511_627_776, // 1024^4
+};
 
 const unitOptions: HTMLElement = document.getElementById(
   "unit-options"
@@ -444,64 +430,89 @@ function changeClickedName(selectedText: string) {
   }
 
   // detail 초기 세팅하기
-  let settingArr: string[];
+  let settingRecord: conversionRecord = lengthConversion;
+  let tempRecord: string[] = temperatureConversion; // 온도는 따로 처리해야 함
 
   switch (selectedText) {
     case "길이":
-      settingArr = lengthCategory;
+      // settingRecord = lengthConversion; 초기 세팅이 길이이므로 의미 없음
       break;
     case "면적":
-      settingArr = areaCategory;
+      settingRecord = areaConversion;
       break;
     case "부피":
-      settingArr = volumeCategory;
+      settingRecord = volumeConversion;
       break;
     case "속도":
-      settingArr = speedCategory;
+      settingRecord = speedConversion;
       break;
     case "시간":
-      settingArr = timeCategory;
+      settingRecord = timeConversion;
       break;
     case "압력":
-      settingArr = pressureCategory;
+      settingRecord = pressureConversion;
       break;
     case "에너지":
-      settingArr = energyCategory;
+      settingRecord = energyConversion;
       break;
     case "연비":
-      settingArr = fuelEfficiencyCategory;
+      settingRecord = fuelEfficiencyConversion;
       break;
     case "온도":
-      settingArr = temperatureCategory;
+      // tempRecord = temperatureConversion; 맨 처음에 해놔서 의미 없음
       break;
     case "주파수":
-      settingArr = frequencyCategory;
+      settingRecord = frequencyConversion;
       break;
     case "질량":
-      settingArr = massCategory;
+      settingRecord = massConversion;
       break;
     case "평면각":
-      settingArr = angleCategory;
+      settingRecord = angleConversion;
       break;
     case "데이터 크기":
-      settingArr = dataSizeCategory;
+      settingRecord = dataSizeConversion;
       break;
     case "데이터 전송 속도":
-      settingArr = dataTransferRateCategory;
+      settingRecord = dataTransferRateConversion;
       break;
     default:
       console.error(
-        "settingArr 세팅 실패. selectedText case를 찾을 수 없습니다."
+        "settingRecord 세팅 실패. selectedText case를 찾을 수 없습니다."
       );
       return;
   }
 
-  if (unitLeftSelect) unitLeftSelect.innerHTML = settingArr[0];
-  if (unitRightSelect) unitRightSelect.innerHTML = settingArr[1];
-  const unitLeftInput = document.getElementById(
-    "unit-convert-detail-input-left"
-  ) as HTMLInputElement | null;
-  if (unitLeftInput) unitLeftInput.value = "1";
+  if (selectedText === "온도") {
+    // 온도는 따로 처리
+    if (unitLeftSelect) unitLeftSelect.innerHTML = tempRecord[0];
+    if (unitRightSelect) unitRightSelect.innerHTML = tempRecord[1];
+    const unitLeftInput = document.getElementById(
+      "unit-convert-detail-input-left"
+    ) as HTMLInputElement | null;
+    if (unitLeftInput) unitLeftInput.value = "0";
+  } else {
+    // 기준점이 되는 단위를 찾아 왼쪽에 배치, 기준점 바로 아래쪽 항목을 오른쪽에 배치
+    // 기준점 찾기
+    const keys: string[] = Object.keys(settingRecord);
+    const datumPoint: number = keys.findIndex(
+      (key) => settingRecord[key] === 1
+    );
+    const index: number = datumPoint !== -1 ? datumPoint : 0; // 찾지 못하면 첫 번째 항목을 기준점으로 설정
+
+    // 배치
+    if (index + 1 !== keys.length) {
+      if (unitLeftSelect) unitLeftSelect.innerHTML = keys[index];
+      if (unitRightSelect) unitRightSelect.innerHTML = keys[index + 1];
+    } else {
+      if (unitLeftSelect) unitLeftSelect.innerHTML = keys[index];
+      if (unitRightSelect) unitRightSelect.innerHTML = keys[0];
+    }
+    const unitLeftInput = document.getElementById(
+      "unit-convert-detail-input-left"
+    ) as HTMLInputElement | null;
+    if (unitLeftInput) unitLeftInput.value = "1";
+  }
 }
 
 // 모든 카테고리 초기화
@@ -527,6 +538,30 @@ unitOptions.addEventListener("click", (event) => {
 allUnitCategoryShow();
 
 // 계산 과정
+
+// 온도 변환
+function convertTemperature(
+  value: number,
+  fromUnit: string,
+  toUnit: string
+): number {
+  if (fromUnit === toUnit) return value;
+
+  if (fromUnit === "섭씨") {
+    if (toUnit === "화씨") return value * 1.8 + 32;
+    if (toUnit === "켈빈") return value + 273.15;
+  }
+  if (fromUnit === "화씨") {
+    if (toUnit === "섭씨") return (value - 32) / 1.8;
+    if (toUnit === "켈빈") return (value - 32) / 1.8 + 273.15;
+  }
+  if (fromUnit === "켈빈") {
+    if (toUnit === "섭씨") return value - 273.15;
+    if (toUnit === "화씨") return (value - 273.15) * 1.8 + 32;
+  }
+  throw new Error("지원하지 않는 변환");
+}
+
 // 엔터키 누르면 검색한 거 입력필드에 넣기
 // 초성 관련 문제. ㄱ에서도 기에서도 길ㅇ에서도 "길이"가 나오도록 하기?
 
