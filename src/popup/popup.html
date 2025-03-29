@@ -12,7 +12,7 @@
       <button id="character-count" type="button">글자 수 세기</button>
       <button id="capital-lower-convert" type="button">대소문자 변환</button>
       <button id="unit-convert" type="button">단위 변환</button>
-      <button id="unmeral-convert" type="button">진수 변환</button>
+      <button id="number-system-convert" type="button">진수 변환</button>
       <button id="kor-eng-convert" type="button">한영타 변환</button>
       <button id="exchange-rate-calculate" type="button">환율 계산</button>
       <button id="date-calculate" type="button">날짜 계산</button>
@@ -104,8 +104,44 @@
       <button class="back-btn" type="button">돌아가기</button>
     </div>
 
-    <div id="unmeral-convert-panel" class="blind">
+    <div id="number-system-convert-panel" class="blind">
       <p>진수 변환</p>
+      <span>10진수</span>
+      <input
+        id="decimal-input"
+        aria-label="decimal-input"
+        placeholder="10진수 값을 입력하세요"
+      />
+      <br />
+      <span>2진수</span>
+      <input
+        id="binary-input"
+        aria-label="binary-input"
+        placeholder="2진수 값을 입력하세요"
+      />
+      <br />
+      <span>8진수</span>
+      <input
+        id="octal-input"
+        aria-label="octal-input"
+        placeholder="8진수 값을 입력하세요"
+      />
+      <br />
+      <span>16진수</span>
+      <input
+        id="hexadecimal-input"
+        aria-label="hexadecimal-input"
+        placeholder="16진수 값을 입력하세요"
+      />
+      <br />
+      <span>10진수 : 0 ~ 9</span>
+      <br />
+      <span>2진수 : 0 ~ 1</span>
+      <br />
+      <span>8진수 : 0 ~ 7</span>
+      <br />
+      <span>16진수 : 0 ~ F (10 = A, 11 = B, 12 = C...)</span>
+      <br />
       <button class="back-btn" type="button">돌아가기</button>
     </div>
 

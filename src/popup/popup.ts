@@ -10,9 +10,11 @@ document
 document.getElementById("unit-convert")?.addEventListener("click", () => {
   panelToggle("unit-convert-panel");
 });
-document.getElementById("unmeral-convert")?.addEventListener("click", () => {
-  panelToggle("unmeral-convert-panel");
-});
+document
+  .getElementById("number-system-convert")
+  ?.addEventListener("click", () => {
+    panelToggle("number-system-convert-panel");
+  });
 document.getElementById("kor-eng-convert")?.addEventListener("click", () => {
   panelToggle("kor-eng-convert-panel");
 });
@@ -989,3 +991,117 @@ function unitDetailOptionsClick(selectedText: string, event: Event) {
 }
 
 /** 진수 변환 */
+document
+  .getElementById("decimal-input")
+  ?.addEventListener("input", numberSystemConvertAction);
+document
+  .getElementById("octal-input")
+  ?.addEventListener("input", numberSystemConvertAction);
+document
+  .getElementById("hexadecimal-input")
+  ?.addEventListener("input", numberSystemConvertAction);
+document
+  .getElementById("binary-input")
+  ?.addEventListener("input", numberSystemConvertAction);
+
+// 진법 변환
+function numberSystemConvertAction(e: Event) {
+  const decimalInput = document.getElementById(
+    "decimal-input"
+  ) as HTMLInputElement;
+  const binaryInput = document.getElementById(
+    "binary-input"
+  ) as HTMLInputElement;
+  const octalInput = document.getElementById("octal-input") as HTMLInputElement;
+  const hexadecimalInput = document.getElementById(
+    "hexadecimal-input"
+  ) as HTMLInputElement;
+
+  const id: string = (e.target as HTMLElement).id;
+  let inputValue: string = (e.target as HTMLInputElement).value;
+  let fromBase: number;
+
+  switch (id) {
+    case "decimal-input":
+      fromBase = 10;
+      break;
+    case "binary-input":
+      fromBase = 2;
+      break;
+    case "octal-input":
+      fromBase = 8;
+      break;
+    case "hexadecimal-input":
+      fromBase = 16;
+      break;
+    default:
+      console.error("진수 판별 불가");
+      return;
+  }
+
+  if (inputValue === "") {
+    decimalInput.value = "";
+    binaryInput.value = "";
+    octalInput.value = "";
+    hexadecimalInput.value = "";
+    return;
+  }
+
+  // 입력값 필터
+  if (!numberSystemConvertDistinction(inputValue, fromBase)) {
+    return;
+  }
+
+  const isNegative: boolean = inputValue.startsWith("-");
+  inputValue = isNegative ? inputValue.slice(1) : inputValue;
+
+  const [integerPart, fractionalPart]: string[] = inputValue.split(".");
+
+  // 정수 변환
+  let decimalValue: number = parseInt(integerPart, fromBase);
+
+  // 소수 변환
+  let fractionalValue: number = 0;
+  if (fractionalPart) {
+    fractionalValue = fractionalPart.split("").reduce((acc, digit, index) => {
+      return acc + parseInt(digit, fromBase) / Math.pow(fromBase, index + 1);
+    }, 0);
+  }
+
+  let result: number = decimalValue + fractionalValue;
+  if (isNaN(result)) {
+    (e.target as HTMLInputElement).value = "";
+    return;
+  }
+
+  let result10: string = (isNegative ? "-" : "") + result.toString(10);
+  let result2: string = (isNegative ? "-" : "") + result.toString(2);
+  let result8: string = (isNegative ? "-" : "") + result.toString(8);
+  let result16: string =
+    (isNegative ? "-" : "") + result.toString(16).toUpperCase();
+
+  decimalInput.value = result10;
+  binaryInput.value = result2;
+  octalInput.value = result8;
+  hexadecimalInput.value = result16;
+}
+// 입력값 판별
+function numberSystemConvertDistinction(
+  inputValue: string,
+  base: number
+): boolean {
+  // -가 처음에 올 수 있도록 처리
+  if (inputValue.startsWith("-")) {
+    inputValue = inputValue.slice(1); // -는 제거
+  }
+
+  const patterns: { [key: number]: RegExp } = {
+    2: /^[01]+(\.[01]+)?$/,
+    8: /^[0-7]+(\.[0-7]+)?$/,
+    10: /^[0-9]+(\.[0-9]+)?$/,
+    16: /^[0-9a-fA-F]+(\.[0-9a-fA-F]+)?$/,
+  };
+
+  // 정규식을 사용하여 올바른 입력인지 확인
+  return patterns[base].test(inputValue);
+}
