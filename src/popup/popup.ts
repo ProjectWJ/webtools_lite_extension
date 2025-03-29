@@ -323,6 +323,10 @@ const unitDetailOptionsLeft: HTMLElement = document.getElementById(
 const unitDetailOptionsRight: HTMLElement = document.getElementById(
   "unit-detail-options-right"
 ) as HTMLElement;
+let fromInput: string = "default";
+let toInput: string = "default";
+let fromSelect: string = "default";
+let toSelect: string = "default";
 document
   .getElementById("unit-convert-selectbox")
   ?.addEventListener("mousedown", unitConvertSelectBoxToggle);
@@ -331,18 +335,115 @@ document.getElementById("unit-filter")?.addEventListener("input", filterAction);
 document
   .getElementById("unit-filter")
   ?.addEventListener("keydown", filterEnterAction);
-const unitLeftInput: HTMLElement | null = document.getElementById(
-  "unit-convert-detail-input-left"
-);
+document
+  .getElementById("unit-convert-detail-input-left")
+  ?.addEventListener("input", unitDetailInputAction);
 const unitLeftSelect: HTMLElement | null = document.getElementById(
   "unit-convert-detail-select-left"
 );
-const unitRightInput: HTMLElement | null = document.getElementById(
-  "unit-convert-detail-input-right"
-);
+document
+  .getElementById("unit-convert-detail-input-right")
+  ?.addEventListener("input", unitDetailInputAction);
 const unitRightSelect: HTMLElement | null = document.getElementById(
   "unit-convert-detail-select-right"
 );
+
+/*
+  액션
+
+  - 왼쪽이나 오른쪽의 input 값 바꾸기
+  바꾼 곳을 fromInput, 바꿀 곳을 toInput으로 하기
+  바꾼 곳의 select값을 토대로 반대쪽의 select값을 가져와 공식에 적용
+  (완료)
+
+  - 왼쪽이나 오른쪽의 select 값 바꾸기
+  어느 쪽을 바꾸더라도 왼쪽이 fromInput, 오른쪽이 toInput
+  계산 방향 또한 왼쪽에서 오른쪽으로
+  (일단 select를 할 수 있게 해야 함)
+*/
+
+// 단위 input에 값 입력 시
+function unitDetailInputAction(e: Event) {
+  // 이벤트 타겟
+  const target = e.target;
+  if (target === null) {
+    console.error("event target이 null입니다.");
+    return;
+  }
+
+  // 어느 input에서 입력되었는지, 값은 무엇인지 확인
+  const fromInputId: string = (target as HTMLElement).id;
+  fromInput = (target as HTMLInputElement).value;
+  let value: number = parseFloat(fromInput);
+
+  // 입력된 input값이 없거나 숫자가 아니면 그대로 반환. 개선 필요?
+  if (fromInput === "" || fromInput === null) {
+    const unitLeftInput = document.getElementById(
+      "unit-convert-detail-input-left"
+    ) as HTMLInputElement | null;
+    if (unitLeftInput) {
+      unitLeftInput.value = "";
+    }
+    const unitRightInput = document.getElementById(
+      "unit-convert-detail-input-right"
+    ) as HTMLInputElement | null;
+    if (unitRightInput) {
+      unitRightInput.value = "";
+    }
+    return;
+  }
+  if (isNaN(value)) {
+    console.error("입력값이 숫자가 아닙니다.");
+    return;
+  }
+
+  // input값이 입력된 곳에 따라 같은 방향의 select가 from이 된다
+  if (fromInputId.includes("left")) {
+    fromSelect = document.getElementById("unit-convert-detail-select-left")
+      ?.innerHTML as string;
+    toSelect = document.getElementById("unit-convert-detail-select-right")
+      ?.innerHTML as string;
+  } else if (fromInputId.includes("right")) {
+    fromSelect = document.getElementById("unit-convert-detail-select-right")
+      ?.innerHTML as string;
+    toSelect = document.getElementById("unit-convert-detail-select-left")
+      ?.innerHTML as string;
+  } else {
+    console.error("fromInput을 판별할 수 없습니다.");
+    return;
+  }
+
+  // 카테고리 판별
+  const unitSelectElement = document.getElementById("unit-convert-select-unit");
+  if (unitSelectElement === null) {
+    console.error("unit-convert-select-unit값을 찾을 수 없습니다.");
+    return;
+  }
+  const currentCategory: string = unitSelectElement.innerHTML;
+
+  // 결과 계산
+  let result;
+  if (currentCategory === "온도") {
+    result = convertTemperature(value, fromSelect, toSelect);
+  } else {
+    const conversionTables = switchConversion(currentCategory);
+    result = convertUnit(value, fromSelect, toSelect, conversionTables);
+  }
+
+  // 적용
+  toInput = result.toString();
+  if (fromInputId.includes("left")) {
+    const resultDOM = document.getElementById(
+      "unit-convert-detail-input-right"
+    ) as HTMLInputElement;
+    resultDOM.value = toInput;
+  } else {
+    const resultDOM = document.getElementById(
+      "unit-convert-detail-input-left"
+    ) as HTMLInputElement;
+    resultDOM.value = toInput;
+  }
+}
 
 // 드롭다운 메뉴 토글
 function unitConvertSelectBoxToggle() {
@@ -433,6 +534,118 @@ function changeClickedName(selectedText: string) {
   let settingRecord: conversionRecord = lengthConversion;
   let tempRecord: string[] = temperatureConversion; // 온도는 따로 처리해야 함
 
+  settingRecord = switchConversion(selectedText);
+
+  if (selectedText === "온도") {
+    // 온도는 따로 처리
+    if (unitLeftSelect) unitLeftSelect.innerHTML = tempRecord[0];
+    if (unitRightSelect) unitRightSelect.innerHTML = tempRecord[1];
+    const unitLeftInput = document.getElementById(
+      "unit-convert-detail-input-left"
+    ) as HTMLInputElement | null;
+    // if (unitLeftInput) unitLeftInput.value = "0";
+  } else {
+    // 기준점이 되는 단위를 찾아 왼쪽에 배치, 기준점 바로 아래쪽 항목을 오른쪽에 배치
+    // 기준점 찾기
+    const keys: string[] = Object.keys(settingRecord);
+    const datumPoint: number = keys.findIndex(
+      (key) => settingRecord[key] === 1
+    );
+    const index: number = datumPoint !== -1 ? datumPoint : 0; // 찾지 못하면 첫 번째 항목을 기준점으로 설정
+
+    // 배치
+    if (index + 1 !== keys.length) {
+      if (unitLeftSelect) unitLeftSelect.innerHTML = keys[index];
+      if (unitRightSelect) unitRightSelect.innerHTML = keys[index + 1];
+    } else {
+      if (unitLeftSelect) unitLeftSelect.innerHTML = keys[index];
+      if (unitRightSelect) unitRightSelect.innerHTML = keys[0];
+    }
+    const unitLeftInput = document.getElementById(
+      "unit-convert-detail-input-left"
+    ) as HTMLInputElement | null;
+    // if (unitLeftInput) unitLeftInput.value = "1";
+  }
+}
+// 처음에 길이 보여주게 하기
+changeClickedName("길이");
+// 모든 카테고리 초기화
+function allUnitCategoryShow() {
+  unitOptions.innerHTML = unitConvertCategory
+    .map((unit: string) => `<li class="unit-option-item">${unit}</li>`)
+    .join("");
+}
+
+// 이벤트 위임을 통한 클릭 이벤트 처리
+unitOptions.addEventListener("click", (event) => {
+  const target: HTMLElement = event.target as HTMLElement;
+
+  // unit-option-item을 가진 li 요소만 선택되도록
+  if (
+    target.tagName === "LI" &&
+    unitOptions.contains(target) &&
+    target.classList.contains("unit-option-item")
+  ) {
+    changeClickedName(target.textContent || "");
+  }
+});
+allUnitCategoryShow();
+
+// 계산 실행
+function convertUnit(
+  value: number,
+  fromUnit: string,
+  toUnit: string,
+  conversionTable: Record<string, number>
+): number {
+  return (value * conversionTable[fromUnit]) / conversionTable[toUnit];
+}
+
+// 계산 실행(온도 변환)
+function convertTemperature(
+  value: number,
+  fromUnit: string,
+  toUnit: string
+): number {
+  if (fromUnit === toUnit) return value;
+
+  if (fromUnit === "섭씨") {
+    if (toUnit === "화씨") return value * 1.8 + 32;
+    if (toUnit === "켈빈") return value + 273.15;
+  }
+  if (fromUnit === "화씨") {
+    if (toUnit === "섭씨") return (value - 32) / 1.8;
+    if (toUnit === "켈빈") return (value - 32) / 1.8 + 273.15;
+  }
+  if (fromUnit === "켈빈") {
+    if (toUnit === "섭씨") return value - 273.15;
+    if (toUnit === "화씨") return (value - 273.15) * 1.8 + 32;
+  }
+  throw new Error("지원하지 않는 변환입니다.");
+}
+
+// 선택된 두 세부단위에 따른 공식 설명
+// 근삿값인지, 카테고리는 무엇인지, 어떤 연산을 해야 하는지(곱셈, 나눗셈 등), 어느 정도의 값을 연산해야 하는지
+function fomulaSetting(
+  approximation: boolean,
+  category: string,
+  calType: string,
+  calValue: string
+) {
+  const formulaDOM: HTMLElement = document.getElementById(
+    "unit-convert-formula"
+  ) as HTMLElement;
+
+  let result = "";
+
+  // 공식 문단 작성하는 곳
+
+  formulaDOM.innerHTML = result;
+}
+// 변환 케이스 스위치(온도 제외)
+function switchConversion(selectedText: string): conversionRecord {
+  let settingRecord: conversionRecord = lengthConversion;
+
   switch (selectedText) {
     case "길이":
       // settingRecord = lengthConversion; 초기 세팅이 길이이므로 의미 없음
@@ -459,7 +672,7 @@ function changeClickedName(selectedText: string) {
       settingRecord = fuelEfficiencyConversion;
       break;
     case "온도":
-      // tempRecord = temperatureConversion; 맨 처음에 해놔서 의미 없음
+      // tempRecord = temperatureConversion; 초기 세팅이 온도이므로 의미 없음
       break;
     case "주파수":
       settingRecord = frequencyConversion;
@@ -480,106 +693,7 @@ function changeClickedName(selectedText: string) {
       console.error(
         "settingRecord 세팅 실패. selectedText case를 찾을 수 없습니다."
       );
-      return;
   }
 
-  if (selectedText === "온도") {
-    // 온도는 따로 처리
-    if (unitLeftSelect) unitLeftSelect.innerHTML = tempRecord[0];
-    if (unitRightSelect) unitRightSelect.innerHTML = tempRecord[1];
-    const unitLeftInput = document.getElementById(
-      "unit-convert-detail-input-left"
-    ) as HTMLInputElement | null;
-    if (unitLeftInput) unitLeftInput.value = "0";
-  } else {
-    // 기준점이 되는 단위를 찾아 왼쪽에 배치, 기준점 바로 아래쪽 항목을 오른쪽에 배치
-    // 기준점 찾기
-    const keys: string[] = Object.keys(settingRecord);
-    const datumPoint: number = keys.findIndex(
-      (key) => settingRecord[key] === 1
-    );
-    const index: number = datumPoint !== -1 ? datumPoint : 0; // 찾지 못하면 첫 번째 항목을 기준점으로 설정
-
-    // 배치
-    if (index + 1 !== keys.length) {
-      if (unitLeftSelect) unitLeftSelect.innerHTML = keys[index];
-      if (unitRightSelect) unitRightSelect.innerHTML = keys[index + 1];
-    } else {
-      if (unitLeftSelect) unitLeftSelect.innerHTML = keys[index];
-      if (unitRightSelect) unitRightSelect.innerHTML = keys[0];
-    }
-    const unitLeftInput = document.getElementById(
-      "unit-convert-detail-input-left"
-    ) as HTMLInputElement | null;
-    if (unitLeftInput) unitLeftInput.value = "1";
-  }
-}
-
-// 모든 카테고리 초기화
-function allUnitCategoryShow() {
-  unitOptions.innerHTML = unitConvertCategory
-    .map((unit: string) => `<li class="unit-option-item">${unit}</li>`)
-    .join("");
-}
-
-// 이벤트 위임을 통한 클릭 이벤트 처리
-unitOptions.addEventListener("click", (event) => {
-  const target: HTMLElement = event.target as HTMLElement;
-
-  // unit-option-item을 가진 li 요소만 선택되도록
-  if (
-    target.tagName === "LI" &&
-    unitOptions.contains(target) &&
-    target.classList.contains("unit-option-item")
-  ) {
-    changeClickedName(target.textContent || "");
-  }
-});
-allUnitCategoryShow();
-
-// 계산 과정
-
-// 온도 변환
-function convertTemperature(
-  value: number,
-  fromUnit: string,
-  toUnit: string
-): number {
-  if (fromUnit === toUnit) return value;
-
-  if (fromUnit === "섭씨") {
-    if (toUnit === "화씨") return value * 1.8 + 32;
-    if (toUnit === "켈빈") return value + 273.15;
-  }
-  if (fromUnit === "화씨") {
-    if (toUnit === "섭씨") return (value - 32) / 1.8;
-    if (toUnit === "켈빈") return (value - 32) / 1.8 + 273.15;
-  }
-  if (fromUnit === "켈빈") {
-    if (toUnit === "섭씨") return value - 273.15;
-    if (toUnit === "화씨") return (value - 273.15) * 1.8 + 32;
-  }
-  throw new Error("지원하지 않는 변환");
-}
-
-// 엔터키 누르면 검색한 거 입력필드에 넣기
-// 초성 관련 문제. ㄱ에서도 기에서도 길ㅇ에서도 "길이"가 나오도록 하기?
-
-// 선택된 두 세부단위에 따른 공식 설명
-// 근삿값인지, 카테고리는 무엇인지, 어떤 연산을 해야 하는지(곱셈, 나눗셈 등), 어느 정도의 값을 연산해야 하는지
-function fomulaSetting(
-  approximation: boolean,
-  category: string,
-  calType: string,
-  calValue: string
-) {
-  const formulaDOM: HTMLElement = document.getElementById(
-    "unit-convert-formula"
-  ) as HTMLElement;
-
-  let result = "";
-
-  // 공식 문단 작성하는 곳
-
-  formulaDOM.innerHTML = result;
+  return settingRecord;
 }
