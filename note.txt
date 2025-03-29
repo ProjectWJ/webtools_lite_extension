@@ -70,19 +70,18 @@ content_scripts는 아직 해당 사항이 없다.
 번들링을 해서 import를 없애거나, 그냥 import할 구문을 그 위치에 작성해야 한다.
 
 todo
-- 진수 변환 구현하기
+- 한영타 변환 구현하기
 
 suggest
 - 사용법 설명하는 페이지 만들기. 굳이 페이지 아니더라도 간단하게 안내하는 것도 괜찮음
 - 단위 변환기에서 영어로 입력 가능한 단위라면 (kg, inch 등등) 이걸로 검색할 수 있도록 해보기
 - 초성 관련 문제. ㄱ에서도 기에서도 길ㅇ에서도 "길이"가 나오도록 하기?
-
+- 도로명주소 변경 기능은 api 활용하기 https://business.juso.go.kr/addrlink/openApi/apiExprn.do
 
 suggest(complete)
 - 드롭다운 박스에 검색 기능이 추가된 select2를 사용할 수 있음(https://select2.org/)(직접 구현함)
 - 단위 변환기 초기 세팅을 길이로 하기(적용)
 - 대단위에서 엔터키 누르면 검색한 거 입력필드에 넣기(적용)
-
 
 Reference
 - 글자수 세는 방법
@@ -90,6 +89,9 @@ https://medium.com/@vagabond95/%EA%B8%80%EC%9E%90%EC%88%98%EB%A5%BC-%EC%84%B8%EB
 
 - 토스트 메시지
 https://www.google.com/search?newwindow=1&sca_esv=94c092591444690d&q=%ED%86%A0%EC%8A%A4%ED%8A%B8+%EB%A9%94%EC%8B%9C%EC%A7%80&udm=2&fbs=ABzOT_CZsxZeNKUEEOfuRMhc2yCI6hbTw9MNVwGCzBkHjFwaK53DgNHTMxn53_XGiUHS2MvCJOyRBFAs1hn9fBmZ19LYQ9yir0OaCtXuvoNzG8-dHmcRTmmsRqZ5k2cSbGmqEOzbPeKK3_yeEwDTB0-yQ8hPn4ZIpFFaP5lIIYo78XEtUm4eOu_MLKQQKyyvx_AVHgdb7Sce9eZwaQ0p6CoLuRlZrqo34A&sa=X&ved=2ahUKEwjBtbHgn5iMAxXf3zQHHVGVFOQQtKgLegQIFBAB&biw=1270&bih=1354&dpr=1.5
+
+- 커스텀 select 메뉴 검색
+https://stickode.tistory.com/675
 
 타입스크립트 서버 재시작
 Cmd+Shift+P (Ctrl+Shift+P)

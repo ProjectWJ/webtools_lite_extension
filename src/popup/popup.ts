@@ -15,8 +15,13 @@ document
   ?.addEventListener("click", () => {
     panelToggle("number-system-convert-panel");
   });
-document.getElementById("kor-eng-convert")?.addEventListener("click", () => {
-  panelToggle("kor-eng-convert-panel");
+document
+  .getElementById("hangul-alphabet-convert")
+  ?.addEventListener("click", () => {
+    panelToggle("hangul-alphabet-convert-panel");
+  });
+document.getElementById("juso-convert")?.addEventListener("click", () => {
+  panelToggle("juso-convert-panel");
 });
 document
   .getElementById("exchange-rate-calculate")
@@ -25,9 +30,6 @@ document
   });
 document.getElementById("date-calculate")?.addEventListener("click", () => {
   panelToggle("date-calculate-panel");
-});
-document.getElementById("address-convert")?.addEventListener("click", () => {
-  panelToggle("address-convert-panel");
 });
 
 /** 돌아가기 버튼 */
@@ -142,7 +144,6 @@ function capitalLowerConvertAction() {
 }
 
 /** 단위 변환 */
-// https://stickode.tistory.com/675 참조
 type conversionRecord = Record<string, number>;
 
 const unitConvertCategory: string[] = [
@@ -1074,6 +1075,7 @@ function numberSystemConvertAction(e: Event) {
     return;
   }
 
+  // 진수 변환
   let result10: string = (isNegative ? "-" : "") + result.toString(10);
   let result2: string = (isNegative ? "-" : "") + result.toString(2);
   let result8: string = (isNegative ? "-" : "") + result.toString(8);
@@ -1104,4 +1106,42 @@ function numberSystemConvertDistinction(
 
   // 정규식을 사용하여 올바른 입력인지 확인
   return patterns[base].test(inputValue);
+}
+
+/** 한영타 변환 */
+document
+  .getElementById("hangul-alphabet-convert-input-kor")
+  ?.addEventListener("input", hangulAlphabetConvertAction);
+document
+  .getElementById("hangul-alphabet-convert-input-eng")
+  ?.addEventListener("input", hangulAlphabetConvertAction);
+
+// 한영타 변환 메인 함수
+function hangulAlphabetConvertAction(e: Event) {
+  // 한글 필드인지 영어 필드인지 구분
+  let isHangul: Boolean = true;
+  if ((e.target as HTMLElement).id === "hangul-alphabet-convert-input-eng") {
+    isHangul = false;
+  }
+
+  // 한글 <-> 영어 상호 변환
+  if (isHangul === true) {
+    let hangulValue: string = (e.target as HTMLTextAreaElement).value;
+    let result: string = "";
+
+    // 반대쪽 input에 적용
+    const engDom = document.getElementById(
+      "hangul-alphabet-convert-input-eng"
+    ) as HTMLElement;
+    (engDom as HTMLTextAreaElement).value = result;
+  } else {
+    let alphabetValue = (e.target as HTMLTextAreaElement).value;
+    let result: string = "";
+
+    // 반대쪽 input에 적용
+    const korDom = document.getElementById(
+      "hangul-alphabet-convert-input-kor"
+    ) as HTMLElement;
+    (korDom as HTMLTextAreaElement).value = result;
+  }
 }

@@ -13,7 +13,8 @@
       <button id="capital-lower-convert" type="button">대소문자 변환</button>
       <button id="unit-convert" type="button">단위 변환</button>
       <button id="number-system-convert" type="button">진수 변환</button>
-      <button id="kor-eng-convert" type="button">한영타 변환</button>
+      <button id="hangul-alphabet-convert" type="button">한영타 변환</button>
+      <button id="juso-convert" type="button">도로명주소 변환</button>
       <button id="exchange-rate-calculate" type="button">환율 계산</button>
       <button id="date-calculate" type="button">날짜 계산</button>
       <button id="options-btn" type="button">설정</button>
@@ -145,11 +146,40 @@
       <button class="back-btn" type="button">돌아가기</button>
     </div>
 
-    <div id="kor-eng-convert-panel" class="blind">
+    <div id="hangul-alphabet-convert-panel" class="blind">
       <p>한영타 변환</p>
+      <span>한글</span>
+      <br />
+      <textarea
+        id="hangul-alphabet-convert-input-kor"
+        aria-label="hangul"
+        placeholder="한글을 입력해주세요"
+      ></textarea>
+      <button class="hangul-alphabet-convert-copy-btn-kor" type="button">
+        복사
+      </button>
+      <br />
+      <span>영어</span>
+      <br />
+      <textarea
+        id="hangul-alphabet-convert-input-eng"
+        aria-label="alphabet"
+        placeholder="영어를 입력해주세요"
+      ></textarea>
+      <button class="hangul-alphabet-convert-copy-btn-eng" type="button">
+        복사
+      </button>
+      <br />
+      <button class="hangul-alphabet-convert-clear-btn" type="button">
+        비우기
+      </button>
       <button class="back-btn" type="button">돌아가기</button>
     </div>
-
+    <div id="juso-convert-panel" class="blind">
+      <p>도로명주소 변환</p>
+      <p>영어주소 변환</p>
+      <button class="back-btn" type="button">돌아가기</button>
+    </div>
     <div id="exchange-rate-calculate-panel" class="blind">
       <p>환율 계산</p>
       <button class="back-btn" type="button">돌아가기</button>
@@ -157,11 +187,6 @@
 
     <div id="date-calculate-panel" class="blind">
       <p>날짜 계산</p>
-      <button class="back-btn" type="button">돌아가기</button>
-    </div>
-
-    <div id="address-convert-panel" class="blind">
-      <p>도로명-지번 변환</p>
       <button class="back-btn" type="button">돌아가기</button>
     </div>
   </body>
