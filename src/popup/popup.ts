@@ -139,10 +139,10 @@ function capitalLowerConvertAction() {
   }
 }
 
-type conversionRecord = Record<string, number>;
-
 /** 단위 변환 */
 // https://stickode.tistory.com/675 참조
+type conversionRecord = Record<string, number>;
+
 const unitConvertCategory: string[] = [
   "길이",
   "면적",
@@ -323,18 +323,42 @@ const unitDetailOptionsLeft: HTMLElement = document.getElementById(
 const unitDetailOptionsRight: HTMLElement = document.getElementById(
   "unit-detail-options-right"
 ) as HTMLElement;
+unitDetailOptionsLeft.addEventListener("click", unitDetailOptionsEvent);
+unitDetailOptionsRight.addEventListener("click", unitDetailOptionsEvent);
 let fromInput: string = "default";
 let toInput: string = "default";
 let fromSelect: string = "default";
 let toSelect: string = "default";
+let selectedUnit: string[] = []; // 현재 선택된 대단위의 소단위 배열
 document
   .getElementById("unit-convert-selectbox")
   ?.addEventListener("mousedown", unitConvertSelectBoxToggle);
 document.addEventListener("mousedown", unitConvertSearchboxOutsideClick);
-document.getElementById("unit-filter")?.addEventListener("input", filterAction);
+document.addEventListener("mousedown", unitConvertDetailSearchboxOutsideClick);
+document
+  .getElementById("unit-filter")
+  ?.addEventListener("input", unitFilterAction);
 document
   .getElementById("unit-filter")
   ?.addEventListener("keydown", filterEnterAction);
+document
+  .getElementById("unit-detail-filter-left")
+  ?.addEventListener("input", unitDetailFilterAction);
+document
+  .getElementById("unit-detail-filter-right")
+  ?.addEventListener("input", unitDetailFilterAction);
+document
+  .getElementById("unit-detail-filter-left")
+  ?.addEventListener("keydown", detailFilterEnterAction);
+document
+  .getElementById("unit-detail-filter-right")
+  ?.addEventListener("keydown", detailFilterEnterAction);
+document
+  .getElementById("unit-convert-detail-select-leftbox")
+  ?.addEventListener("mousedown", unitDetailSearchBoxToggle);
+document
+  .getElementById("unit-convert-detail-select-rightbox")
+  ?.addEventListener("mousedown", unitDetailSearchBoxToggle);
 document
   .getElementById("unit-convert-detail-input-left")
   ?.addEventListener("input", unitDetailInputAction);
@@ -348,22 +372,10 @@ const unitRightSelect: HTMLElement | null = document.getElementById(
   "unit-convert-detail-select-right"
 );
 
-/*
-  액션
-
-  - 왼쪽이나 오른쪽의 input 값 바꾸기
-  바꾼 곳을 fromInput, 바꿀 곳을 toInput으로 하기
-  바꾼 곳의 select값을 토대로 반대쪽의 select값을 가져와 공식에 적용
-  (완료)
-
-  - 왼쪽이나 오른쪽의 select 값 바꾸기
-  어느 쪽을 바꾸더라도 왼쪽이 fromInput, 오른쪽이 toInput
-  계산 방향 또한 왼쪽에서 오른쪽으로
-  (일단 select를 할 수 있게 해야 함)
-*/
-
 // 소단위 input에 값 입력 시
 function unitDetailInputAction(e: Event) {
+  console.log(e);
+  console.log(e.target);
   // 이벤트 타겟
   const target = e.target;
   if (target === null) {
@@ -371,29 +383,52 @@ function unitDetailInputAction(e: Event) {
     return;
   }
 
-  // 어느 input에서 입력되었는지, 값은 무엇인지 확인
-  const fromInputId: string = (target as HTMLElement).id;
-  fromInput = (target as HTMLInputElement).value;
-  let value: number = parseFloat(fromInput);
+  let fromInputId: string = "";
+  let value: number;
 
-  // 입력된 input값이 없거나 숫자가 아니면 그대로 반환. 개선 필요?
-  if (fromInput === "" || fromInput === null) {
+  // 입력 이벤트의 경우
+  if (e instanceof InputEvent) {
+    // 어느 input에서 입력되었는지, 값은 무엇인지 확인
+    fromInputId = (target as HTMLElement).id;
+    fromInput = (target as HTMLInputElement).value;
+    value = parseFloat(fromInput);
+
+    // 입력된 input값이 없거나 숫자가 아니면 그대로 반환. 개선 필요?
+    if (fromInput === "" || fromInput === null) {
+      const unitLeftInput = document.getElementById(
+        "unit-convert-detail-input-left"
+      ) as HTMLInputElement | null;
+      if (unitLeftInput) {
+        unitLeftInput.value = "";
+      }
+      const unitRightInput = document.getElementById(
+        "unit-convert-detail-input-right"
+      ) as HTMLInputElement | null;
+      if (unitRightInput) {
+        unitRightInput.value = "";
+      }
+      return;
+    }
+    if (isNaN(value)) {
+      console.error("입력값이 숫자가 아닙니다.");
+      return;
+    }
+  }
+  // 소단위 select가 바뀐 경우(클릭, 키보드)
+  // input에 value가 있을 때 이 함수가 실행되도록 했음
+  else if (e instanceof PointerEvent || e instanceof KeyboardEvent) {
+    fromInputId = "left";
+
     const unitLeftInput = document.getElementById(
       "unit-convert-detail-input-left"
     ) as HTMLInputElement | null;
+
     if (unitLeftInput) {
-      unitLeftInput.value = "";
+      fromInput = unitLeftInput.value;
     }
-    const unitRightInput = document.getElementById(
-      "unit-convert-detail-input-right"
-    ) as HTMLInputElement | null;
-    if (unitRightInput) {
-      unitRightInput.value = "";
-    }
-    return;
-  }
-  if (isNaN(value)) {
-    console.error("입력값이 숫자가 아닙니다.");
+    value = parseFloat(fromInput);
+  } else {
+    console.error("지원하는 이벤트값을 벗어났습니다.");
     return;
   }
 
@@ -445,7 +480,7 @@ function unitDetailInputAction(e: Event) {
   }
 }
 
-// 드롭다운 메뉴 토글
+// 대단위 카테고리 토글
 function unitConvertSelectBoxToggle() {
   const unitConvertSearchbox: HTMLElement = document.getElementById(
     "unit-convert-searchbox"
@@ -483,7 +518,7 @@ function unitConvertSearchboxOutsideClick(event: MouseEvent) {
 }
 
 // 검색창에 입력 시 필터링
-function filterAction(this: HTMLElement, e: Event) {
+function unitFilterAction(this: HTMLElement, e: Event) {
   let newUnitCategory: string[] = [];
   let searchWord: string = (e.target as HTMLInputElement)?.value;
   unitOptions.innerHTML = ""; // 기존 목록 초기화
@@ -510,13 +545,13 @@ function filterEnterAction(e: KeyboardEvent) {
     ).value;
 
     if (unitConvertCategory.includes(inputValue)) {
-      changeClickedName(inputValue);
+      unitOptionsClick(inputValue);
     }
   }
 }
 
 // 대단위 선택 시 처리해야 할 작업
-function changeClickedName(selectedText: string) {
+function unitOptionsClick(selectedText: string) {
   // 검색창 비우기
   const unitFilter: HTMLElement | null = document.getElementById("unit-filter");
   if (unitFilter) {
@@ -534,8 +569,8 @@ function changeClickedName(selectedText: string) {
     selectUnit.innerHTML = selectedText;
   }
 
-  // detail 초기 세팅하기
-  let settingRecord: conversionRecord = lengthConversion;
+  // 소단위 초기 세팅하기
+  let settingRecord: conversionRecord = lengthConversion; // 처음에는 길이로
   let tempRecord: string[] = temperatureConversion; // 온도는 따로 처리해야 함
 
   settingRecord = switchConversion(selectedText);
@@ -544,10 +579,10 @@ function changeClickedName(selectedText: string) {
     // 온도는 따로 처리
     if (unitLeftSelect) unitLeftSelect.innerHTML = tempRecord[0];
     if (unitRightSelect) unitRightSelect.innerHTML = tempRecord[1];
-    const unitLeftInput = document.getElementById(
+    /*     const unitLeftInput = document.getElementById(
       "unit-convert-detail-input-left"
     ) as HTMLInputElement | null;
-    // if (unitLeftInput) unitLeftInput.value = "0";
+    if (unitLeftInput) unitLeftInput.value = "0"; */
   } else {
     // 기준점이 되는 단위를 찾아 왼쪽에 배치, 기준점 바로 아래쪽 항목을 오른쪽에 배치
     // 기준점 찾기
@@ -557,6 +592,10 @@ function changeClickedName(selectedText: string) {
     );
     const index: number = datumPoint !== -1 ? datumPoint : 0; // 찾지 못하면 첫 번째 항목을 기준점으로 설정
 
+    // 소단위 카테고리 초기화
+    allDetailCategoryShow(keys);
+    selectedUnit = keys;
+
     // 배치
     if (index + 1 !== keys.length) {
       if (unitLeftSelect) unitLeftSelect.innerHTML = keys[index];
@@ -565,15 +604,15 @@ function changeClickedName(selectedText: string) {
       if (unitLeftSelect) unitLeftSelect.innerHTML = keys[index];
       if (unitRightSelect) unitRightSelect.innerHTML = keys[0];
     }
-    const unitLeftInput = document.getElementById(
+    /*     const unitLeftInput = document.getElementById(
       "unit-convert-detail-input-left"
     ) as HTMLInputElement | null;
-    // if (unitLeftInput) unitLeftInput.value = "1";
+    if (unitLeftInput) unitLeftInput.value = "1"; */
   }
 }
 
 // 처음에 길이 보여주게 하기
-changeClickedName("길이");
+unitOptionsClick("길이");
 
 // 모든 대단위 카테고리 초기화
 function allUnitCategoryShow() {
@@ -595,7 +634,7 @@ unitOptions.addEventListener("click", (event) => {
     unitOptions.contains(target) &&
     target.classList.contains("unit-option-item")
   ) {
-    changeClickedName(target.textContent || "");
+    unitOptionsClick(target.textContent || "");
   }
 });
 
@@ -632,21 +671,21 @@ function convertTemperature(
   throw new Error("지원하지 않는 변환입니다.");
 }
 
-// 선택된 두 세부단위에 따른 공식 설명
-// 근삿값인지, 카테고리는 무엇인지, 어떤 연산을 해야 하는지(곱셈, 나눗셈 등), 어느 정도의 값을 연산해야 하는지
+// 선택된 두 세부단위에 따른 공식 설명(구현 보류)
 function fomulaSetting(
   approximation: boolean,
   category: string,
   calType: string,
   calValue: string
 ) {
+  // 근삿값인지, 카테고리는 무엇인지, 어떤 연산을 해야 하는지(곱셈, 나눗셈 등), 어느 정도의 값을 연산해야 하는지
   const formulaDOM: HTMLElement = document.getElementById(
     "unit-convert-formula"
   ) as HTMLElement;
 
   let result = "";
 
-  // 공식 문단 작성하는 곳
+  // 공식 작성하는 곳
 
   formulaDOM.innerHTML = result;
 }
@@ -705,3 +744,248 @@ function switchConversion(selectedText: string): conversionRecord {
 
   return settingRecord;
 }
+
+// 모든 소단위 카테고리 초기화
+function allDetailCategoryShow(keys: string[]) {
+  unitDetailOptionsLeft.innerHTML = keys
+    .map(
+      (key: string) => `<li class="unit-detail-option-left-item">${key}</li>`
+    )
+    .join("");
+  unitDetailOptionsRight.innerHTML = keys
+    .map(
+      (key: string) => `<li class="unit-detail-option-right-item">${key}</li>`
+    )
+    .join("");
+}
+
+// 소단위 카테고리 토글
+function unitDetailSearchBoxToggle(event: Event) {
+  const target: HTMLElement = event.target as HTMLElement;
+  let unitDetailSearchbox: HTMLElement;
+
+  if (
+    target.id.includes("left") ||
+    target.classList.contains("unit-detail-option-left-item")
+  ) {
+    unitDetailSearchbox = document.getElementById(
+      "unit-convert-detail-search-left"
+    ) as HTMLElement;
+  } else if (
+    target.id.includes("right") ||
+    target.classList.contains("unit-detail-option-right-item")
+  ) {
+    unitDetailSearchbox = document.getElementById(
+      "unit-convert-detail-search-right"
+    ) as HTMLElement;
+  } else {
+    console.error("target id를 판별할 수 없습니다.");
+    console.error(target);
+    return;
+  }
+
+  if (unitDetailSearchbox.classList.contains("blind")) {
+    unitDetailSearchbox.classList.remove("blind");
+  } else {
+    unitDetailSearchbox.classList.add("blind");
+  }
+}
+
+// 소단위 카테고리 외부 클릭 시 닫기
+function unitConvertDetailSearchboxOutsideClick(event: Event) {
+  const selectBoxLeft: HTMLElement | null = document.getElementById(
+    "unit-convert-detail-select-leftbox"
+  );
+  const selectBoxRight: HTMLElement | null = document.getElementById(
+    "unit-convert-detail-select-rightbox"
+  );
+  const searchBoxLeft: HTMLElement | null = document.getElementById(
+    "unit-convert-detail-search-left"
+  );
+  const searchBoxRight: HTMLElement | null = document.getElementById(
+    "unit-convert-detail-search-right"
+  );
+
+  // 내부 클릭이면 종료
+  if (
+    selectBoxLeft?.contains(event.target as Node) ||
+    searchBoxLeft?.contains(event.target as Node)
+  ) {
+    return;
+  }
+  if (
+    selectBoxRight?.contains(event.target as Node) ||
+    searchBoxRight?.contains(event.target as Node)
+  ) {
+    return;
+  }
+
+  // 외부 클릭이면 닫기
+  if (searchBoxLeft && !searchBoxLeft.classList.contains("blind")) {
+    searchBoxLeft.classList.add("blind");
+  }
+  if (searchBoxRight && !searchBoxRight.classList.contains("blind")) {
+    searchBoxRight.classList.add("blind");
+  }
+}
+
+// 소단위 카테고리 검색 시 필터링
+function unitDetailFilterAction(this: HTMLElement, e: Event) {
+  let target: EventTarget = e.target as EventTarget;
+  let newUnitDetailCategory: string[] = [];
+  let searchWord: string = (e.target as HTMLInputElement)?.value;
+
+  if (searchWord.length > 0) {
+    newUnitDetailCategory = selectedUnit.filter((data: string) =>
+      data.startsWith(searchWord)
+    );
+  } else {
+    newUnitDetailCategory = selectedUnit;
+  }
+
+  // left right 구별
+  if ((target as HTMLElement).id.includes("left")) {
+    // 왼쪽의 경우
+    const listItems: string = newUnitDetailCategory
+      .map(
+        (data: string) =>
+          `<li class="unit-detail-option-left-item">${data}</li>`
+      )
+      .join("");
+    unitDetailOptionsLeft.innerHTML = listItems;
+  } else {
+    // 오른쪽의 경우
+    const listItems: string = newUnitDetailCategory
+      .map(
+        (data: string) =>
+          `<li class="unit-detail-option-right-item">${data}</li>`
+      )
+      .join("");
+    unitDetailOptionsRight.innerHTML = listItems;
+  }
+}
+
+// 소단위 카테고리 검색 엔터 이벤트
+function detailFilterEnterAction(e: KeyboardEvent) {
+  if (e.key === "Enter" && e.target) {
+    const inputValue: string = (e.target as HTMLInputElement).value;
+
+    if (selectedUnit.includes(inputValue)) {
+      unitDetailOptionsClick(inputValue, e);
+    }
+  }
+}
+
+// 소단위 카테고리 이벤트
+function unitDetailOptionsEvent(event: Event) {
+  const target: HTMLElement = event.target as HTMLElement;
+
+  if (
+    target.tagName === "LI" &&
+    unitDetailOptionsLeft.contains(target) &&
+    target.classList.contains("unit-detail-option-left-item")
+  ) {
+    unitDetailOptionsClick(target.textContent || "", event);
+  } else if (
+    target.tagName === "LI" &&
+    unitDetailOptionsRight.contains(target) &&
+    target.classList.contains("unit-detail-option-right-item")
+  ) {
+    unitDetailOptionsClick(target.textContent || "", event);
+  }
+}
+
+// 소단위 카테고리 클릭 시 실행
+function unitDetailOptionsClick(selectedText: string, event: Event) {
+  const target: EventTarget | null = event.target;
+  if (target === null) {
+    console.error(
+      "unitDetailOptionsClick에서 event.target을 찾을 수 없습니다."
+    );
+    return;
+  }
+  let leftRight = "";
+
+  // left right 구분하고 그 검색창 비우기
+  if (
+    (target as HTMLElement).id === "unit-detail-filter-left" ||
+    (target as HTMLElement).className === "unit-detail-option-left-item"
+  ) {
+    leftRight = "left";
+    const unitDetailFilter: HTMLElement | null = document.getElementById(
+      "unit-detail-filter-left"
+    );
+    if (unitDetailFilter) {
+      (unitDetailFilter as HTMLInputElement).value = "";
+    }
+  } else if (
+    (target as HTMLElement).id === "unit-detail-filter-right" ||
+    (target as HTMLElement).className === "unit-detail-option-right-item"
+  ) {
+    leftRight = "right";
+    const unitDetailFilter: HTMLElement | null = document.getElementById(
+      "unit-detail-filter-right"
+    );
+    if (unitDetailFilter) {
+      (unitDetailFilter as HTMLInputElement).value = "";
+    }
+  } else {
+    console.error("target 판별 불가능");
+    console.error(target);
+    return;
+  }
+
+  // 소단위 카테고리 초기화 및 목록 닫기
+  allDetailCategoryShow(selectedUnit);
+  unitDetailSearchBoxToggle(event);
+
+  // 좌우의 select값 구하기
+  let currentSelect: string = "";
+  if (leftRight === "left") {
+    currentSelect =
+      document.getElementById("unit-convert-detail-select-left")?.innerHTML ||
+      "";
+  } else if (leftRight === "right") {
+    currentSelect =
+      document.getElementById("unit-convert-detail-select-right")?.innerHTML ||
+      "";
+  }
+
+  // 선택한 단위 표시하기
+  const selectUnitDetail: HTMLElement | null = document.getElementById(
+    `unit-convert-detail-select-${leftRight}`
+  );
+  if (selectUnitDetail) {
+    // 적용
+    selectUnitDetail.innerHTML = selectedText;
+  }
+
+  // 좌우가 같으면 교환
+  let tempLeft = document.getElementById("unit-convert-detail-select-left");
+  let tempRight = document.getElementById("unit-convert-detail-select-right");
+
+  if (tempLeft && tempRight && tempLeft.innerHTML === tempRight.innerHTML) {
+    if (leftRight === "left") {
+      tempRight.innerHTML = currentSelect;
+    } else if (leftRight === "right") {
+      tempLeft.innerHTML = currentSelect;
+    }
+  }
+
+  // 두 input값이 남아있으면 계산
+  const unitDetailLeftInput = document.getElementById(
+    "unit-convert-detail-input-left"
+  ) as HTMLInputElement | null;
+  const unitDetailRightInput = document.getElementById(
+    "unit-convert-detail-input-right"
+  ) as HTMLInputElement | null;
+
+  // 순서는 무조건 왼쪽 -> 오른쪽
+  if (unitDetailLeftInput && unitDetailRightInput) {
+    if (unitDetailLeftInput.value !== "" && unitDetailRightInput.value !== "") {
+      unitDetailInputAction(event);
+    }
+  }
+}
+
+/** 진수 변환 */
