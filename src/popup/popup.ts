@@ -362,7 +362,7 @@ const unitRightSelect: HTMLElement | null = document.getElementById(
   (일단 select를 할 수 있게 해야 함)
 */
 
-// 단위 input에 값 입력 시
+// 소단위 input에 값 입력 시
 function unitDetailInputAction(e: Event) {
   // 이벤트 타겟
   const target = e.target;
@@ -457,6 +457,7 @@ function unitConvertSelectBoxToggle() {
     unitConvertSearchbox.classList.add("blind");
   }
 }
+
 // 외부 클릭 시 닫기
 function unitConvertSearchboxOutsideClick(event: MouseEvent) {
   const selectBox: HTMLElement | null = document.getElementById(
@@ -480,6 +481,7 @@ function unitConvertSearchboxOutsideClick(event: MouseEvent) {
     searchBox.classList.add("blind");
   }
 }
+
 // 검색창에 입력 시 필터링
 function filterAction(this: HTMLElement, e: Event) {
   let newUnitCategory: string[] = [];
@@ -499,6 +501,7 @@ function filterAction(this: HTMLElement, e: Event) {
     .join("");
   unitOptions.innerHTML = listItems;
 }
+
 // unit-filter에서 엔터키 눌렀을 때
 function filterEnterAction(e: KeyboardEvent) {
   if (e.key === "Enter") {
@@ -511,7 +514,8 @@ function filterEnterAction(e: KeyboardEvent) {
     }
   }
 }
-// 단위 선택 시 처리해야 할 작업
+
+// 대단위 선택 시 처리해야 할 작업
 function changeClickedName(selectedText: string) {
   // 검색창 비우기
   const unitFilter: HTMLElement | null = document.getElementById("unit-filter");
@@ -567,14 +571,19 @@ function changeClickedName(selectedText: string) {
     // if (unitLeftInput) unitLeftInput.value = "1";
   }
 }
+
 // 처음에 길이 보여주게 하기
 changeClickedName("길이");
-// 모든 카테고리 초기화
+
+// 모든 대단위 카테고리 초기화
 function allUnitCategoryShow() {
   unitOptions.innerHTML = unitConvertCategory
     .map((unit: string) => `<li class="unit-option-item">${unit}</li>`)
     .join("");
 }
+
+// 처음에 모든 대단위 카테고리 초기화하기
+allUnitCategoryShow();
 
 // 이벤트 위임을 통한 클릭 이벤트 처리
 unitOptions.addEventListener("click", (event) => {
@@ -589,7 +598,6 @@ unitOptions.addEventListener("click", (event) => {
     changeClickedName(target.textContent || "");
   }
 });
-allUnitCategoryShow();
 
 // 계산 실행
 function convertUnit(
