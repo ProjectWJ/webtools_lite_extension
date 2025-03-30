@@ -377,8 +377,6 @@ const unitRightSelect: HTMLElement | null = document.getElementById(
 
 // 소단위 input에 값 입력 시
 function unitDetailInputAction(e: Event) {
-  console.log(e);
-  console.log(e.target);
   // 이벤트 타겟
   const target = e.target;
   if (target === null) {
@@ -1116,7 +1114,7 @@ document
   .getElementById("hangul-alphabet-convert-input-eng")
   ?.addEventListener("input", hangulAlphabetConvertAction);
 
-// 한영타 변환 메인 함수
+// 한영타 변환 메인 실행 함수
 function hangulAlphabetConvertAction(e: Event) {
   // 한글 필드인지 영어 필드인지 구분
   let isHangul: Boolean = true;
@@ -1124,19 +1122,23 @@ function hangulAlphabetConvertAction(e: Event) {
     isHangul = false;
   }
 
+  // 우선은 매 입력 때마다 textarea를 전체 검사하도록 구현
+
   // 한글 <-> 영어 상호 변환
   if (isHangul === true) {
-    let hangulValue: string = (e.target as HTMLTextAreaElement).value;
+    // 한글 -> 영어
+    /*     let hangulValue: string = (e.target as HTMLTextAreaElement).value;
     let result: string = "";
 
     // 반대쪽 input에 적용
     const engDom = document.getElementById(
       "hangul-alphabet-convert-input-eng"
     ) as HTMLElement;
-    (engDom as HTMLTextAreaElement).value = result;
+    (engDom as HTMLTextAreaElement).value = result; */
   } else {
+    // 영어 -> 한글
     let alphabetValue = (e.target as HTMLTextAreaElement).value;
-    let result: string = "";
+    let result: string = engKorLogic(alphabetValue); // 조합된 한글이 여기에 들어감
 
     // 반대쪽 input에 적용
     const korDom = document.getElementById(
@@ -1145,3 +1147,287 @@ function hangulAlphabetConvertAction(e: Event) {
     (korDom as HTMLTextAreaElement).value = result;
   }
 }
+
+const korEngField: Record<string, string | number> = {
+  eng: "rRseEfaqQtTdwWczxvgASDFGZXCVkoiOjpuPhynbmlYUIHJKLBNM",
+  kor: "ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎㅁㄴㅇㄹㅎㅋㅌㅊㅍㅏㅐㅑㅒㅓㅔㅕㅖㅗㅛㅜㅠㅡㅣㅛㅕㅑㅗㅓㅏㅣㅠㅜㅡ",
+  korFirst: "ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ", // 19개
+  korSecond: "ㅏㅐㅑㅒㅓㅔㅕㅖㅗㅘㅙㅚㅛㅜㅝㅞㅟㅠㅡㅢㅣ", // 21개
+  korThird: " ㄱㄲㄳㄴㄵㄶㄷㄹㄺㄻㄼㄽㄾㄿㅀㅁㅂㅄㅅㅆㅇㅈㅊㅋㅌㅍㅎ",
+  korMoum: 28,
+  ga: 44032, // 유니코드 한글 시작점
+  hig: 55203, // 유니코드 한글 종료점
+  r: 12593,
+  l: 12643,
+};
+
+const connectableConsonant: Record<string, string> = {
+  ㄱㅅ: "ㄳ",
+  ㄴㅈ: "ㄵ",
+  ㄴㅎ: "ㄶ",
+  ㄹㄱ: "ㄺ",
+  ㄹㅁ: "ㄻ",
+  ㄹㅂ: "ㄼ",
+  ㄹㅅ: "ㄽ",
+  ㄹㅌ: "ㄾ",
+  ㄹㅍ: "ㄿ",
+  ㄹㅎ: "ㅀ",
+  ㅂㅅ: "ㅄ",
+};
+
+const connectableVowel: Record<string, string> = {
+  ㅗㅏ: "ㅘ",
+  ㅗㅐ: "ㅙ",
+  ㅗㅣ: "ㅚ",
+  ㅜㅓ: "ㅝ",
+  ㅜㅔ: "ㅞ",
+  ㅜㅣ: "ㅟ",
+  ㅡㅣ: "ㅢ",
+};
+
+const korFirst: string = korEngField.korFirst as string;
+const korSecond: string = korEngField.korSecond as string;
+const korThird: string = korEngField.korThird as string;
+
+// 한글 -> 영어
+function korEngLogic(input: string): string {
+  let result = "";
+
+  return result;
+}
+// 영어 -> 한글
+function engKorLogic(input: string): string {
+  const eng: string = korEngField.eng as string;
+  const kor: string = korEngField.kor as string;
+
+  // input된 값 모두 한글로 변환
+  let engChangeKor: string = "";
+  const arr: string[] = input.split("");
+
+  for (let i = 0; i < arr.length; i++) {
+    if (eng.indexOf(arr[i]) !== -1) {
+      let where: number = eng.indexOf(arr[i]);
+      engChangeKor += kor[where];
+    } else {
+      engChangeKor += arr[i];
+    }
+  }
+
+  // console.log(engChangeKor);
+
+  // 초/중/종성 판단
+  /*
+    입력값 검증
+    - 모음이 처음에 온다 -> pass
+    - 자음만 세 번 이상 나열된다 -> pass
+    - 모음만 세 번 이상 나열된다 -> pass
+    - 한글이 아니다 -> pass
+    - 입력이 한 글자다 -> pass
+    - 빈 문자열인 경우 -> pass
+
+    기본 규칙
+    - 자음 뒤에 모음이 온다
+      -> 자음은 초성, 모음이 중성
+    - 자음 뒤에 모음 뒤에 자음이 온다 + 뒤에 모음이 온다
+      -> 마지막에 온 자음은 초성
+    - 모음이 마지막에 온다
+      -> 종성 없음
+
+    복자음 / 복모음 처리 단계(결합 생성 혹은 해제)
+    - 자음 뒤에 모음 뒤에 자음이 온다 + 뒤에 자음이 온다 + 마지막 두 자음이 connectableConsonant에 있다
+      + 뒤에 자음이 오거나 마지막 글자이다
+      -> 마지막 두 자음은 종성이고 복자음
+    - 자음 뒤에 모음 뒤에 자음이 온다 + 뒤에 자음이 온다 + 마지막 두 자음이 connectableConsonant에 있다
+      + 뒤에 모음이 온다
+      -> 복자음 x, 뒤로 세었을 때 두 번째 자음은 종성, 첫 번째 자음은 초성
+    - 자음 뒤에 모음 뒤에 모음이 온다 + 두 모음이 connectableVowel에 있다
+      -> 두 모음은 중성이고 복모음
+  */
+
+  /* 
+    자, 모, 자자, 자모, 모모, 자모자, 자모모, 자모자자, 자모모자, 자모모자자
+    i + 3 <= input.length // 자모모자자
+    i + 2 <= input.length // 자모자자, 자모모자
+    i + 1 <= input.legnth // 자모자, 자모모
+    i <= input.length // 자자, 자모, 모모
+  */
+
+  // 맥시멈이 engChangeKor.length만큼. 안 들어가면 비어 있으니까 나중에 넘길 것
+  let combineReady: string[] = new Array(engChangeKor.length);
+  let isCombineNeed: boolean[] = new Array(engChangeKor.length);
+  chojungjong(engChangeKor);
+
+  // 이 함수는 모든 한글이 나뉘어진 상태여야(ㅎㅏㄴㄱㅡㄹ ㅈㅗㅎㅇㅏ) 기능합니다.
+  function chojungjong(input: string) {
+    for (let i = 0; i < input.length; i++) {
+      let cho = "";
+      let jun = "";
+      let jon = "";
+      // 입력값 검증 부분
+      // 맨 처음에 모음이 오면
+      if (i === 0 && korSecond.includes(input[i])) {
+        combineReady[i] = input[i];
+        isCombineNeed[i] = false;
+        console.log("맨 처음에 모음 등장");
+        continue;
+      }
+      // 빈 문자열의 경우
+      if (input === "") {
+        combineReady[i] = input[i];
+        isCombineNeed[i] = false;
+        console.log("빈 문자열");
+        break;
+      }
+      // 입력이 한 글자인 경우
+      if (input.length === 1) {
+        console.log("입력이 하나");
+        return input;
+      }
+      // 자음만 나열되면
+      if (i + 2 < input.length) {
+        if (
+          (korFirst.includes(input[i]) &&
+            korFirst.includes(input[i + 1]) &&
+            korFirst.includes(input[i + 2])) ||
+          // 모음만 나열되면
+          (korSecond.includes(input[i]) &&
+            korSecond.includes(input[i + 1]) &&
+            korSecond.includes(input[i + 2]))
+        ) {
+          console.log("자음 셋 혹은 모음 셋");
+          combineReady[i] = input[i];
+          isCombineNeed[i] = false;
+        }
+      }
+      // 한글이 아닌 경우
+      if (!kor.includes(input[i])) {
+        console.log("한글이 아님");
+        combineReady[i] = input[i];
+        isCombineNeed[i] = false;
+        continue;
+      }
+
+      // 이하 자모모자자 먼저 처리
+      /*
+        복자음 / 복모음 처리 단계(결합 생성 혹은 해제)
+      - 자음 뒤에 모음 뒤에 자음이 온다 + 뒤에 자음이 온다 + 마지막 두 자음이 connectableConsonant에 있다
+        + 뒤에 자음이 오거나 마지막 글자이다
+        -> 마지막 두 자음은 종성이고 복자음
+      - 자음 뒤에 모음 뒤에 자음이 온다 + 뒤에 자음이 온다 + 마지막 두 자음이 connectableConsonant에 있다
+        + 뒤에 모음이 온다
+        -> 복자음 x, 뒤로 세었을 때 두 번째 자음은 종성, 첫 번째 자음은 초성
+      - 자음 뒤에 모음 뒤에 모음이 온다 + 두 모음이 connectableVowel에 있다
+        -> 두 모음은 중성이고 복모음
+      */
+
+      /*
+        let k1 = input[i];
+        let k2 = input[i] + input[i + 1];
+        ...
+        let j1 = false;
+        let j2 = false;
+        ...
+
+        자, 모, 자자, 자모, 모모, 자모자, 자모모, 자모자자, 자모모자, 자모모자자 판별
+
+        자, 모, 자자부터 시작해서 자모모자자가 되면 j5 = true;
+        자모자자, 자모모자면 j4 = true;
+        우선순위는 j5부터 j1까지
+
+        j5가 된다 해도 i + 5 하지 말 것. 자모모자자모가 되면 맨 뒤 자모 연결해야 함
+
+
+        --- 유니코드 하면 마지막에 정규화 해줘야 함
+
+
+        ㅂㅜㅔㄹㄱㅇㅓ
+        
+        입력받으면
+        빈 종성은 ""로 처리
+
+        자음 + 모음 = 초성, 중성
+        자음 + 모음 + 자음 = 초성, 중성, 종성
+        자음 + 모음 + 자음 + 모음 = 초성, 중성, 초성2, 중성2
+        ->
+        ㄱㅏ      초성, 중성
+        ㄱㅏㄴ    초성, 중성, 종성
+        ㄱㅏㄴㅏ  초성, 중성, 초성, 중성
+
+        모음 + 자음 + 자음 = 중성, 종성(조건부 복자음)
+        모음 + 자음 + 자음 + 모음 = 중성, 종성, 초성(복자음 해제), 중성
+        ->
+        ㅏㄹㄱ    중성, 종성(복자음)
+        ㅏㄹㅋ    중성, 종성, 초성
+        ㅏㄹㄱㅓ  중성, 종성, 초성(복자음 해제), 중성
+
+        모음 + 모음 = 중성(조건부 복모음)
+        ->
+        ㅗㅣ      중성
+        ㅏㅏ      중성, 예외
+
+        배열을 두 개 만들어서 하나는 초중종성 담는 거
+        하나는 콤바인을 해야 하는지 그냥 단품처리인지
+      */
+
+      if (i + 4 < input.length) {
+        if (
+          korFirst.includes(input[i]) &&
+          korSecond.includes(input[i + 1]) &&
+          korSecond.includes(input[i + 2]) &&
+          korFirst.includes(input[i + 3]) &&
+          korFirst.includes(input[i + 4])
+        ) {
+          // 마지막 두 자음이 connectableConsonant에 있으면
+          if (input[i + 3] + input[i + 4] in connectableConsonant) {
+            if (
+              // 이게 마지막 글자거나 뒤에 자음이 오면
+              i + 5 === input.length ||
+              (i + 5 < input.length && korFirst.includes(input[i + 5]))
+            ) {
+              // 모모, 자자는 복모음 복자음이므로 합칠 것
+              cho = input[i];
+              jun = connectableVowel[input[i + 1] + input[i + 2]];
+              jon = connectableConsonant[input[i + 3] + input[i + 4]];
+              console.log("자모모자자");
+              combineReady[i] = cho + jun + jon;
+              i += 5;
+            }
+            // 뒤에 모음이 오면
+            else if (i + 5 < input.length && korSecond.includes(input[i + 5])) {
+              cho = input[i];
+              jun = connectableVowel[input[i + 1] + input[i + 2]];
+              jon = input[3];
+              combineReady[i] = cho + jun + jon;
+              i += 4;
+            }
+          }
+        }
+      }
+      // 자모자자, 자모모자
+      // 자모자, 자모모
+      // 자자, 자모, 모모
+      // 자, 모모
+    }
+  }
+
+  // console.log(combineReady);
+
+  // 한 글자라고 판단된 한글들을 배열로 정리
+
+  // 결합시켜 한 글자로 만들고, 문장으로 정리
+
+  let result: string = "";
+  return result;
+}
+
+// 외부 api 호출 예시
+async function fetchData() {
+  try {
+    const response = await fetch("https://api.sampleapis.com/wines/reds");
+    const data = await response.json();
+    console.log(data);
+  } catch (error) {
+    console.error("API 호출 실패:", error);
+  }
+}
+// fetchData();

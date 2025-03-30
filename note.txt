@@ -77,6 +77,9 @@ suggest
 - 단위 변환기에서 영어로 입력 가능한 단위라면 (kg, inch 등등) 이걸로 검색할 수 있도록 해보기
 - 초성 관련 문제. ㄱ에서도 기에서도 길ㅇ에서도 "길이"가 나오도록 하기?
 - 도로명주소 변경 기능은 api 활용하기 https://business.juso.go.kr/addrlink/openApi/apiExprn.do
+- 한영타 변환 단축키에 등록?
+- 글자 수 세기에 정규화 기능 추가?
+https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Global_Objects/String/normalize
 
 suggest(complete)
 - 드롭다운 박스에 검색 기능이 추가된 select2를 사용할 수 있음(https://select2.org/)(직접 구현함)
@@ -92,6 +95,9 @@ https://www.google.com/search?newwindow=1&sca_esv=94c092591444690d&q=%ED%86%A0%E
 
 - 커스텀 select 메뉴 검색
 https://stickode.tistory.com/675
+
+- 한영타 변환 로직
+https://github.com/738/inko/blob/master/index.js
 
 타입스크립트 서버 재시작
 Cmd+Shift+P (Ctrl+Shift+P)
