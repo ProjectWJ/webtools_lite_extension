@@ -70,7 +70,7 @@ content_scripts는 아직 해당 사항이 없다.
 번들링을 해서 import를 없애거나, 그냥 import할 구문을 그 위치에 작성해야 한다.
 
 todo
-- 한영타 변환 구현하기
+- 도로명주소 변환 구현하기
 
 suggest
 - 사용법 설명하는 페이지 만들기. 굳이 페이지 아니더라도 간단하게 안내하는 것도 괜찮음
@@ -102,3 +102,56 @@ https://github.com/738/inko/blob/master/index.js
 타입스크립트 서버 재시작
 Cmd+Shift+P (Ctrl+Shift+P)
 > TypeScript: Restart TS server
+
+
+
+// 0.3초 지연실행 적용된 한영타 변환 메인 실행 함수
+let debounceTimer: number | undefined;
+
+function hangulAlphabetConvertAction(e: Event) {
+  // 한글 필드인지 영어 필드인지 구분
+  let isHangul: Boolean = true;
+  if ((e.target as HTMLElement).id === "hangul-alphabet-convert-input-eng") {
+    isHangul = false;
+  }
+
+  // 한글 <-> 영어 상호 변환
+  if (isHangul === true) {
+    // 한글 -> 영어
+    let hangulValue: string = (e.target as HTMLTextAreaElement).value;
+
+    clearTimeout(debounceTimer); // 이전 타이머 취소
+
+    // 0.3초 후에 실행
+    debounceTimer = setTimeout(() => {
+      const result: string = korEngLogic(hangulValue);
+
+      const engDom = document.getElementById(
+        "hangul-alphabet-convert-input-eng"
+      ) as HTMLTextAreaElement;
+
+      if (engDom) engDom.value = result;
+    }, 300);
+  } else {
+    // 영어 -> 한글
+    let alphabetValue: string = (e.target as HTMLTextAreaElement).value;
+
+    clearTimeout(debounceTimer); // 이전 타이머 취소
+
+    // 0.3초 후에 실행
+    debounceTimer = setTimeout(() => {
+      const result: string = engKorLogic(alphabetValue); // 조합된 한글이 여기에 들어감
+      if (result === "fail") {
+        console.error("변환 실패");
+        return;
+      }
+
+      // 반대쪽 input에 적용
+      const korDom = document.getElementById(
+        "hangul-alphabet-convert-input-kor"
+      ) as HTMLTextAreaElement;
+
+      if (korDom) korDom.value = result;
+    }, 300);
+  }
+}

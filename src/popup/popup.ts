@@ -1113,44 +1113,15 @@ document
 document
   .getElementById("hangul-alphabet-convert-input-eng")
   ?.addEventListener("input", hangulAlphabetConvertAction);
-
-// 한영타 변환 메인 실행 함수
-function hangulAlphabetConvertAction(e: Event) {
-  // 한글 필드인지 영어 필드인지 구분
-  let isHangul: Boolean = true;
-  if ((e.target as HTMLElement).id === "hangul-alphabet-convert-input-eng") {
-    isHangul = false;
-  }
-
-  // 우선은 매 입력 때마다 textarea를 전체 검사하도록 구현
-
-  // 한글 <-> 영어 상호 변환
-  if (isHangul === true) {
-    // 한글 -> 영어
-    /*     let hangulValue: string = (e.target as HTMLTextAreaElement).value;
-    let result: string = "";
-
-    // 반대쪽 input에 적용
-    const engDom = document.getElementById(
-      "hangul-alphabet-convert-input-eng"
-    ) as HTMLElement;
-    (engDom as HTMLTextAreaElement).value = result; */
-  } else {
-    // 영어 -> 한글
-    let alphabetValue = (e.target as HTMLTextAreaElement).value;
-    let result: string = engKorLogic(alphabetValue); // 조합된 한글이 여기에 들어감
-    if (result === "fail") {
-      console.error("변환 실패");
-      return;
-    }
-
-    // 반대쪽 input에 적용
-    const korDom = document.getElementById(
-      "hangul-alphabet-convert-input-kor"
-    ) as HTMLElement;
-    (korDom as HTMLTextAreaElement).value = result;
-  }
-}
+document
+  .getElementById("hangul-alphabet-convert-copy-btn-kor")
+  ?.addEventListener("click", hangulAlphabetCopyAction);
+document
+  .getElementById("hangul-alphabet-convert-copy-btn-eng")
+  ?.addEventListener("click", hangulAlphabetCopyAction);
+document
+  .getElementById("hangul-alphabet-convert-clear-btn")
+  ?.addEventListener("click", hangulAlphabetClearAction);
 
 const korEngField: Record<string, string | number> = {
   eng: "rRseEfaqQtTdwWczxvgASDFGZXCVkoiOjpuPhynbmlYUIHJKLBNM",
@@ -1179,6 +1150,20 @@ const connectableConsonant: Record<string, string> = {
   ㅂㅅ: "ㅄ",
 };
 
+const connectableConsonantReverse: Record<string, string> = {
+  ㄳ: "ㄱㅅ",
+  ㄵ: "ㄴㅈ",
+  ㄶ: "ㄴㅎ",
+  ㄺ: "ㄹㄱ",
+  ㄻ: "ㄹㅁ",
+  ㄼ: "ㄹㅂ",
+  ㄽ: "ㄹㅅ",
+  ㄾ: "ㄹㅌ",
+  ㄿ: "ㄹㅍ",
+  ㅀ: "ㄹㅎ",
+  ㅄ: "ㅂㅅ",
+};
+
 const connectableVowel: Record<string, string> = {
   ㅗㅏ: "ㅘ",
   ㅗㅐ: "ㅙ",
@@ -1189,15 +1174,51 @@ const connectableVowel: Record<string, string> = {
   ㅡㅣ: "ㅢ",
 };
 
+const connectableVowelReverse: Record<string, string> = {
+  ㅘ: "ㅗㅏ",
+  ㅙ: "ㅗㅐ",
+  ㅚ: "ㅗㅣ",
+  ㅝ: "ㅜㅓ",
+  ㅞ: "ㅜㅔ",
+  ㅟ: "ㅜㅣ",
+  ㅢ: "ㅡㅣ",
+};
+
 const korFirst: string = korEngField.korFirst as string;
 const korSecond: string = korEngField.korSecond as string;
 const korThird: string = korEngField.korThird as string;
 
-// 한글 -> 영어
-function korEngLogic(input: string): string {
-  let result = "";
+// 한영타 변환 메인 실행 함수
+function hangulAlphabetConvertAction(e: Event) {
+  // 한글 필드인지 영어 필드인지 구분
+  let isHangul: Boolean = true;
+  if ((e.target as HTMLElement).id === "hangul-alphabet-convert-input-eng") {
+    isHangul = false;
+  }
 
-  return result;
+  // 한글 -> 영어
+  if (isHangul === true) {
+    const hangulValue: string = (e.target as HTMLTextAreaElement).value;
+    const result: string = korEngLogic(hangulValue); // 영어가 여기에 들어감
+
+    // 반대쪽 input에 적용
+    const engDom = document.getElementById(
+      "hangul-alphabet-convert-input-eng"
+    ) as HTMLElement;
+    (engDom as HTMLTextAreaElement).value = result;
+  }
+
+  // 영어 -> 한글
+  else {
+    const alphabetValue = (e.target as HTMLTextAreaElement).value;
+    const result: string = engKorLogic(alphabetValue); // 조합된 한글이 여기에 들어감
+
+    // 반대쪽 input에 적용
+    const korDom = document.getElementById(
+      "hangul-alphabet-convert-input-kor"
+    ) as HTMLElement;
+    (korDom as HTMLTextAreaElement).value = result;
+  }
 }
 
 // 영어 -> 한글
@@ -1511,11 +1532,11 @@ function chojungjongSlice(input: string): string[][] | undefined {
 
   // 복자음, 복모음 처리
   for (let i = 0; i < result.length; i++) {
-    const [cho, jung, jong] = result[i];
+    const [cho, jung, jong]: string[] = result[i];
 
     // 복자음 처리
     if (jong.length === 2) {
-      const combinedJong = connectableConsonant[jong];
+      const combinedJong: string = connectableConsonant[jong];
       if (combinedJong) {
         result[i][2] = combinedJong;
       }
@@ -1523,7 +1544,7 @@ function chojungjongSlice(input: string): string[][] | undefined {
 
     // 복모음 처리
     if (jung.length === 2) {
-      const combinedJung = connectableVowel[jung];
+      const combinedJung: string = connectableVowel[jung];
       if (combinedJung) {
         result[i][1] = combinedJung;
       }
@@ -1582,6 +1603,122 @@ function combineHangul(chojungjong: string[][]): string | undefined {
   }
 
   return combineResult;
+}
+
+// 한글 -> 영어
+function korEngLogic(input: string): string {
+  const eng: string = korEngField.eng as string;
+  const kor: string = korEngField.kor as string;
+
+  const hangulSplitResult: string = hangulSplit(input).join("");
+  const arr: string[] = hangulSplitResult.split("");
+  let result: string = "";
+
+  // 한글을 영어로 변환
+  for (let i = 0; i < arr.length; i++) {
+    if (kor.indexOf(arr[i]) !== -1) {
+      let where: number = kor.indexOf(arr[i]);
+      result += eng[where];
+    } else {
+      result += arr[i];
+    }
+  }
+
+  return result;
+}
+
+// 한글 분리하기
+function hangulSplit(input: string): string[] {
+  const result: string[] = [];
+  for (let i = 0; i < input.length; i++) {
+    const charCode: number = input.charCodeAt(i);
+    if (
+      charCode >= (korEngField.ga as number) &&
+      charCode <= (korEngField.hig as number)
+    ) {
+      const choIndex: number = Math.floor(
+        (charCode - (korEngField.ga as number)) / 588
+      );
+      const jungIndex: number = Math.floor(
+        ((charCode - (korEngField.ga as number)) % 588) / 28
+      );
+      const jongIndex: number = (charCode - (korEngField.ga as number)) % 28;
+
+      const cho: string = (korEngField.korFirst as string).charAt(choIndex);
+      const jung: string = (korEngField.korSecond as string).charAt(jungIndex);
+      const jong: string = (korEngField.korThird as string).charAt(jongIndex);
+
+      // 종성이 없는 경우
+      if (jong === " ") {
+        result.push(cho, jung);
+      } else {
+        // 종성이 있는 경우
+        result.push(cho, jung, jong);
+      }
+    } else {
+      result.push(input[i]);
+    }
+  }
+
+  // 복자음, 복모음 나누기
+  for (let i = 0; i < result.length; i++) {
+    const char: string = result[i];
+    if (connectableConsonantReverse[char]) {
+      const sliceConsonant: string = connectableConsonantReverse[char];
+      result[i] = sliceConsonant;
+    } else if (connectableVowelReverse[char]) {
+      const sliceVowel: string = connectableVowelReverse[char];
+      result[i] = sliceVowel;
+    }
+  }
+
+  return result;
+}
+
+// 복사
+function hangulAlphabetCopyAction(e: Event) {
+  const target: HTMLElement = e.target as HTMLElement;
+  let copyTarget = "";
+
+  if (target.id === "hangul-alphabet-convert-copy-btn-kor") {
+    copyTarget = "hangul-alphabet-convert-input-kor";
+  } else if (target.id === "hangul-alphabet-convert-copy-btn-eng") {
+    copyTarget = "hangul-alphabet-convert-input-eng";
+  }
+
+  const copyText = (document.getElementById(copyTarget) as HTMLTextAreaElement)
+    .value;
+
+  if (copyText) {
+    navigator.clipboard
+      .writeText(copyText)
+      .then(() => {
+        const messageTarget = document.getElementById(`${target.id}-message`);
+        if (messageTarget) {
+          messageTarget.innerText = "복사되었습니다.";
+          setTimeout(() => {
+            messageTarget.innerText = ""; // 2초 후에 메시지 초기화
+          }, 2000);
+        }
+      })
+      .catch((err) => {
+        console.error("복사 실패:", err);
+      });
+  }
+}
+
+// 비우기
+function hangulAlphabetClearAction() {
+  const korInput = document.getElementById("hangul-alphabet-convert-input-kor");
+  const engInput = document.getElementById("hangul-alphabet-convert-input-eng");
+
+  if (korInput && engInput) {
+    (korInput as HTMLTextAreaElement).value = "";
+    (engInput as HTMLTextAreaElement).value = "";
+  } else {
+    console.error("textArea를 찾을 수 없습니다.");
+    return;
+  }
 }
 
 // 외부 api 호출 예시
