@@ -1157,7 +1157,7 @@ const korEngField: Record<string, string | number> = {
   kor: "ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎㅁㄴㅇㄹㅎㅋㅌㅊㅍㅏㅐㅑㅒㅓㅔㅕㅖㅗㅛㅜㅠㅡㅣㅛㅕㅑㅗㅓㅏㅣㅠㅜㅡ",
   korFirst: "ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ", // 19개
   korSecond: "ㅏㅐㅑㅒㅓㅔㅕㅖㅗㅘㅙㅚㅛㅜㅝㅞㅟㅠㅡㅢㅣ", // 21개
-  korThird: "ㄱㄲㄳㄴㄵㄶㄷㄹㄺㄻㄼㄽㄾㄿㅀㅁㅂㅄㅅㅆㅇㅈㅊㅋㅌㅍㅎ",
+  korThird: " ㄱㄲㄳㄴㄵㄶㄷㄹㄺㄻㄼㄽㄾㄿㅀㅁㅂㅄㅅㅆㅇㅈㅊㅋㅌㅍㅎ",
   korMoum: 28,
   ga: 44032, // 유니코드 한글 시작점
   hig: 55203, // 유니코드 한글 종료점
@@ -1199,6 +1199,7 @@ function korEngLogic(input: string): string {
 
   return result;
 }
+
 // 영어 -> 한글
 function engKorLogic(input: string): string {
   const eng: string = korEngField.eng as string;
@@ -1351,10 +1352,8 @@ function chojungjongSlice(input: string): string[][] | undefined {
         connectableConsonant[cho + input[i]]
       ) {
         jong = cho + input[i]; // 종성
-        result.push(["", "", jong]); // 현재 입력을 push
         cho = "";
         jung = "";
-        jong = "";
         inputState = "jong"; // 종성을 입력받은 것이니 종성으로 이동
       }
 
@@ -1477,6 +1476,21 @@ function chojungjongSlice(input: string): string[][] | undefined {
         inputState = "jung";
       }
 
+      // 종성만 있는 상태(ex: ㄵ)에서 중성 입력한 경우(ex: ㄴ재)
+      else if (
+        cho === "" &&
+        jung === "" &&
+        jong !== "" &&
+        jong.length === 2 &&
+        korSecond.includes(input[i])
+      ) {
+        result.push(["", "", jong[0]]);
+        cho = jong[1];
+        jung = input[i];
+        jong = "";
+        inputState = "jung";
+      }
+
       // 유효한 입력이 아니라고 판단될 경우
       else {
         console.error("jong 상태에서 유효한 입력이 아닙니다.");
@@ -1495,12 +1509,77 @@ function chojungjongSlice(input: string): string[][] | undefined {
     result.push([cho, jung, jong]);
   }
 
+  // 복자음, 복모음 처리
+  for (let i = 0; i < result.length; i++) {
+    const [cho, jung, jong] = result[i];
+
+    // 복자음 처리
+    if (jong.length === 2) {
+      const combinedJong = connectableConsonant[jong];
+      if (combinedJong) {
+        result[i][2] = combinedJong;
+      }
+    }
+
+    // 복모음 처리
+    if (jung.length === 2) {
+      const combinedJung = connectableVowel[jung];
+      if (combinedJung) {
+        result[i][1] = combinedJung;
+      }
+    }
+  }
+
   return result;
 }
 
 // 한글 조합하기
 function combineHangul(chojungjong: string[][]): string | undefined {
-  let combineResult = "";
+  let combineResult: string = "";
+
+  for (let i = 0; i < chojungjong.length; i++) {
+    const [cho, jung, jong]: string[] = chojungjong[i];
+
+    // 초성, 중성, 종성이 모두 있는 경우
+    if (cho && jung && jong) {
+      const choIndex: number = (korEngField.korFirst as string).indexOf(cho);
+      const jungIndex: number = (korEngField.korSecond as string).indexOf(jung);
+      const jongIndex: number = (korEngField.korThird as string).indexOf(jong);
+
+      if (choIndex === -1 || jungIndex === -1 || jongIndex === -1) {
+        console.error("초중종성 조합 실패");
+        return undefined;
+      }
+
+      const codePoint: number =
+        (korEngField.ga as number) +
+        choIndex * 588 +
+        jungIndex * 28 +
+        jongIndex;
+      combineResult += String.fromCharCode(codePoint);
+    }
+
+    // 초성, 중성만 있는 경우
+    else if (cho && jung) {
+      const choIndex: number = (korEngField.korFirst as string).indexOf(cho);
+      const jungIndex: number = (korEngField.korSecond as string).indexOf(jung);
+
+      if (choIndex === -1 || jungIndex === -1) {
+        console.error("초중 조합 실패");
+        return undefined;
+      }
+
+      const codePoint: number =
+        (korEngField.ga as number) + choIndex * 588 + jungIndex * 28;
+
+      combineResult += String.fromCharCode(codePoint);
+    }
+
+    // 초, 중, 종성 각각 하나씩만 있는 경우
+    else if (cho) combineResult += cho;
+    else if (jung) combineResult += jung;
+    else if (jong) combineResult += jong;
+  }
 
   return combineResult;
 }
