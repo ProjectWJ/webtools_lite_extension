@@ -1139,6 +1139,10 @@ function hangulAlphabetConvertAction(e: Event) {
     // 영어 -> 한글
     let alphabetValue = (e.target as HTMLTextAreaElement).value;
     let result: string = engKorLogic(alphabetValue); // 조합된 한글이 여기에 들어감
+    if (result === "fail") {
+      console.error("변환 실패");
+      return;
+    }
 
     // 반대쪽 input에 적용
     const korDom = document.getElementById(
@@ -1153,7 +1157,7 @@ const korEngField: Record<string, string | number> = {
   kor: "ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎㅁㄴㅇㄹㅎㅋㅌㅊㅍㅏㅐㅑㅒㅓㅔㅕㅖㅗㅛㅜㅠㅡㅣㅛㅕㅑㅗㅓㅏㅣㅠㅜㅡ",
   korFirst: "ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ", // 19개
   korSecond: "ㅏㅐㅑㅒㅓㅔㅕㅖㅗㅘㅙㅚㅛㅜㅝㅞㅟㅠㅡㅢㅣ", // 21개
-  korThird: " ㄱㄲㄳㄴㄵㄶㄷㄹㄺㄻㄼㄽㄾㄿㅀㅁㅂㅄㅅㅆㅇㅈㅊㅋㅌㅍㅎ",
+  korThird: "ㄱㄲㄳㄴㄵㄶㄷㄹㄺㄻㄼㄽㄾㄿㅀㅁㅂㅄㅅㅆㅇㅈㅊㅋㅌㅍㅎ",
   korMoum: 28,
   ga: 44032, // 유니코드 한글 시작점
   hig: 55203, // 유니코드 한글 종료점
@@ -1213,211 +1217,292 @@ function engKorLogic(input: string): string {
     }
   }
 
-  // console.log(engChangeKor);
+  // 초성, 중성, 종성 나누기
+  const chojungjong: string[][] | undefined = chojungjongSlice(engChangeKor);
+  if (chojungjong === undefined) {
+    console.error("초중종성 나누기 실패");
+    return "fail";
+  }
+  // 한 글자라고 판단된 글자 정리 및 문장 구성
+  const result: string | undefined = combineHangul(chojungjong);
+  if (result === undefined) {
+    console.error("한글 조합 실패");
+    return "fail";
+  }
 
-  // 초/중/종성 판단
-  /*
-    입력값 검증
-    - 모음이 처음에 온다 -> pass
-    - 자음만 세 번 이상 나열된다 -> pass
-    - 모음만 세 번 이상 나열된다 -> pass
-    - 한글이 아니다 -> pass
-    - 입력이 한 글자다 -> pass
-    - 빈 문자열인 경우 -> pass
+  return result;
+}
 
-    기본 규칙
-    - 자음 뒤에 모음이 온다
-      -> 자음은 초성, 모음이 중성
-    - 자음 뒤에 모음 뒤에 자음이 온다 + 뒤에 모음이 온다
-      -> 마지막에 온 자음은 초성
-    - 모음이 마지막에 온다
-      -> 종성 없음
+// 초중종성 나누기
+function chojungjongSlice(input: string): string[][] | undefined {
+  let inputState: string = "start"; // 입력받은 상태
+  let result: string[][] = [];
+  let cho = "";
+  let jung = "";
+  let jong = "";
+  let other = "";
 
-    복자음 / 복모음 처리 단계(결합 생성 혹은 해제)
-    - 자음 뒤에 모음 뒤에 자음이 온다 + 뒤에 자음이 온다 + 마지막 두 자음이 connectableConsonant에 있다
-      + 뒤에 자음이 오거나 마지막 글자이다
-      -> 마지막 두 자음은 종성이고 복자음
-    - 자음 뒤에 모음 뒤에 자음이 온다 + 뒤에 자음이 온다 + 마지막 두 자음이 connectableConsonant에 있다
-      + 뒤에 모음이 온다
-      -> 복자음 x, 뒤로 세었을 때 두 번째 자음은 종성, 첫 번째 자음은 초성
-    - 자음 뒤에 모음 뒤에 모음이 온다 + 두 모음이 connectableVowel에 있다
-      -> 두 모음은 중성이고 복모음
-  */
-
-  /* 
-    자, 모, 자자, 자모, 모모, 자모자, 자모모, 자모자자, 자모모자, 자모모자자
-    i + 3 <= input.length // 자모모자자
-    i + 2 <= input.length // 자모자자, 자모모자
-    i + 1 <= input.legnth // 자모자, 자모모
-    i <= input.length // 자자, 자모, 모모
-  */
-
-  // 맥시멈이 engChangeKor.length만큼. 안 들어가면 비어 있으니까 나중에 넘길 것
-  let combineReady: string[] = new Array(engChangeKor.length);
-  let isCombineNeed: boolean[] = new Array(engChangeKor.length);
-  chojungjong(engChangeKor);
-
-  // 이 함수는 모든 한글이 나뉘어진 상태여야(ㅎㅏㄴㄱㅡㄹ ㅈㅗㅎㅇㅏ) 기능합니다.
-  function chojungjong(input: string) {
-    for (let i = 0; i < input.length; i++) {
-      let cho = "";
-      let jun = "";
-      let jon = "";
-      // 입력값 검증 부분
-      // 맨 처음에 모음이 오면
-      if (i === 0 && korSecond.includes(input[i])) {
-        combineReady[i] = input[i];
-        isCombineNeed[i] = false;
-        console.log("맨 처음에 모음 등장");
-        continue;
+  for (let i = 0; i < input.length; i++) {
+    // 한글 입력이 아닐 때
+    if (!(korEngField.kor as string).includes(input[i])) {
+      if (cho !== "" || jung !== "" || jong !== "") {
+        // 초성, 중성, 종성이 있는 상태에서 다른 글자 입력 시
+        result.push([cho, jung, jong]);
+        cho = "";
+        jung = "";
+        jong = "";
       }
-      // 빈 문자열의 경우
-      if (input === "") {
-        combineReady[i] = input[i];
-        isCombineNeed[i] = false;
-        console.log("빈 문자열");
-        break;
+      other = input[i];
+      inputState = "other";
+    }
+
+    // start 상태에서 가능한 입력
+    if (inputState === "start") {
+      // 초성 입력한 경우
+      if (korFirst.includes(input[i])) {
+        cho = input[i]; // 초성
+        inputState = "cho";
       }
-      // 입력이 한 글자인 경우
-      if (input.length === 1) {
-        console.log("입력이 하나");
-        return input;
-      }
-      // 자음만 나열되면
-      if (i + 2 < input.length) {
-        if (
-          (korFirst.includes(input[i]) &&
-            korFirst.includes(input[i + 1]) &&
-            korFirst.includes(input[i + 2])) ||
-          // 모음만 나열되면
-          (korSecond.includes(input[i]) &&
-            korSecond.includes(input[i + 1]) &&
-            korSecond.includes(input[i + 2]))
-        ) {
-          console.log("자음 셋 혹은 모음 셋");
-          combineReady[i] = input[i];
-          isCombineNeed[i] = false;
+
+      // 중성 입력한 경우
+      else if (korSecond.includes(input[i])) {
+        // 이전에 종성이 있었으면 그게 초성이 됨
+        if (result.length > 0 && i > 0 && result[result.length - 1][2] !== "") {
+          // 복자음인 경우
+          if (result[result.length - 1][2].length === 2) {
+            cho = result[result.length - 1][2].substring(1, 2); // 초성
+            result[result.length - 1][2] = result[
+              result.length - 1
+            ][2].substring(0, 1); // 종성
+          }
+
+          // 단자음인 경우
+          else if (result[result.length - 1][2].length === 1) {
+            cho = result[result.length - 1][2]; // 초성
+            result[result.length - 1][2] = ""; // 종성 공백 설정
+          }
+          jung = input[i];
+          inputState = "jung"; // 복모음 올 수 있음
         }
-      }
-      // 한글이 아닌 경우
-      if (!kor.includes(input[i])) {
-        console.log("한글이 아님");
-        combineReady[i] = input[i];
-        isCombineNeed[i] = false;
-        continue;
-      }
 
-      // 이하 자모모자자 먼저 처리
-      /*
-        복자음 / 복모음 처리 단계(결합 생성 혹은 해제)
-      - 자음 뒤에 모음 뒤에 자음이 온다 + 뒤에 자음이 온다 + 마지막 두 자음이 connectableConsonant에 있다
-        + 뒤에 자음이 오거나 마지막 글자이다
-        -> 마지막 두 자음은 종성이고 복자음
-      - 자음 뒤에 모음 뒤에 자음이 온다 + 뒤에 자음이 온다 + 마지막 두 자음이 connectableConsonant에 있다
-        + 뒤에 모음이 온다
-        -> 복자음 x, 뒤로 세었을 때 두 번째 자음은 종성, 첫 번째 자음은 초성
-      - 자음 뒤에 모음 뒤에 모음이 온다 + 두 모음이 connectableVowel에 있다
-        -> 두 모음은 중성이고 복모음
-      */
-
-      /*
-        let k1 = input[i];
-        let k2 = input[i] + input[i + 1];
-        ...
-        let j1 = false;
-        let j2 = false;
-        ...
-
-        자, 모, 자자, 자모, 모모, 자모자, 자모모, 자모자자, 자모모자, 자모모자자 판별
-
-        자, 모, 자자부터 시작해서 자모모자자가 되면 j5 = true;
-        자모자자, 자모모자면 j4 = true;
-        우선순위는 j5부터 j1까지
-
-        j5가 된다 해도 i + 5 하지 말 것. 자모모자자모가 되면 맨 뒤 자모 연결해야 함
-
-
-        --- 유니코드 하면 마지막에 정규화 해줘야 함
-
-
-        ㅂㅜㅔㄹㄱㅇㅓ
-        
-        입력받으면
-        빈 종성은 ""로 처리
-
-        자음 + 모음 = 초성, 중성
-        자음 + 모음 + 자음 = 초성, 중성, 종성
-        자음 + 모음 + 자음 + 모음 = 초성, 중성, 초성2, 중성2
-        ->
-        ㄱㅏ      초성, 중성
-        ㄱㅏㄴ    초성, 중성, 종성
-        ㄱㅏㄴㅏ  초성, 중성, 초성, 중성
-
-        모음 + 자음 + 자음 = 중성, 종성(조건부 복자음)
-        모음 + 자음 + 자음 + 모음 = 중성, 종성, 초성(복자음 해제), 중성
-        ->
-        ㅏㄹㄱ    중성, 종성(복자음)
-        ㅏㄹㅋ    중성, 종성, 초성
-        ㅏㄹㄱㅓ  중성, 종성, 초성(복자음 해제), 중성
-
-        모음 + 모음 = 중성(조건부 복모음)
-        ->
-        ㅗㅣ      중성
-        ㅏㅏ      중성, 예외
-
-        배열을 두 개 만들어서 하나는 초중종성 담는 거
-        하나는 콤바인을 해야 하는지 그냥 단품처리인지
-      */
-
-      if (i + 4 < input.length) {
-        if (
-          korFirst.includes(input[i]) &&
-          korSecond.includes(input[i + 1]) &&
-          korSecond.includes(input[i + 2]) &&
-          korFirst.includes(input[i + 3]) &&
-          korFirst.includes(input[i + 4])
+        // 초성도 종성도 없을 때
+        else if (
+          (cho === "" &&
+            result.length > 0 &&
+            i > 0 &&
+            result[result.length - 1][2] === "") ||
+          i === 0 // 혹은 시작부터 모음이 오면
         ) {
-          // 마지막 두 자음이 connectableConsonant에 있으면
-          if (input[i + 3] + input[i + 4] in connectableConsonant) {
-            if (
-              // 이게 마지막 글자거나 뒤에 자음이 오면
-              i + 5 === input.length ||
-              (i + 5 < input.length && korFirst.includes(input[i + 5]))
-            ) {
-              // 모모, 자자는 복모음 복자음이므로 합칠 것
-              cho = input[i];
-              jun = connectableVowel[input[i + 1] + input[i + 2]];
-              jon = connectableConsonant[input[i + 3] + input[i + 4]];
-              console.log("자모모자자");
-              combineReady[i] = cho + jun + jon;
-              i += 5;
-            }
-            // 뒤에 모음이 오면
-            else if (i + 5 < input.length && korSecond.includes(input[i + 5])) {
-              cho = input[i];
-              jun = connectableVowel[input[i + 1] + input[i + 2]];
-              jon = input[3];
-              combineReady[i] = cho + jun + jon;
-              i += 4;
-            }
+          // 예비 복자음의 경우
+          if (input[i] === "ㅗ" || input[i] === "ㅜ" || input[i] === "ㅡ") {
+            jung = input[i];
+            inputState = "jung"; // 복모음 올 수 있음
+          }
+
+          // 단자음의 경우
+          else if (
+            input[i] !== "ㅗ" &&
+            input[i] !== "ㅜ" &&
+            input[i] !== "ㅡ"
+          ) {
+            jung = input[i];
+            result.push(["", jung, ""]);
+            cho = "";
+            jung = "";
+            jong = "";
+            inputState = "start"; // 상태 초기화
           }
         }
+
+        // 그 외
+        else {
+          console.error("start 상태에서 조건에 맞지 않는 중성 입력입니다.");
+        }
       }
-      // 자모자자, 자모모자
-      // 자모자, 자모모
-      // 자자, 자모, 모모
-      // 자, 모모
+
+      // 초성, 중성도 아닌 경우
+      else {
+        console.error("start 상태에서 유효한 입력이 아닙니다.");
+        return;
+      }
+    }
+
+    // cho 상태에서 가능한 입력
+    else if (inputState === "cho") {
+      // 중성 입력한 경우
+      if (cho !== "" && korSecond.includes(input[i])) {
+        jung = input[i];
+        inputState = "jung";
+      }
+
+      // 초성 입력한 경우
+      else if (
+        korFirst.includes(input[i]) &&
+        !connectableConsonant[cho + input[i]]
+      ) {
+        result.push([cho, "", ""]); // 현재 입력을 push
+        cho = input[i];
+        inputState = "cho"; // 다시 초성으로
+      }
+
+      // 초성(조합) = 종성
+      else if (
+        korFirst.includes(input[i]) &&
+        connectableConsonant[cho + input[i]]
+      ) {
+        jong = cho + input[i]; // 종성
+        result.push(["", "", jong]); // 현재 입력을 push
+        cho = "";
+        jung = "";
+        jong = "";
+        inputState = "jong"; // 종성을 입력받은 것이니 종성으로 이동
+      }
+
+      // 중성, 초성, 초성(조합) 모두 아닌 경우
+      else {
+        console.error("cho 상태에서 유효한 입력이 아닙니다.");
+        return;
+      }
+    }
+
+    // jung 상태에서 가능한 입력
+    else if (inputState === "jung") {
+      // 초성, 중성이 있는 상태에서 종성 입력한 경우
+      if (cho !== "" && jung !== "" && korThird.includes(input[i])) {
+        jong = input[i];
+        inputState = "jong";
+      }
+
+      // 초성, 중성이 있는 상태에서 중성(조합) 입력한 경우
+      else if (
+        cho !== "" &&
+        jung !== "" &&
+        korSecond.includes(input[i]) &&
+        connectableVowel[jung + input[i]]
+      ) {
+        jung += input[i];
+        inputState = "jung";
+      }
+
+      // 조합이 안 되는 중성을 입력한 경우
+      else if (
+        korSecond.includes(input[i]) &&
+        !connectableVowel[jung + input[i]]
+      ) {
+        result.push([cho, jung, ""]); // 현재 입력도 push
+        cho = "";
+        jung = input[i];
+        jong = "";
+        inputState = "jung"; // 상태 초기화
+      }
+
+      // 초성이 없는 상황에서 중성(조합) 입력한 경우
+      else if (
+        cho === "" &&
+        jung !== "" &&
+        korSecond.includes(input[i]) &&
+        connectableVowel[jung + input[i]]
+      ) {
+        jung += input[i];
+        result.push(["", jung, ""]);
+        cho = "";
+        jung = "";
+        jong = "";
+        inputState = "start"; // 상태 초기화
+      }
+
+      // 유효한 입력이 아니라고 판단될 경우
+      else {
+        console.error("jung 상태에서 유효한 입력이 아닙니다.");
+        return;
+      }
+    }
+
+    // jong 상태에서 가능한 입력
+    else if (inputState === "jong") {
+      // 초, 중, 종성이 있는 상태에서 종성(조합) 입력한 경우
+      if (
+        cho !== "" &&
+        jung !== "" &&
+        jong !== "" &&
+        korThird.includes(input[i]) &&
+        connectableConsonant[jong + input[i]]
+      ) {
+        jong += input[i];
+        inputState = "jong";
+      }
+
+      // 초, 중, 종성이 있는 상태에서 초성 입력한 경우(= 조합이 안 되는 종성 입력한 경우)
+      else if (
+        cho !== "" &&
+        jung !== "" &&
+        jong !== "" &&
+        korFirst.includes(input[i]) &&
+        !connectableConsonant[jong + input[i]]
+      ) {
+        result.push([cho, jung, jong]);
+        cho = input[i];
+        jung = "";
+        jong = "";
+        inputState = "cho";
+      }
+
+      // 초, 중, 종성이 있는 상태에서 중성 입력한 경우
+      else if (
+        cho !== "" &&
+        jung !== "" &&
+        jong !== "" &&
+        jong.length === 1 && // 단자음인 경우
+        korSecond.includes(input[i])
+      ) {
+        result.push([cho, jung, ""]); // result.push([cho, jung, " "]); 유니코드 고려하기?
+        cho = jong;
+        jung = input[i];
+        jong = "";
+        inputState = "jung";
+      }
+
+      // 초, 중 종성(복자음)이 있는 상태에서 중성 입력한 경우
+      else if (
+        cho !== "" &&
+        jung !== "" &&
+        jong !== "" &&
+        jong.length === 2 && // 복자음인 경우
+        korSecond.includes(input[i])
+      ) {
+        result.push([cho, jung, jong[0]]);
+        cho = jong[1];
+        jung = input[i];
+        jong = "";
+        inputState = "jung";
+      }
+
+      // 유효한 입력이 아니라고 판단될 경우
+      else {
+        console.error("jong 상태에서 유효한 입력이 아닙니다.");
+        return;
+      }
+    }
+
+    if (inputState === "other") {
+      result.push([other, "", ""]);
+      inputState = "start";
     }
   }
 
-  // console.log(combineReady);
+  // 반복 끝나고 마지막에 남은 초성, 중성, 종성이 있으면 추가
+  if (cho !== "" || jung !== "" || jong !== "") {
+    result.push([cho, jung, jong]);
+  }
 
-  // 한 글자라고 판단된 한글들을 배열로 정리
-
-  // 결합시켜 한 글자로 만들고, 문장으로 정리
-
-  let result: string = "";
   return result;
+}
+
+// 한글 조합하기
+function combineHangul(chojungjong: string[][]): string | undefined {
+  let combineResult = "";
+
+  return combineResult;
 }
 
 // 외부 api 호출 예시
