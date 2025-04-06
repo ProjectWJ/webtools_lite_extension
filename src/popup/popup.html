@@ -14,8 +14,10 @@
       <button id="unit-convert" type="button">단위 변환</button>
       <button id="number-system-convert" type="button">진수 변환</button>
       <button id="hangul-alphabet-convert" type="button">한영타 변환</button>
-      <button id="juso-convert" type="button">도로명주소 변환</button>
-      <button id="exchange-rate-calculate" type="button">환율 계산</button>
+      <button id="full-juso-finder" type="button">통합 주소 검색</button>
+      <button id="exchange-rate-calculate" type="button">
+        환율 검색 / 비교
+      </button>
       <button id="date-calculate" type="button">날짜 계산</button>
       <button id="options-btn" type="button">설정</button>
     </div>
@@ -189,13 +191,38 @@
       </button>
       <button class="back-btn" type="button">돌아가기</button>
     </div>
-    <div id="juso-convert-panel" class="blind">
-      <p>도로명주소 변환</p>
-      <p>영어주소 변환</p>
+    <div id="full-juso-finder-panel" class="blind">
+      <p>통합 주소 검색</p>
+      <input
+        id="full-juso-finder-input"
+        aria-label="full-juso-finder-input"
+        placeholder="주소를 입력하세요"
+      />
+      <button id="full-juso-finder-btn" type="button">검색</button>
+      <br />
+      <span>결과</span><br />
+      <hr />
+      <span>도로명</span> <span id="full-juso-finder-result-roadname"></span
+      ><br />
+      <span>지번</span><br />
+      <span>영문</span><br />
+      <span>우편번호</span><br />
+      <span>상세주소</span><br />
+      <hr />
+      <span
+        >요청이 실패하거나 더 많은 데이터가 필요할 경우
+        <a
+          href="https://www.juso.go.kr/openIndexPage.do"
+          target="_blank"
+          rel="noopener"
+          >이곳</a
+        >을 이용해주세요</span
+      ><br />
+      <hr />
       <button class="back-btn" type="button">돌아가기</button>
     </div>
     <div id="exchange-rate-calculate-panel" class="blind">
-      <p>환율 계산</p>
+      <p>환율 검색 / 비교</p>
       <button class="back-btn" type="button">돌아가기</button>
     </div>
 

@@ -20,8 +20,8 @@ document
   ?.addEventListener("click", () => {
     panelToggle("hangul-alphabet-convert-panel");
   });
-document.getElementById("juso-convert")?.addEventListener("click", () => {
-  panelToggle("juso-convert-panel");
+document.getElementById("full-juso-finder")?.addEventListener("click", () => {
+  panelToggle("full-juso-finder-panel");
 });
 document
   .getElementById("exchange-rate-calculate")
@@ -1732,3 +1732,51 @@ async function fetchData() {
   }
 }
 // fetchData();
+
+/** 도로명주소 변환 */
+const jusoInput: HTMLElement | null = document.getElementById(
+  "full-juso-finder-input"
+);
+document
+  .getElementById("full-juso-finder-btn")
+  ?.addEventListener("click", roadAddressSearchAction);
+// 엔터 키 입력 시 검색 실행
+document
+  .getElementById("full-juso-finder-input")
+  ?.addEventListener("keydown", (e: KeyboardEvent) => {
+    if (e.key === "Enter") {
+      roadAddressSearchAction();
+    }
+  });
+
+async function roadAddressSearchAction() {
+  const jusoInputValue: string = (jusoInput as HTMLInputElement).value;
+  if (jusoInputValue === "") {
+    return;
+  }
+  try {
+    const response: Response = await fetch(
+      `https://api.projectwj.uk/jusorequest?q=${jusoInputValue}`,
+      {
+        method: "GET",
+        headers: {
+          "X-Request-Source": "projectwj-jusorequest",
+        },
+        mode: "cors",
+        // credentials: "include", // 쿠키 포함 여부 설정
+      }
+    );
+    const responseData = await response.text();
+    const viewElement: HTMLElement | null = document.getElementById(
+      "full-juso-finder-result-roadname"
+    );
+    if (viewElement) {
+      viewElement.innerHTML = responseData;
+    }
+  } catch (error) {
+    console.error("API 요청 실패:", error);
+    return;
+  }
+
+  // 검색하면 새 페이지를 열어 검색 결과를 보여주고, 요소를 클릭하면 해당 정보를 webtool view에 보여주기?
+}
