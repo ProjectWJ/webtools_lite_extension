@@ -193,10 +193,19 @@
     </div>
     <div id="full-juso-finder-panel" class="blind">
       <p>통합 주소 검색</p>
+      <span>기본주소</span>
       <input
         id="full-juso-finder-input"
+        type="text"
         aria-label="full-juso-finder-input"
         placeholder="주소를 입력하세요"
+      /><br />
+      <span>상세주소</span>
+      <input
+        id="full-juso-finder-input-detail"
+        type="text"
+        arai-label="full-juso-finder-input-detail"
+        placeholder="(선택) ex: 101동 101호"
       />
       <button id="full-juso-finder-btn" type="button">검색</button>
       <br />
@@ -204,10 +213,11 @@
       <hr />
       <span>도로명</span> <span id="full-juso-finder-result-roadname"></span
       ><br />
-      <span>지번</span><br />
-      <span>영문</span><br />
-      <span>우편번호</span><br />
-      <span>상세주소</span><br />
+      <span>지번</span><span id="full-juso-finder-result-jibun"></span><br />
+      <span>영문</span><span id="full-juso-finder-result-roadnameeng"></span
+      ><br />
+      <span>우편번호</span><span id="full-juso-finder-result-zipcode"></span
+      ><br />
       <hr />
       <span
         >요청이 실패하거나 더 많은 데이터가 필요할 경우

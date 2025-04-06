@@ -1737,6 +1737,21 @@ async function fetchData() {
 const jusoInput: HTMLElement | null = document.getElementById(
   "full-juso-finder-input"
 );
+const jusoInputDetail: HTMLElement | null = document.getElementById(
+  "full-juso-finder-input-detail"
+);
+const roadnameResultDOM: HTMLElement | null = document.getElementById(
+  "full-juso-finder-result-roadname"
+);
+const jibunResultDOM: HTMLElement | null = document.getElementById(
+  "full-juso-finder-result-jibun"
+);
+const roadnameengResultDOM: HTMLElement | null = document.getElementById(
+  "full-juso-finder-result-roadname"
+);
+const zipcodeResultDOM: HTMLElement | null = document.getElementById(
+  "full-juso-finder-result-roadname"
+);
 document
   .getElementById("full-juso-finder-btn")
   ?.addEventListener("click", roadAddressSearchAction);
@@ -1748,32 +1763,94 @@ document
       roadAddressSearchAction();
     }
   });
+document
+  .getElementById("full-juso-finder-input-detail")
+  ?.addEventListener("keydown", (e: KeyboardEvent) => {
+    if (e.key === "Enter") {
+      roadAddressSearchAction();
+    }
+  });
 
 async function roadAddressSearchAction() {
   const jusoInputValue: string = (jusoInput as HTMLInputElement).value;
+
+  // 입력값 검증
   if (jusoInputValue === "") {
     return;
   }
+
+  // 50자 넘어가면 거부
+  if (jusoInputValue.length > 50) {
+    roadnameResultDOM
+      ? (roadnameResultDOM.innerHTML = "주소가 너무 깁니다.")
+      : alert("주소가 너무 깁니다.");
+    return;
+  }
+
+  // 한글과 숫자, -만 입력 가능
+  const jusoInputPattern: RegExp = /^[가-힣0-9\s-]+$/;
+  if (!jusoInputPattern.test(jusoInputValue)) {
+    roadnameResultDOM
+      ? (roadnameResultDOM.innerHTML = "한글, 숫자, -만 입력 가능합니다.")
+      : alert("한글, 숫자, -만 입력 가능합니다.");
+    return;
+  }
+
+  // 익스텐션 id와 토큰
+  const extensionId: string = chrome.runtime.id;
+  // const clientToken = "abc123xyz-secret-token";
+  // API 호출
   try {
     const response: Response = await fetch(
       `https://api.projectwj.uk/jusorequest?q=${jusoInputValue}`,
       {
         method: "GET",
         headers: {
+          "X-Extension-Id": extensionId,
+          // "X-Client-Token": clientToken,
           "X-Request-Source": "projectwj-jusorequest",
         },
         mode: "cors",
         // credentials: "include", // 쿠키 포함 여부 설정
       }
     );
-    const responseData = await response.text();
-    const viewElement: HTMLElement | null = document.getElementById(
-      "full-juso-finder-result-roadname"
-    );
-    if (viewElement) {
-      viewElement.innerHTML = responseData;
+
+    // 결과 데이터
+    const responseData: string = await response.text();
+
+    // dom에 적용
+    if (
+      roadnameResultDOM ||
+      jibunResultDOM ||
+      roadnameengResultDOM ||
+      zipcodeResultDOM
+    ) {
+      let doro: string = ""; // 도로명
+      let jibun: string = ""; // 지번
+      let doroeng: string = ""; // 영문
+      let zipcode: string = ""; // 우편번호
+
+      // 상세주소가 있을 때 도로명, 지번, 영문에 결과 추가
+      if ((jusoInputDetail as HTMLInputElement).value !== "") {
+      } else {
+      }
+
+      // 임시용 결과 출력
+      roadnameResultDOM ? (roadnameResultDOM.innerHTML = responseData) : "";
+
+      // 결과 출력
+      /*       roadnameResultDOM ? (roadnameResultDOM.innerHTML = doro) : "";
+      jibunResultDOM ? (jibunResultDOM.innerHTML = jibun) : "";
+      roadnameengResultDOM ? (roadnameengResultDOM.innerHTML = doroeng) : "";
+      zipcodeResultDOM ? (zipcodeResultDOM.innerHTML = zipcode) : ""; */
+    } else {
+      console.error("결과를 표시할 DOM 요소를 찾을 수 없습니다.");
+      return;
     }
   } catch (error) {
+    roadnameResultDOM
+      ? (roadnameResultDOM.innerHTML = "API 요청 실패")
+      : alert("API 요청 실패");
     console.error("API 요청 실패:", error);
     return;
   }
