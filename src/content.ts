@@ -416,3 +416,57 @@
 }
 
     */
+
+/* 
+
+상세주소 보류
+
+      <span>상세주소</span>
+      <input
+        id="full-juso-finder-input-detail"
+        type="text"
+        arai-label="full-juso-finder-input-detail"
+        placeholder="(선택) ex: 101동 203호, 1층, 지하 2층"
+      />
+
+
+    // 상세주소가 있을 때 도로명, 지번, 영문에 결과 추가
+    const detailVal: string = (jusoInputDetail as HTMLInputElement).value;
+    if (detailVal !== "") {
+      doro = doro + " " + detailVal;
+      jibun = jibun + " " + detailVal;
+
+      // 영문주소 처리
+      let dvTemp: string = detailVal.replace(/\s/g, "");
+      // 층
+      if (dvTemp.includes("층") && !dvTemp.includes("지하")) {
+        dvTemp = dvTemp.replace("층", "F, ");
+      }
+      // 지하
+      else if (!dvTemp.includes("층") && dvTemp.includes("지하")) {
+        dvTemp = dvTemp.replace("지하", "B") + ", ";
+      }
+      // 지하 + 층(ex 지하 1층)
+      else if (dvTemp.includes("지하") && dvTemp.includes("층")) {
+        dvTemp = dvTemp.replace("층", ""); // 층 제거
+        dvTemp = dvTemp.replace("지하", "B") + ", "; // 지하만 남기기
+      }
+
+      // 호
+      if (!dvTemp.includes("동") && dvTemp.includes("호")) {
+        // 층이 있을 때
+        if (dvTemp.includes("B") || dvTemp.includes("F")) {
+          dvTemp = dvTemp.replace(", ", "-");
+          dvTemp = dvTemp.replace("호", ", ");
+        } else {
+          dvTemp = dvTemp.replace("호", ", ");
+        }
+      }
+      // 동 + 호
+      else if (dvTemp.includes("동") && dvTemp.includes("호")) {
+        dvTemp = dvTemp.replace("동", "-");
+        dvTemp = dvTemp.replace("호", ", ");
+      }
+
+      doroeng = dvTemp + doroeng;
+    } */

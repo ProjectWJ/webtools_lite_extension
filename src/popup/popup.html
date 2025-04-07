@@ -193,34 +193,25 @@
     </div>
     <div id="full-juso-finder-panel" class="blind">
       <p>통합 주소 검색</p>
-      <span>기본주소</span>
+      <span>도로명주소, 지번주소, 영문주소, 우편번호를 제공합니다.</span>
       <input
         id="full-juso-finder-input"
         type="text"
         aria-label="full-juso-finder-input"
-        placeholder="주소를 입력하세요"
-      /><br />
-      <span>상세주소</span>
-      <input
-        id="full-juso-finder-input-detail"
-        type="text"
-        arai-label="full-juso-finder-input-detail"
-        placeholder="(선택) ex: 101동 101호"
+        placeholder="검색할 주소 입력"
       />
       <button id="full-juso-finder-btn" type="button">검색</button>
-      <br />
-      <span>결과</span><br />
       <hr />
-      <span>도로명</span> <span id="full-juso-finder-result-roadname"></span
+      <span>도로명: </span><span id="full-juso-finder-result-roadname"></span
       ><br />
-      <span>지번</span><span id="full-juso-finder-result-jibun"></span><br />
-      <span>영문</span><span id="full-juso-finder-result-roadnameeng"></span
+      <span>지번: </span><span id="full-juso-finder-result-jibun"></span><br />
+      <span>영문: </span><span id="full-juso-finder-result-roadnameeng"></span
       ><br />
-      <span>우편번호</span><span id="full-juso-finder-result-zipcode"></span
+      <span>우편번호: </span><span id="full-juso-finder-result-zipcode"></span
       ><br />
       <hr />
       <span
-        >요청이 실패하거나 더 많은 데이터가 필요할 경우
+        >요청이 실패하거나 더 많은 데이터가 필요하다면
         <a
           href="https://www.juso.go.kr/openIndexPage.do"
           target="_blank"
@@ -228,6 +219,12 @@
           >이곳</a
         >을 이용해주세요</span
       ><br />
+      <span>
+        고급 영문주소 변환 기능이 필요하다면
+        <a href="https://www.kraddress.com/" target="_blank" rel="noopener"
+          >이곳</a
+        >을 이용해주세요
+      </span>
       <hr />
       <button class="back-btn" type="button">돌아가기</button>
     </div>

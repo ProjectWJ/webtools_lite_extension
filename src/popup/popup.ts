@@ -1747,10 +1747,10 @@ const jibunResultDOM: HTMLElement | null = document.getElementById(
   "full-juso-finder-result-jibun"
 );
 const roadnameengResultDOM: HTMLElement | null = document.getElementById(
-  "full-juso-finder-result-roadname"
+  "full-juso-finder-result-roadnameeng"
 );
 const zipcodeResultDOM: HTMLElement | null = document.getElementById(
-  "full-juso-finder-result-roadname"
+  "full-juso-finder-result-zipcode"
 );
 document
   .getElementById("full-juso-finder-btn")
@@ -1782,19 +1782,19 @@ async function roadAddressSearchAction() {
   // 50자 넘어가면 거부
   if (jusoInputValue.length > 50) {
     roadnameResultDOM
-      ? (roadnameResultDOM.innerHTML = "주소가 너무 깁니다.")
-      : alert("주소가 너무 깁니다.");
+      ? (roadnameResultDOM.innerHTML = "입력이 너무 많습니다.")
+      : alert("입력이 너무 많습니다.");
     return;
   }
 
   // 한글과 숫자, -만 입력 가능
-  const jusoInputPattern: RegExp = /^[가-힣0-9\s-]+$/;
+  /*   const jusoInputPattern: RegExp = /^[가-힣0-9\s-]+$/;
   if (!jusoInputPattern.test(jusoInputValue)) {
     roadnameResultDOM
       ? (roadnameResultDOM.innerHTML = "한글, 숫자, -만 입력 가능합니다.")
       : alert("한글, 숫자, -만 입력 가능합니다.");
     return;
-  }
+  } */
 
   // 익스텐션 id와 토큰
   const extensionId: string = chrome.runtime.id;
@@ -1816,44 +1816,51 @@ async function roadAddressSearchAction() {
     );
 
     // 결과 데이터
-    const responseData: string = await response.text();
+    const responseData = await response.json();
+    console.log(responseData);
 
-    // dom에 적용
-    if (
-      roadnameResultDOM ||
-      jibunResultDOM ||
-      roadnameengResultDOM ||
-      zipcodeResultDOM
-    ) {
-      let doro: string = ""; // 도로명
-      let jibun: string = ""; // 지번
-      let doroeng: string = ""; // 영문
-      let zipcode: string = ""; // 우편번호
+    // 검색된 정보를 popup.html 화면에 띄우기
+    // 너무 자주 요청하면 팝업 화면에 적절한 오류 메시지 출력
+    // 선택 시 띄운 정보를 지우고 결과창에 적용
 
-      // 상세주소가 있을 때 도로명, 지번, 영문에 결과 추가
-      if ((jusoInputDetail as HTMLInputElement).value !== "") {
-      } else {
-      }
-
-      // 임시용 결과 출력
-      roadnameResultDOM ? (roadnameResultDOM.innerHTML = responseData) : "";
-
-      // 결과 출력
-      /*       roadnameResultDOM ? (roadnameResultDOM.innerHTML = doro) : "";
-      jibunResultDOM ? (jibunResultDOM.innerHTML = jibun) : "";
-      roadnameengResultDOM ? (roadnameengResultDOM.innerHTML = doroeng) : "";
-      zipcodeResultDOM ? (zipcodeResultDOM.innerHTML = zipcode) : ""; */
-    } else {
-      console.error("결과를 표시할 DOM 요소를 찾을 수 없습니다.");
-      return;
-    }
+    // dom에 적용시키기
+    // roadAddressResultAction(responseData);
   } catch (error) {
+    // 요청 실패
     roadnameResultDOM
       ? (roadnameResultDOM.innerHTML = "API 요청 실패")
       : alert("API 요청 실패");
     console.error("API 요청 실패:", error);
     return;
   }
-
   // 검색하면 새 페이지를 열어 검색 결과를 보여주고, 요소를 클릭하면 해당 정보를 webtool view에 보여주기?
+}
+
+// 결과 dom에 적용
+function roadAddressResultAction(responseData: JSON | string) {
+  if (
+    roadnameResultDOM ||
+    jibunResultDOM ||
+    roadnameengResultDOM ||
+    zipcodeResultDOM
+  ) {
+    // 도로명주소, 지번주소, 영문주소, 우편번호 추출
+    let doro: string = ""; // 도로명
+    let jibun: string = ""; // 지번
+    let doroeng: string = ""; // 영문
+    let zipcode: string = ""; // 우편번호
+
+    // 임시 결과 출력
+    if (typeof responseData === "string")
+      roadnameResultDOM ? (roadnameResultDOM.innerHTML = responseData) : "";
+
+    // 결과 출력
+    /*     roadnameResultDOM ? (roadnameResultDOM.innerHTML = doro) : "";
+    jibunResultDOM ? (jibunResultDOM.innerHTML = jibun) : "";
+    roadnameengResultDOM ? (roadnameengResultDOM.innerHTML = doroeng) : "";
+    zipcodeResultDOM ? (zipcodeResultDOM.innerHTML = zipcode) : ""; */
+  } else {
+    console.error("결과를 표시할 DOM 요소를 찾을 수 없습니다.");
+    return;
+  }
 }
