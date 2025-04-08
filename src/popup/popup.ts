@@ -535,7 +535,7 @@ function unitFilterAction(this: HTMLElement, e: Event) {
   const listItems: string = newUnitCategory
     .map((data: string) => `<li class="unit-option-item">${data}</li>`)
     .join("");
-  unitOptions.innerText = listItems;
+  unitOptions.innerHTML = listItems;
 }
 
 // unit-filter에서 엔터키 눌렀을 때
@@ -627,7 +627,7 @@ unitOptionsClick("길이");
 
 // 모든 대단위 카테고리 초기화
 function allUnitCategoryShow() {
-  unitOptions.innerText = unitConvertCategory
+  unitOptions.innerHTML = unitConvertCategory
     .map((unit: string) => `<li class="unit-option-item">${unit}</li>`)
     .join("");
 }
@@ -758,12 +758,12 @@ function switchConversion(selectedText: string): conversionRecord {
 
 // 모든 소단위 카테고리 초기화
 function allDetailCategoryShow(keys: string[]) {
-  unitDetailOptionsLeft.innerText = keys
+  unitDetailOptionsLeft.innerHTML = keys
     .map(
       (key: string) => `<li class="unit-detail-option-left-item">${key}</li>`
     )
     .join("");
-  unitDetailOptionsRight.innerText = keys
+  unitDetailOptionsRight.innerHTML = keys
     .map(
       (key: string) => `<li class="unit-detail-option-right-item">${key}</li>`
     )
@@ -863,7 +863,7 @@ function unitDetailFilterAction(this: HTMLElement, e: Event) {
           `<li class="unit-detail-option-left-item">${data}</li>`
       )
       .join("");
-    unitDetailOptionsLeft.innerText = listItems;
+    unitDetailOptionsLeft.innerHTML = listItems;
   } else {
     // 오른쪽의 경우
     const listItems: string = newUnitDetailCategory
@@ -872,7 +872,7 @@ function unitDetailFilterAction(this: HTMLElement, e: Event) {
           `<li class="unit-detail-option-right-item">${data}</li>`
       )
       .join("");
-    unitDetailOptionsRight.innerText = listItems;
+    unitDetailOptionsRight.innerHTML = listItems;
   }
 }
 
