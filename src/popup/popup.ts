@@ -576,14 +576,14 @@ function unitOptionsClick(selectedText: string) {
 
   settingRecord = switchConversion(selectedText);
 
-  if (selectedText === "온도") {
+  if (selectUnit && selectUnit.innerText === "온도") {
     // 온도는 따로 처리
+    // 소단위 카테고리 초기화 후 배치
+    allDetailCategoryShow(tempRecord);
+    selectedUnit = tempRecord;
+
     if (unitLeftSelect) unitLeftSelect.innerHTML = tempRecord[0];
     if (unitRightSelect) unitRightSelect.innerHTML = tempRecord[1];
-    /*     const unitLeftInput = document.getElementById(
-      "unit-convert-detail-input-left"
-    ) as HTMLInputElement | null;
-    if (unitLeftInput) unitLeftInput.value = "0"; */
   } else {
     // 기준점이 되는 단위를 찾아 왼쪽에 배치, 기준점 바로 아래쪽 항목을 오른쪽에 배치
     // 기준점 찾기
@@ -605,10 +605,20 @@ function unitOptionsClick(selectedText: string) {
       if (unitLeftSelect) unitLeftSelect.innerHTML = keys[index];
       if (unitRightSelect) unitRightSelect.innerHTML = keys[0];
     }
-    /*     const unitLeftInput = document.getElementById(
-      "unit-convert-detail-input-left"
-    ) as HTMLInputElement | null;
-    if (unitLeftInput) unitLeftInput.value = "1"; */
+  }
+
+  // 소단위 input 비우기
+  const unitConvertDetailInputLeft = document.getElementById(
+    "unit-convert-detail-input-left"
+  ) as HTMLInputElement;
+  const unitConvertDetailInputRight = document.getElementById(
+    "unit-convert-detail-input-right"
+  ) as HTMLInputElement;
+  if (unitConvertDetailInputLeft) {
+    unitConvertDetailInputLeft.value = "";
+  }
+  if (unitConvertDetailInputRight) {
+    unitConvertDetailInputRight.value = "";
   }
 }
 
