@@ -137,9 +137,9 @@ function capitalLowerConvertAction() {
   );
 
   if ((selectCapitalLower as HTMLSelectElement)?.value === "capital") {
-    textAreaOutput.innerHTML = textAreaInput.value.toUpperCase();
+    textAreaOutput.innerText = textAreaInput.value.toUpperCase();
   } else {
-    textAreaOutput.innerHTML = textAreaInput.value.toLowerCase();
+    textAreaOutput.innerText = textAreaInput.value.toLowerCase();
   }
 }
 
@@ -436,14 +436,14 @@ function unitDetailInputAction(e: Event) {
   // input값이 입력된 곳에 따라 같은 방향의 select가 from이 된다
   if (fromInputId.includes("left")) {
     fromSelect = document.getElementById("unit-convert-detail-select-left")
-      ?.innerHTML as string;
+      ?.innerText as string;
     toSelect = document.getElementById("unit-convert-detail-select-right")
-      ?.innerHTML as string;
+      ?.innerText as string;
   } else if (fromInputId.includes("right")) {
     fromSelect = document.getElementById("unit-convert-detail-select-right")
-      ?.innerHTML as string;
+      ?.innerText as string;
     toSelect = document.getElementById("unit-convert-detail-select-left")
-      ?.innerHTML as string;
+      ?.innerText as string;
   } else {
     console.error("fromInput을 판별할 수 없습니다.");
     return;
@@ -455,7 +455,7 @@ function unitDetailInputAction(e: Event) {
     console.error("unit-convert-select-unit값을 찾을 수 없습니다.");
     return;
   }
-  const currentCategory: string = unitSelectElement.innerHTML;
+  const currentCategory: string = unitSelectElement.innerText;
 
   // 결과 계산
   let result;
@@ -522,7 +522,7 @@ function unitConvertSearchboxOutsideClick(event: MouseEvent) {
 function unitFilterAction(this: HTMLElement, e: Event) {
   let newUnitCategory: string[] = [];
   let searchWord: string = (e.target as HTMLInputElement)?.value;
-  unitOptions.innerHTML = ""; // 기존 목록 초기화
+  unitOptions.innerText = ""; // 기존 목록 초기화
 
   if (searchWord.length > 0) {
     newUnitCategory = unitConvertCategory.filter((data: string) =>
@@ -535,7 +535,7 @@ function unitFilterAction(this: HTMLElement, e: Event) {
   const listItems: string = newUnitCategory
     .map((data: string) => `<li class="unit-option-item">${data}</li>`)
     .join("");
-  unitOptions.innerHTML = listItems;
+  unitOptions.innerText = listItems;
 }
 
 // unit-filter에서 엔터키 눌렀을 때
@@ -567,7 +567,7 @@ function unitOptionsClick(selectedText: string) {
     "unit-convert-select-unit"
   );
   if (selectUnit) {
-    selectUnit.innerHTML = selectedText;
+    selectUnit.innerText = selectedText;
   }
 
   // 소단위 초기 세팅하기
@@ -582,8 +582,8 @@ function unitOptionsClick(selectedText: string) {
     allDetailCategoryShow(tempRecord);
     selectedUnit = tempRecord;
 
-    if (unitLeftSelect) unitLeftSelect.innerHTML = tempRecord[0];
-    if (unitRightSelect) unitRightSelect.innerHTML = tempRecord[1];
+    if (unitLeftSelect) unitLeftSelect.innerText = tempRecord[0];
+    if (unitRightSelect) unitRightSelect.innerText = tempRecord[1];
   } else {
     // 기준점이 되는 단위를 찾아 왼쪽에 배치, 기준점 바로 아래쪽 항목을 오른쪽에 배치
     // 기준점 찾기
@@ -599,11 +599,11 @@ function unitOptionsClick(selectedText: string) {
 
     // 배치
     if (index + 1 !== keys.length) {
-      if (unitLeftSelect) unitLeftSelect.innerHTML = keys[index];
-      if (unitRightSelect) unitRightSelect.innerHTML = keys[index + 1];
+      if (unitLeftSelect) unitLeftSelect.innerText = keys[index];
+      if (unitRightSelect) unitRightSelect.innerText = keys[index + 1];
     } else {
-      if (unitLeftSelect) unitLeftSelect.innerHTML = keys[index];
-      if (unitRightSelect) unitRightSelect.innerHTML = keys[0];
+      if (unitLeftSelect) unitLeftSelect.innerText = keys[index];
+      if (unitRightSelect) unitRightSelect.innerText = keys[0];
     }
   }
 
@@ -627,7 +627,7 @@ unitOptionsClick("길이");
 
 // 모든 대단위 카테고리 초기화
 function allUnitCategoryShow() {
-  unitOptions.innerHTML = unitConvertCategory
+  unitOptions.innerText = unitConvertCategory
     .map((unit: string) => `<li class="unit-option-item">${unit}</li>`)
     .join("");
 }
@@ -698,7 +698,7 @@ function fomulaSetting(
 
   // 공식 작성하는 곳
 
-  formulaDOM.innerHTML = result;
+  formulaDOM.innerText = result;
 }
 // 변환 케이스 스위치(온도 제외)
 function switchConversion(selectedText: string): conversionRecord {
@@ -758,12 +758,12 @@ function switchConversion(selectedText: string): conversionRecord {
 
 // 모든 소단위 카테고리 초기화
 function allDetailCategoryShow(keys: string[]) {
-  unitDetailOptionsLeft.innerHTML = keys
+  unitDetailOptionsLeft.innerText = keys
     .map(
       (key: string) => `<li class="unit-detail-option-left-item">${key}</li>`
     )
     .join("");
-  unitDetailOptionsRight.innerHTML = keys
+  unitDetailOptionsRight.innerText = keys
     .map(
       (key: string) => `<li class="unit-detail-option-right-item">${key}</li>`
     )
@@ -863,7 +863,7 @@ function unitDetailFilterAction(this: HTMLElement, e: Event) {
           `<li class="unit-detail-option-left-item">${data}</li>`
       )
       .join("");
-    unitDetailOptionsLeft.innerHTML = listItems;
+    unitDetailOptionsLeft.innerText = listItems;
   } else {
     // 오른쪽의 경우
     const listItems: string = newUnitDetailCategory
@@ -872,7 +872,7 @@ function unitDetailFilterAction(this: HTMLElement, e: Event) {
           `<li class="unit-detail-option-right-item">${data}</li>`
       )
       .join("");
-    unitDetailOptionsRight.innerHTML = listItems;
+    unitDetailOptionsRight.innerText = listItems;
   }
 }
 
@@ -954,11 +954,11 @@ function unitDetailOptionsClick(selectedText: string, event: Event) {
   let currentSelect: string = "";
   if (leftRight === "left") {
     currentSelect =
-      document.getElementById("unit-convert-detail-select-left")?.innerHTML ||
+      document.getElementById("unit-convert-detail-select-left")?.innerText ||
       "";
   } else if (leftRight === "right") {
     currentSelect =
-      document.getElementById("unit-convert-detail-select-right")?.innerHTML ||
+      document.getElementById("unit-convert-detail-select-right")?.innerText ||
       "";
   }
 
@@ -968,18 +968,18 @@ function unitDetailOptionsClick(selectedText: string, event: Event) {
   );
   if (selectUnitDetail) {
     // 적용
-    selectUnitDetail.innerHTML = selectedText;
+    selectUnitDetail.innerText = selectedText;
   }
 
   // 좌우가 같으면 교환
   let tempLeft = document.getElementById("unit-convert-detail-select-left");
   let tempRight = document.getElementById("unit-convert-detail-select-right");
 
-  if (tempLeft && tempRight && tempLeft.innerHTML === tempRight.innerHTML) {
+  if (tempLeft && tempRight && tempLeft.innerText === tempRight.innerText) {
     if (leftRight === "left") {
-      tempRight.innerHTML = currentSelect;
+      tempRight.innerText = currentSelect;
     } else if (leftRight === "right") {
-      tempLeft.innerHTML = currentSelect;
+      tempLeft.innerText = currentSelect;
     }
   }
 
@@ -1792,7 +1792,7 @@ async function roadAddressSearchAction() {
   // 50자 넘어가면 거부
   if (jusoInputValue.length > 50) {
     roadnameResultDOM
-      ? (roadnameResultDOM.innerHTML = "입력이 너무 많습니다.")
+      ? (roadnameResultDOM.innerText = "입력이 너무 많습니다.")
       : alert("입력이 너무 많습니다.");
     return;
   }
@@ -1801,7 +1801,7 @@ async function roadAddressSearchAction() {
   /*   const jusoInputPattern: RegExp = /^[가-힣0-9\s-]+$/;
   if (!jusoInputPattern.test(jusoInputValue)) {
     roadnameResultDOM
-      ? (roadnameResultDOM.innerHTML = "한글, 숫자, -만 입력 가능합니다.")
+      ? (roadnameResultDOM.innerText = "한글, 숫자, -만 입력 가능합니다.")
       : alert("한글, 숫자, -만 입력 가능합니다.");
     return;
   } */
@@ -1838,7 +1838,7 @@ async function roadAddressSearchAction() {
   } catch (error) {
     // 요청 실패
     roadnameResultDOM
-      ? (roadnameResultDOM.innerHTML = "API 요청 실패")
+      ? (roadnameResultDOM.innerText = "API 요청 실패")
       : alert("API 요청 실패");
     console.error("API 요청 실패:", error);
     return;
@@ -1862,13 +1862,13 @@ function roadAddressResultAction(responseData: JSON | string) {
 
     // 임시 결과 출력
     if (typeof responseData === "string")
-      roadnameResultDOM ? (roadnameResultDOM.innerHTML = responseData) : "";
+      roadnameResultDOM ? (roadnameResultDOM.innerText = responseData) : "";
 
     // 결과 출력
-    /*     roadnameResultDOM ? (roadnameResultDOM.innerHTML = doro) : "";
-    jibunResultDOM ? (jibunResultDOM.innerHTML = jibun) : "";
-    roadnameengResultDOM ? (roadnameengResultDOM.innerHTML = doroeng) : "";
-    zipcodeResultDOM ? (zipcodeResultDOM.innerHTML = zipcode) : ""; */
+    /*     roadnameResultDOM ? (roadnameResultDOM.innerText = doro) : "";
+    jibunResultDOM ? (jibunResultDOM.innerText = jibun) : "";
+    roadnameengResultDOM ? (roadnameengResultDOM.innerText = doroeng) : "";
+    zipcodeResultDOM ? (zipcodeResultDOM.innerText = zipcode) : ""; */
   } else {
     console.error("결과를 표시할 DOM 요소를 찾을 수 없습니다.");
     return;
