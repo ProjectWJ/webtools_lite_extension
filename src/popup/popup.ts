@@ -1731,18 +1731,6 @@ function hangulAlphabetClearAction() {
   }
 }
 
-// 외부 api 호출 예시
-async function fetchData() {
-  try {
-    const response = await fetch("https://api.sampleapis.com/wines/reds");
-    const data = await response.json();
-    console.log(data);
-  } catch (error) {
-    console.error("API 호출 실패:", error);
-  }
-}
-// fetchData();
-
 /** 도로명주소 변환 */
 const jusoInput: HTMLElement | null = document.getElementById(
   "full-juso-finder-input"
@@ -1768,16 +1756,14 @@ const jusoSearchResultMessage: HTMLElement | null = document.getElementById(
 const jusoSearchResultDiv: HTMLElement | null = document.getElementById(
   "full-juso-finder-search-result-div"
 );
-const jusoSearchResultField: HTMLElement | null = document.getElementById(
-  "full-juso-finder-search-result-field"
-);
+
 const jusoResultTotalCount: HTMLElement | null = document.getElementById(
   "full-juso-finder-result-totalcount"
 );
 
 document
   .getElementById("full-juso-finder-btn")
-  ?.addEventListener("click", roadAddressSearchAction);
+  ?.addEventListener("click", () => roadAddressSearchAction());
 // 엔터 키 입력 시 검색 실행
 document
   .getElementById("full-juso-finder-input")
@@ -1839,7 +1825,7 @@ type AddressApiResponse = {
 };
 
 let roadAddressSearchActionErrorCount: number = 0;
-async function roadAddressSearchAction() {
+async function roadAddressSearchAction(nextPageNum: number = 1) {
   const jusoInputValue: string = (jusoInput as HTMLInputElement).value;
 
   // 입력값 검증
@@ -1849,17 +1835,26 @@ async function roadAddressSearchAction() {
 
   // 50자 넘어가면 거부
   if (jusoInputValue.length > 50) {
-    roadnameResultDOM
-      ? (roadnameResultDOM.innerText = "입력이 너무 많습니다.")
+    jusoSearchResultMessage
+      ? (jusoSearchResultMessage.innerText = "입력이 너무 많습니다.")
       : alert("입력이 너무 많습니다.");
+    return;
+  }
+
+  // 1자 이하면 거부
+  if (jusoInputValue.length < 2) {
+    jusoSearchResultMessage
+      ? (jusoSearchResultMessage.innerText =
+          "검색어는 두 글자 이상이어야 합니다.")
+      : alert("검색어는 두 글자 이상이어야 합니다.");
     return;
   }
 
   // 한글과 숫자, -만 입력 가능
   /*   const jusoInputPattern: RegExp = /^[가-힣0-9\s-]+$/;
   if (!jusoInputPattern.test(jusoInputValue)) {
-    roadnameResultDOM
-      ? (roadnameResultDOM.innerText = "한글, 숫자, -만 입력 가능합니다.")
+    jusoSearchResultMessage
+      ? (jusoSearchResultMessage.innerText = "한글, 숫자, -만 입력 가능합니다.")
       : alert("한글, 숫자, -만 입력 가능합니다.");
     return;
   } */
@@ -1870,7 +1865,7 @@ async function roadAddressSearchAction() {
   // API 호출
   try {
     const response: Response = await fetch(
-      `https://api.projectwj.uk/jusorequest?q=${jusoInputValue}`,
+      `https://api.projectwj.uk/jusorequest?q=${jusoInputValue}&page=${nextPageNum}`,
       {
         method: "GET",
         headers: {
@@ -1886,20 +1881,9 @@ async function roadAddressSearchAction() {
     // response로 온 모든 데이터
     const responseData: AddressApiResponse = await response.json();
     roadAddressSearchActionErrorCount = 0;
-    console.log(responseData);
 
     // 검색 결과 1차 처리 및 리스트에 보여줄 dom 요소
     const searchedFieldDOM = await jusoDataField(responseData);
-
-    // 검색된 정보를 popup.html 화면에 띄우기
-
-    // 너무 자주 요청하면 팝업 화면에 적절한 오류 메시지 출력
-    // 선택 시 띄운 정보를 지우고 결과창에 적용
-
-    // result에서 common에서 errorMessage !== "정상"이면 에러이니 출력하기
-
-    // dom에 적용시키기
-    // roadAddressResultAction(responseData);
   } catch (error) {
     // 요청 실패 시 3번까지 재시도
     roadAddressSearchActionErrorCount++;
@@ -1909,8 +1893,8 @@ async function roadAddressSearchAction() {
       console.warn("재시도중...");
       roadAddressSearchAction();
     } else {
-      roadnameResultDOM
-        ? (roadnameResultDOM.innerText = "API 요청 실패")
+      jusoSearchResultMessage
+        ? (jusoSearchResultMessage.innerText = "API 요청 실패")
         : alert("API 요청 실패");
       console.error("API 요청 실패:", error);
       return;
@@ -1942,18 +1926,30 @@ function jusoDataField(responseData: AddressApiResponse) {
         }
       }
 
+      // 매번 재생성할지 말지 확인해야 하므로 여기서 선언
+      const jusoSearchResultField: HTMLElement | null = document.getElementById(
+        "full-juso-finder-search-result-field"
+      );
+
       // 결과 dom 초기화 및 생성
       if (jusoSearchResultField) {
         // dom 초기화 및 틀 재생성
-        jusoSearchResultField.remove();
-        const newField = document.createElement("ol");
-        newField.id = "full-juso-finder-search-result-field";
-        jusoSearchResultDiv
-          ? jusoSearchResultDiv.appendChild(newField)
-          : console.error("jusoSearchResultDiv 요소를 찾을 수 없습니다.");
+        if (currentPage === "1") {
+          jusoSearchResultField.remove();
+          const newField = document.createElement("ol");
+          newField.id = `full-juso-finder-search-result-field`;
+          jusoSearchResultDiv
+            ? jusoSearchResultDiv.appendChild(newField)
+            : console.error("jusoSearchResultDiv 요소를 찾을 수 없습니다.");
+        }
+
+        let index = (parseInt(currentPage) - 1) * 15; // 더보기 클릭 시에 index 번호 충돌 방지
+
+        // 더보기 버튼 있으면 제거
+        document.getElementById("full-juso-finder-next-btn")?.remove();
 
         // 상세 데이터 요소 구성 및 배치
-        juso.forEach((jusoElement: Juso, index: number) => {
+        juso.forEach((jusoElement: Juso) => {
           const li: HTMLLIElement = document.createElement("li");
           const roadAddrSpan: HTMLSpanElement = document.createElement("span");
           const jibunAddrSpan: HTMLSpanElement = document.createElement("span");
@@ -1964,62 +1960,141 @@ function jusoDataField(responseData: AddressApiResponse) {
           jibunAddrSpan.id = `full-juso-finder-result-jibun-${index}`;
           zipcodeSpan.id = `full-juso-finder-result-zipcode-${index}`;
 
-          roadAddrSpan.innerText = jusoElement.roadAddrPart1 + " ";
-          jibunAddrSpan.innerText = jusoElement.jibunAddr + " ";
+          roadAddrSpan.innerText = jusoElement.roadAddrPart1 + "\n"; // 스타일 적용 전 임시로 공백 추가
+          jibunAddrSpan.innerText = jusoElement.jibunAddr + "\n"; // 스타일 적용 전 임시로 공백 추가
           zipcodeSpan.innerText = jusoElement.zipNo;
 
-          newField.appendChild(li);
+          document
+            .getElementById("full-juso-finder-search-result-field")
+            ?.appendChild(li);
           li.appendChild(roadAddrSpan);
           li.appendChild(jibunAddrSpan);
           li.appendChild(zipcodeSpan);
 
-          // 결과가 남아있으면 더보기 버튼
+          // 도로명, 지번주소 클릭하면 발동하도록 수정하기
+          const liElement: HTMLElement | null = document.getElementById(li.id);
+          liElement
+            ? liElement.addEventListener("mousedown", (event) => {
+                jusoElementClick(event, responseData);
+              })
+            : "";
+
+          // 인덱스 ++
+          index++;
         });
+
+        // 결과가 남았으면 더보기 버튼
+        if (index < parseInt(totalCount)) {
+          const nextPage = parseInt(currentPage) + 1; // 다음 페이지 번호
+          const nextButton = document.createElement("button"); // 더보기 검색버튼
+          nextButton.id = `full-juso-finder-next-btn`; // id
+          nextButton.value = nextPage.toString(); // 더보기 검색 value
+          nextButton.type = "button"; // 타입
+          nextButton.innerText = "더보기";
+
+          jusoSearchResultDiv?.appendChild(nextButton);
+          const nextButtonElement = document.getElementById(
+            "full-juso-finder-next-btn"
+          );
+          if (nextButtonElement)
+            nextButtonElement.addEventListener("click", () => {
+              roadAddressSearchAction(nextPage);
+            });
+        }
       }
+    } else {
+      errorCodeTask(common.errorCode);
     }
-    // -999 시스템 에러 도로명주소 도움센터로 문의하시기 바랍니다.
-    else if (common.errorCode === "-999") {
-    }
-    // E0001	승인되지 않은 KEY 입니다.	정확한 승인키를 입력하세요.(팝업API 승인키 사용불가)
-    // E0005	검색어가 입력되지 않았습니다.	검색어를 입력해주세요.
-    // E0006	주소를 상세히 입력해 주시기 바랍니다.	시도명으로는 검색이 불가합니다.
-    // E0008	검색어는 두글자 이상 입력되어야 합니다.	한 글자만으로는 검색이 불가합니다.
-    // E0009	검색어는 문자와 숫자 같이 입력되어야 합니다.	숫자만으로는 검색이 불가합니다.
-    // E0010	검색어가 너무 깁니다. (한글40자, 영문,숫자 80자 이하)	80글자를 초과한 검색어는 검색이 불가합니다.
-    // E0011	검색어에 너무 긴 숫자가 포함되어 있습니다. (숫자10자 이하)	10자리를 초과하는 숫자가 포함된 검색어는 검색이 불가합니다.
-    // E0012	특수문자+숫자만으로는 검색이 불가능 합니다.	특수문자와 숫자만으로 이루어진 검색어는 검색이 불가합니다.
-    // E0013	SQL 예약어 또는 특수문자( %,=,>,<,[,] )는 검색이 불가능 합니다.	SQL예약어 또는 특수문자를 제거 후 검색합니다.
-    // E0014	개발승인키 기간이 만료되어 서비스를 이용하실 수 없습니다.	개발승인키를 다시 발급받아 API서비스를 호출합니다.
-    // E0015	검색 범위를 초과하였습니다.	검색결과가 9천건이 초과하는 검색은 불가합니다.
-    return resolve;
   });
 }
 
-// 결과 dom에 적용
-function roadAddressResultAction(responseData: JSON | string) {
-  if (
-    roadnameResultDOM ||
-    jibunResultDOM ||
-    roadnameengResultDOM ||
-    zipcodeResultDOM
-  ) {
-    // 도로명주소, 지번주소, 영문주소, 우편번호 추출
-    let doro: string = ""; // 도로명
-    let jibun: string = ""; // 지번
-    let doroeng: string = ""; // 영문
-    let zipcode: string = ""; // 우편번호
+function jusoElementClick(event: Event, responseData: AddressApiResponse) {
+  const target: EventTarget | null = event.target;
+  if (target) {
+    // 클릭한 dom
+    const elementId: string = (target as HTMLElement).id;
+    const index: string = elementId.split("-")[5];
 
-    // 임시 결과 출력
-    if (typeof responseData === "string")
-      roadnameResultDOM ? (roadnameResultDOM.innerText = responseData) : "";
+    // 클릭한 dom의 id의 value 모두를 찾기
+    let clkedRoad: string | undefined = document.getElementById(
+      "full-juso-finder-result-road-" + index
+    )?.innerText;
+    let clkedJibun: string | undefined = document.getElementById(
+      "full-juso-finder-result-jibun-" + index
+    )?.innerText;
+    let clkedZipcode: string | undefined = document.getElementById(
+      "full-juso-finder-result-zipcode-" + index
+    )?.innerText;
 
-    // 결과 출력
-    /*     roadnameResultDOM ? (roadnameResultDOM.innerText = doro) : "";
-    jibunResultDOM ? (jibunResultDOM.innerText = jibun) : "";
-    roadnameengResultDOM ? (roadnameengResultDOM.innerText = doroeng) : "";
-    zipcodeResultDOM ? (zipcodeResultDOM.innerText = zipcode) : ""; */
+    // 맨 마지막에 줄바꿈 문자 U+000A가 있으므로 trim처리
+    clkedRoad = clkedRoad?.trim();
+    clkedJibun = clkedJibun?.trim();
+    clkedZipcode = clkedZipcode?.trim();
+
+    // 세 value와 정확히 일치하는 요소를 results에서 찾기
+    const jusoArray: Juso[] = responseData.result.results.juso;
+
+    for (let i = 0; i < jusoArray.length; i++) {
+      // 그 요소의 인덱스를 찾아 결과창 dom에 적용
+      if (
+        jusoArray[i].roadAddrPart1 === clkedRoad &&
+        jusoArray[i].jibunAddr === clkedJibun &&
+        jusoArray[i].zipNo === clkedZipcode
+      ) {
+        if (roadnameResultDOM)
+          roadnameResultDOM.innerText = jusoArray[i].roadAddrPart1;
+        if (roadnameengResultDOM)
+          roadnameengResultDOM.innerText = jusoArray[i].engAddr;
+        if (jibunResultDOM) jibunResultDOM.innerText = jusoArray[i].jibunAddr;
+        if (zipcodeResultDOM) zipcodeResultDOM.innerText = jusoArray[i].zipNo;
+        break;
+      }
+    }
+  }
+}
+
+// 에러코드 처리
+function errorCodeTask(errorCode: string) {
+  if (jusoSearchResultMessage) {
+    if (errorCode === "-999") {
+      jusoSearchResultMessage.innerText =
+        "-999	시스템에러	도로명주소 도움센터로 문의하시기 바랍니다.";
+    } else if (errorCode === "E0001") {
+      jusoSearchResultMessage.innerText =
+        "E0001	승인되지 않은 KEY 입니다.	정확한 승인키를 입력하세요.(팝업API 승인키 사용불가)";
+    } else if (errorCode === "E0005") {
+      jusoSearchResultMessage.innerText =
+        "E0005	검색어가 입력되지 않았습니다.	검색어를 입력해주세요.";
+    } else if (errorCode === "E0006") {
+      jusoSearchResultMessage.innerText =
+        "E0006	주소를 상세히 입력해 주시기 바랍니다.	시도명으로는 검색이 불가합니다.";
+    } else if (errorCode === "E0008") {
+      jusoSearchResultMessage.innerText =
+        "E0008	검색어는 두글자 이상 입력되어야 합니다.	한 글자만으로는 검색이 불가합니다.";
+    } else if (errorCode === "E0009") {
+      jusoSearchResultMessage.innerText =
+        "E0009  검색어는 문자와 숫자 같이 입력되어야 합니다.	숫자만으로는 검색이 불가합니다.";
+    } else if (errorCode === "E0010") {
+      jusoSearchResultMessage.innerText =
+        "E0010	검색어가 너무 깁니다. (한글40자, 영문,숫자 80자 이하)	80글자를 초과한 검색어는 검색이 불가합니다.";
+    } else if (errorCode === "E0011") {
+      jusoSearchResultMessage.innerText =
+        "E0011	검색어에 너무 긴 숫자가 포함되어 있습니다. (숫자10자 이하)	10자리를 초과하는 숫자가 포함된 검색어는 검색이 불가합니다.";
+    } else if (errorCode === "E0012") {
+      jusoSearchResultMessage.innerText =
+        "E0012	특수문자+숫자만으로는 검색이 불가능 합니다.	특수문자와 숫자만으로 이루어진 검색어는 검색이 불가합니다.";
+    } else if (errorCode === "E0013") {
+      jusoSearchResultMessage.innerText =
+        "E0013	SQL 예약어 또는 특수문자( %,=,>,<,[,] )는 검색이 불가능 합니다.	SQL예약어 또는 특수문자를 제거 후 검색합니다.";
+    } else if (errorCode === "E0014") {
+      jusoSearchResultMessage.innerText =
+        "E0014	개발승인키 기간이 만료되어 서비스를 이용하실 수 없습니다.	개발승인키를 다시 발급받아 API서비스를 호출합니다.";
+    } else if (errorCode === "E0015") {
+      jusoSearchResultMessage.innerText =
+        "검색 범위를 초과하였습니다.	검색결과가 9천건이 초과하는 검색은 불가합니다.";
+    }
   } else {
-    console.error("결과를 표시할 DOM 요소를 찾을 수 없습니다.");
-    return;
+    console.error("jusoSearchResultMessage가 null입니다.");
+    alert("jusoSearchResultMessage가 null입니다.");
   }
 }

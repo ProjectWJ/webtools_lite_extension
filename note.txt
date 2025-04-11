@@ -69,9 +69,16 @@ content_scripts는 아직 해당 사항이 없다.
 해결법:
 번들링을 해서 import를 없애거나, 그냥 import할 구문을 그 위치에 작성해야 한다.
 
+문제:
+html 태그에서 얻은 string과 juso[]에서 얻은 string이 같은 문자열인데 서로 불일치하는 현상
+원인:
+html 태그에서 얻은 string 마지막에 줄바꿈 문자(\n, U+000A)가 포함되어 있었다.
+해결법:
+trim()을 사용하여 해결
+
 todo
-- 통합 주소 검색 구현하기
-- popup.ts의 innerHTML 수정 방안 찾아보기
+- 통합 주소 검색에서 제공하는 정보량 검토하기
+- 환율 검색 구현을 할지 다른 걸로 바꿀지 고민하기
 
 suggest
 - 사용법 설명하는 페이지 만들기. 굳이 페이지 아니더라도 간단하게 안내하는 것도 괜찮음
@@ -156,3 +163,29 @@ function hangulAlphabetConvertAction(e: Event) {
     }, 300);
   }
 }
+
+
+
+
+문제
+    function printCharCodes(str: string) {
+      return [...str]
+        .map((char, i) => {
+          return `${i}: '${char}' (U+${char
+            .charCodeAt(0)
+            .toString(16)
+            .toUpperCase()
+            .padStart(4, "0")})`;
+        })
+        .join("\n");
+    }
+
+    const str1 = clkedRoad as string; // 길이 21
+    const str2 = jusoArray[0].roadAddrPart1; // 길이 20
+
+    console.log(
+      "문자열 1 (길이: " + str1.length + ")\n" + printCharCodes(str1)
+    );
+    console.log(
+      "\n문자열 2 (길이: " + str2.length + ")\n" + printCharCodes(str2)
+    );
