@@ -95,11 +95,11 @@ function showModal(selectedText: string, textWithoutSpaces: string): void {
     }
 
     // 모달 내용 추가
-    modal.innerHTML =
+    modal.innerText =
       `공백 포함 ${selectedText.length} 자 | ${byteCounter(
         selectedText,
         1
-      )} Byte<br>` +
+      )} Byte\n` +
       `공백 미포함 ${textWithoutSpaces.length} 자 | ${byteCounter(
         textWithoutSpaces,
         0

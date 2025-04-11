@@ -71,6 +71,7 @@ content_scripts는 아직 해당 사항이 없다.
 
 todo
 - 통합 주소 검색 구현하기
+- popup.ts의 innerHTML 수정 방안 찾아보기
 
 suggest
 - 사용법 설명하는 페이지 만들기. 굳이 페이지 아니더라도 간단하게 안내하는 것도 괜찮음

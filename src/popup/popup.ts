@@ -1762,6 +1762,19 @@ const roadnameengResultDOM: HTMLElement | null = document.getElementById(
 const zipcodeResultDOM: HTMLElement | null = document.getElementById(
   "full-juso-finder-result-zipcode"
 );
+const jusoSearchResultMessage: HTMLElement | null = document.getElementById(
+  "full-juso-finder-result-message"
+);
+const jusoSearchResultDiv: HTMLElement | null = document.getElementById(
+  "full-juso-finder-search-result-div"
+);
+const jusoSearchResultField: HTMLElement | null = document.getElementById(
+  "full-juso-finder-search-result-field"
+);
+const jusoResultTotalCount: HTMLElement | null = document.getElementById(
+  "full-juso-finder-result-totalcount"
+);
+
 document
   .getElementById("full-juso-finder-btn")
   ?.addEventListener("click", roadAddressSearchAction);
@@ -1781,6 +1794,51 @@ document
     }
   });
 
+type Common = {
+  errorMessage: string; // 에러 메시지
+  countPerPage: string; // 페이지당 출력할 결과 row 수
+  totalCount: string; // 총 검색 데이터수
+  errorCode: string; // 에러코드
+  currentPage: string; // 페이지 번호
+};
+
+type Juso = {
+  roadAddr: string; // 도로명주소 전체
+  jibunAddr: string; // 지번주소
+  zipNo: string; // 우편번호
+  bdNm: string; // 건물명
+  siNm: string; // 시도명
+  sggNm: string; // 시군구명
+  emdNm: string; // 읍면동명
+  rn: string; // 도로명
+  udrtYn: string; // 지하여부(0: 지상, 1: 지하)
+  buldMnnm: string; // 건물본번
+  buldSlno: string; // 건물부번
+  detBdNmList: string; // 상세건물명
+  engAddr: string; // 영문 도로명주소
+  roadAddrPart1: string; // 도로명주소 1파트(도로명주소)
+  roadAddrPart2: string; // 도로명주소 2파트(참고주소)
+  admCd: string; // 행정구역코드
+  lnbrMnnm: string; // 지역본번(번지)
+  lnbrSlno: string; // 지번부번(호)
+  bdKdcd: string; // 공동주택여부(1: 공동주택, 0: 비공동주택)
+  rnMgtSn: string; // 도로명코드
+  mtYn: string; // 산여부(0: 대지, 1: 산)
+  bdMgtSn: string; // 건물관리번호
+  liNm: string; // 법정리명
+  emdNo: string; // 읍면동일련번호
+};
+
+type AddressApiResponse = {
+  result: {
+    results: {
+      common: Common;
+      juso: Juso[];
+    };
+  };
+};
+
+let roadAddressSearchActionErrorCount: number = 0;
 async function roadAddressSearchAction() {
   const jusoInputValue: string = (jusoInput as HTMLInputElement).value;
 
@@ -1825,25 +1883,116 @@ async function roadAddressSearchAction() {
       }
     );
 
-    // 결과 데이터
-    const responseData = await response.json();
+    // response로 온 모든 데이터
+    const responseData: AddressApiResponse = await response.json();
+    roadAddressSearchActionErrorCount = 0;
     console.log(responseData);
 
+    // 검색 결과 1차 처리 및 리스트에 보여줄 dom 요소
+    const searchedFieldDOM = await jusoDataField(responseData);
+
     // 검색된 정보를 popup.html 화면에 띄우기
+
     // 너무 자주 요청하면 팝업 화면에 적절한 오류 메시지 출력
     // 선택 시 띄운 정보를 지우고 결과창에 적용
+
+    // result에서 common에서 errorMessage !== "정상"이면 에러이니 출력하기
 
     // dom에 적용시키기
     // roadAddressResultAction(responseData);
   } catch (error) {
-    // 요청 실패
-    roadnameResultDOM
-      ? (roadnameResultDOM.innerText = "API 요청 실패")
-      : alert("API 요청 실패");
-    console.error("API 요청 실패:", error);
-    return;
+    // 요청 실패 시 3번까지 재시도
+    roadAddressSearchActionErrorCount++;
+
+    if (roadAddressSearchActionErrorCount < 3) {
+      console.warn(error);
+      console.warn("재시도중...");
+      roadAddressSearchAction();
+    } else {
+      roadnameResultDOM
+        ? (roadnameResultDOM.innerText = "API 요청 실패")
+        : alert("API 요청 실패");
+      console.error("API 요청 실패:", error);
+      return;
+    }
   }
   // 검색하면 새 페이지를 열어 검색 결과를 보여주고, 요소를 클릭하면 해당 정보를 webtool view에 보여주기?
+}
+
+// 받은 json에서 필요한 데이터 추출
+function jusoDataField(responseData: AddressApiResponse) {
+  return new Promise((resolve) => {
+    const { common, juso }: { common: Common; juso: Juso[] } =
+      responseData.result.results;
+
+    // 정상
+    if (common.errorCode === "0") {
+      const totalCount: string = common.totalCount; // 총 검색 데이터수
+      const currentPage: string = common.currentPage; // 페이지 번호
+      const countPerPage: string = common.countPerPage; // 페이지당 출력할 결과 row 수
+
+      if (jusoResultTotalCount) {
+        jusoResultTotalCount.innerText = `검색결과 총 ${totalCount}건`;
+
+        // 검색 결과가 없는 경우
+        if (totalCount === "0") {
+          jusoSearchResultMessage
+            ? (jusoSearchResultMessage.innerText = "검색 결과가 없습니다.")
+            : alert("검색 결과가 없습니다.");
+        }
+      }
+
+      // 결과 dom 초기화 및 생성
+      if (jusoSearchResultField) {
+        // dom 초기화 및 틀 재생성
+        jusoSearchResultField.remove();
+        const newField = document.createElement("ol");
+        newField.id = "full-juso-finder-search-result-field";
+        jusoSearchResultDiv
+          ? jusoSearchResultDiv.appendChild(newField)
+          : console.error("jusoSearchResultDiv 요소를 찾을 수 없습니다.");
+
+        // 상세 데이터 요소 구성 및 배치
+        juso.forEach((jusoElement: Juso, index: number) => {
+          const li: HTMLLIElement = document.createElement("li");
+          const roadAddrSpan: HTMLSpanElement = document.createElement("span");
+          const jibunAddrSpan: HTMLSpanElement = document.createElement("span");
+          const zipcodeSpan: HTMLSpanElement = document.createElement("span");
+
+          li.id = `full-juso-finder-result-li-${index}`;
+          roadAddrSpan.id = `full-juso-finder-result-road-${index}`;
+          jibunAddrSpan.id = `full-juso-finder-result-jibun-${index}`;
+          zipcodeSpan.id = `full-juso-finder-result-zipcode-${index}`;
+
+          roadAddrSpan.innerText = jusoElement.roadAddrPart1 + " ";
+          jibunAddrSpan.innerText = jusoElement.jibunAddr + " ";
+          zipcodeSpan.innerText = jusoElement.zipNo;
+
+          newField.appendChild(li);
+          li.appendChild(roadAddrSpan);
+          li.appendChild(jibunAddrSpan);
+          li.appendChild(zipcodeSpan);
+
+          // 결과가 남아있으면 더보기 버튼
+        });
+      }
+    }
+    // -999 시스템 에러 도로명주소 도움센터로 문의하시기 바랍니다.
+    else if (common.errorCode === "-999") {
+    }
+    // E0001	승인되지 않은 KEY 입니다.	정확한 승인키를 입력하세요.(팝업API 승인키 사용불가)
+    // E0005	검색어가 입력되지 않았습니다.	검색어를 입력해주세요.
+    // E0006	주소를 상세히 입력해 주시기 바랍니다.	시도명으로는 검색이 불가합니다.
+    // E0008	검색어는 두글자 이상 입력되어야 합니다.	한 글자만으로는 검색이 불가합니다.
+    // E0009	검색어는 문자와 숫자 같이 입력되어야 합니다.	숫자만으로는 검색이 불가합니다.
+    // E0010	검색어가 너무 깁니다. (한글40자, 영문,숫자 80자 이하)	80글자를 초과한 검색어는 검색이 불가합니다.
+    // E0011	검색어에 너무 긴 숫자가 포함되어 있습니다. (숫자10자 이하)	10자리를 초과하는 숫자가 포함된 검색어는 검색이 불가합니다.
+    // E0012	특수문자+숫자만으로는 검색이 불가능 합니다.	특수문자와 숫자만으로 이루어진 검색어는 검색이 불가합니다.
+    // E0013	SQL 예약어 또는 특수문자( %,=,>,<,[,] )는 검색이 불가능 합니다.	SQL예약어 또는 특수문자를 제거 후 검색합니다.
+    // E0014	개발승인키 기간이 만료되어 서비스를 이용하실 수 없습니다.	개발승인키를 다시 발급받아 API서비스를 호출합니다.
+    // E0015	검색 범위를 초과하였습니다.	검색결과가 9천건이 초과하는 검색은 불가합니다.
+    return resolve;
+  });
 }
 
 // 결과 dom에 적용
