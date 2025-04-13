@@ -122,3 +122,64 @@ function showModal(selectedText: string, textWithoutSpaces: string): void {
     document.addEventListener("mousedown", handleOutsideClick);
   }
 }
+
+/** 색 추출하기 */
+
+// 색 추출 우클릭 메뉴
+chrome.runtime.onInstalled.addListener(() => {
+  chrome.contextMenus.create({
+    id: "pick-color",
+    title: "색 추출하기",
+    contexts: ["all"],
+  });
+});
+
+// 색 추출 이벤트 감지
+chrome.contextMenus.onClicked.addListener((info, tab) => {
+  if (info.menuItemId === "pick-color" && tab?.id) {
+    chrome.scripting.executeScript({
+      target: { tabId: tab.id },
+      func: colorExtractClick,
+    });
+  }
+});
+
+// 색 추출 실행
+function colorExtractClick() {
+  // 현재 탭 캡처
+  chrome.tabs.captureVisibleTab(
+    chrome.windows.WINDOW_ID_CURRENT, // chrome.windows.WINDOW_ID_CURRENT는 null
+    { format: "png" },
+    (dataURL) => {
+      // 이미지 그리기
+      const img = new Image();
+      img.src = dataURL;
+      img.onload = () => {
+        const canvas = new OffscreenCanvas(img.width, img.height);
+        const ctx = canvas.getContext("2d");
+        ctx!.drawImage(img, 0, 0);
+
+        // 이미지를 클릭한 부분을 색상 추출
+
+        // 현재 탭에 모달 삽입 요청
+      };
+    }
+  );
+  /*       // 토스트 표시
+      const toast = document.createElement("div");
+      // toast.textContent = `배경: ${bgColor} / 글자: ${textColor}`;
+      Object.assign(toast.style, {
+        position: "fixed",
+        bottom: "20px",
+        left: "20px",
+        background: "#333",
+        color: "#fff",
+        padding: "10px",
+        borderRadius: "8px",
+        zIndex: "999999",
+        fontSize: "14px",
+      });
+      document.body.appendChild(toast);
+
+      setTimeout(() => toast.remove(), 3000); */
+}
