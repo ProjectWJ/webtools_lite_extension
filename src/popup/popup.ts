@@ -23,11 +23,9 @@ document
 document.getElementById("full-juso-finder")?.addEventListener("click", () => {
   panelToggle("full-juso-finder-panel");
 });
-document
-  .getElementById("exchange-rate-calculate")
-  ?.addEventListener("click", () => {
-    panelToggle("exchange-rate-calculate-panel");
-  });
+document.getElementById("color-extractor")?.addEventListener("click", () => {
+  panelToggle("color-extractor-panel");
+});
 document.getElementById("date-calculate")?.addEventListener("click", () => {
   panelToggle("date-calculate-panel");
 });
@@ -1439,6 +1437,15 @@ function chojungjongSlice(input: string): string[][] | undefined {
         jung = "";
         jong = "";
         inputState = "start"; // 상태 초기화
+      }
+
+      // 종성이 될 수 없는 쌍자음을 입력한 경우
+      else if (cho !== "" && jung !== "" && "ㅃㅉㄸ".includes(input[i])) {
+        result.push([cho, jung, ""]);
+        cho = input[i];
+        jung = "";
+        jong = "";
+        inputState = "cho";
       }
 
       // 유효한 입력이 아니라고 판단될 경우
