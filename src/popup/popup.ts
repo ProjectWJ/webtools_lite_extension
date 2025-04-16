@@ -1346,14 +1346,24 @@ function chojungjongSlice(input: string): string[][] | undefined {
 
         // 그 외
         else {
-          console.error("start 상태에서 조건에 맞지 않는 중성 입력입니다.");
+          result.push([input[i], "", ""]);
+          cho = "";
+          jung = "";
+          jong = "";
+          console.warn("start 상태에서 조건에 맞지 않는 중성 입력입니다.");
+          inputState = "start";
+          // return;
         }
       }
 
       // 초성, 중성도 아닌 경우
       else {
-        console.error("start 상태에서 유효한 입력이 아닙니다.");
-        return;
+        result.push([input[i], "", ""]);
+        cho = "";
+        jung = "";
+        jong = "";
+        console.warn("start 상태에서 유효한 입력이 아닙니다.");
+        // return;
       }
     }
 
@@ -1388,8 +1398,14 @@ function chojungjongSlice(input: string): string[][] | undefined {
 
       // 중성, 초성, 초성(조합) 모두 아닌 경우
       else {
-        console.error("cho 상태에서 유효한 입력이 아닙니다.");
-        return;
+        result.push([cho, "", ""]);
+        result.push([input[i], "", ""]);
+        cho = "";
+        jung = "";
+        jong = "";
+        console.warn("cho 상태에서 유효한 입력이 아닙니다.");
+        inputState = "start";
+        // return;
       }
     }
 
@@ -1450,8 +1466,14 @@ function chojungjongSlice(input: string): string[][] | undefined {
 
       // 유효한 입력이 아니라고 판단될 경우
       else {
-        console.error("jung 상태에서 유효한 입력이 아닙니다.");
-        return;
+        result.push([cho, jung, ""]);
+        result.push([input[i], "", ""]);
+        cho = "";
+        jung = "";
+        jong = "";
+        console.warn("jung 상태에서 유효한 입력이 아닙니다.");
+        inputState = "start";
+        // return;
       }
     }
 
@@ -1531,8 +1553,14 @@ function chojungjongSlice(input: string): string[][] | undefined {
 
       // 유효한 입력이 아니라고 판단될 경우
       else {
-        console.error("jong 상태에서 유효한 입력이 아닙니다.");
-        return;
+        result.push([cho, jung, jong]);
+        result.push([input[i], "", ""]);
+        cho = "";
+        jung = "";
+        jong = "";
+        console.warn("jong 상태에서 유효한 입력이 아닙니다.");
+        inputState = "start";
+        // return;
       }
     }
 
