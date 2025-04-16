@@ -123,8 +123,7 @@ function showModal(selectedText: string, textWithoutSpaces: string): void {
   }
 }
 
-/** 색 추출하기 */
-
+/** 웹 페이지에서 색 추출하기 */
 // 색 추출 우클릭 메뉴
 chrome.runtime.onInstalled.addListener(() => {
   chrome.contextMenus.create({
@@ -134,38 +133,168 @@ chrome.runtime.onInstalled.addListener(() => {
   });
 });
 
-// 색 추출 이벤트 감지
+// 색 추출 이벤트 감지 및 실행
 chrome.contextMenus.onClicked.addListener((info, tab) => {
   if (info.menuItemId === "pick-color" && tab?.id) {
-    chrome.scripting.executeScript({
-      target: { tabId: tab.id },
-      func: colorExtractClick,
+    chrome.tabs.captureVisibleTab({ format: "png" }, (dataURL) => {
+      if (!dataURL) return;
+
+      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        const tabId = tabs[0].id!;
+        chrome.scripting.executeScript({
+          target: { tabId },
+          func: injectImageAndColorPicker,
+          args: [dataURL],
+        });
+      });
     });
   }
 });
 
-// 색 추출 실행
-function colorExtractClick() {
-  // 현재 탭 캡처
-  chrome.tabs.captureVisibleTab(
-    chrome.windows.WINDOW_ID_CURRENT, // chrome.windows.WINDOW_ID_CURRENT는 null
-    { format: "png" },
-    (dataURL) => {
-      // 이미지 그리기
-      const img = new Image();
-      img.src = dataURL;
-      img.onload = () => {
-        const canvas = new OffscreenCanvas(img.width, img.height);
-        const ctx = canvas.getContext("2d");
-        ctx!.drawImage(img, 0, 0);
-
-        // 이미지를 클릭한 부분을 색상 추출
-
-        // 현재 탭에 모달 삽입 요청
-      };
-    }
+// 색 추출 모드
+function injectImageAndColorPicker(dataURL: string) {
+  const exiting: HTMLElement | null = document.getElementById(
+    "color-picker-overlay"
   );
-  /*       // 토스트 표시
+  if (exiting) exiting.remove();
+
+  // 스크롤바를 위한 wrapper 처리
+  const wrapper: HTMLDivElement = document.createElement("div");
+  wrapper.style.cssText = `
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow: auto;
+  border: 2px solid rgba(0, 0, 0, 0.2);
+  background: white;
+`;
+
+  // 이미지, 캔버스 생성
+  const overlay: HTMLDivElement = document.createElement("div");
+  overlay.id = "color-picker-overlay";
+  overlay.style.cssText = `
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.3);
+  z-index: 999999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+  const canvas: HTMLCanvasElement = document.createElement("canvas");
+  const ctx: CanvasRenderingContext2D | null = canvas.getContext("2d");
+  const img: HTMLImageElement = new Image();
+
+  img.src = dataURL;
+  canvas.style.cursor = "crosshair"; // 커서 스타일 조정
+
+  if (!ctx) {
+    console.error("ctx가 null입니다.");
+    return;
+  }
+
+  img.onload = () => {
+    canvas.width = img.width;
+    canvas.height = img.height;
+
+    // css 스타일 상에서 실제 보이는 크기도 동일하게
+    canvas.style.width = `${img.width}px`;
+    canvas.style.height = `${img.height}px`;
+
+    ctx.drawImage(img, 0, 0);
+  };
+
+  // 모드 활성화
+  wrapper.appendChild(canvas);
+  overlay.appendChild(wrapper);
+  document.body.appendChild(overlay);
+
+  // esc 누르면 오버레이 닫기
+  const escHandler = (e: KeyboardEvent) => {
+    if (e.key === "Escape") {
+      overlay.remove();
+      document.removeEventListener("keydown", escHandler);
+    }
+  };
+
+  document.addEventListener("keydown", escHandler);
+
+  // 색 추출 클릭 이벤트
+  canvas.addEventListener("click", (e: MouseEvent) => {
+    const rect: DOMRect = canvas.getBoundingClientRect();
+    const x: number = Math.floor(e.clientX - rect.left);
+    const y: number = Math.floor(e.clientY - rect.top);
+    const pixel: Uint8ClampedArray = ctx.getImageData(x, y, 1, 1).data;
+    const hex: string = `#${[pixel[0], pixel[1], pixel[2]]
+      .map((c) => c.toString(16).padStart(2, "0"))
+      .join("")}`;
+
+    // 모달 생성
+    const modal: HTMLDivElement = document.createElement("div");
+    modal.id = "color-picker-modal";
+    modal.style.cssText = `
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: white;
+      padding: 12px 16px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      z-index: 1000000;
+      font-family: sans-serif;
+    `;
+
+    // 라벨
+    const label: HTMLSpanElement = document.createElement("span");
+    label.innerText = "추출된 색상:";
+
+    // 색상값
+    const colorValue: HTMLElement = document.createElement("strong");
+    colorValue.innerText = ` ${hex}`;
+    colorValue.style.color = hex;
+    colorValue.style.marginLeft = "6px";
+
+    // 복사 버튼
+    const copyButton: HTMLButtonElement = document.createElement("button");
+    copyButton.id = "color-copy-btn";
+    copyButton.innerText = "복사";
+    copyButton.style.marginLeft = "12px";
+
+    // 닫기 버튼
+    const closeButton: HTMLButtonElement = document.createElement("button");
+    closeButton.innerText = "✕";
+    closeButton.style.cssText = `
+        background: transparent;
+        border: none;
+        font-size: 16px;
+        cursor: pointer;
+        margin-left: auto;
+        padding: 0;
+        color: #666;
+      `;
+    closeButton.addEventListener("click", () => {
+      modal.remove();
+    });
+
+    modal.appendChild(label);
+    modal.appendChild(colorValue);
+    modal.appendChild(copyButton);
+    modal.appendChild(closeButton);
+    document.body.appendChild(modal);
+
+    // 복사 이벤트
+    copyButton.addEventListener("click", () => {
+      navigator.clipboard.writeText(hex);
+      copyButton.innerText = "복사됨!";
+    });
+
+    // 캔버스 제거
+    overlay.remove();
+    document.removeEventListener("keydown", escHandler); // 이 둘은 세트로 따라다녀야 함
+  });
+}
+
+/*       // 토스트 표시
       const toast = document.createElement("div");
       // toast.textContent = `배경: ${bgColor} / 글자: ${textColor}`;
       Object.assign(toast.style, {
@@ -182,4 +311,3 @@ function colorExtractClick() {
       document.body.appendChild(toast);
 
       setTimeout(() => toast.remove(), 3000); */
-}
