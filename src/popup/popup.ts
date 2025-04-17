@@ -2143,8 +2143,8 @@ function errorCodeTask(errorCode: string) {
 const colorPickerImage: HTMLElement | null = document.getElementById(
   "color-picker-choose-image"
 );
-const colorPickerPreview: HTMLElement | null = document.getElementById(
-  "color-picker-preview"
+const colorPickerPreviewDiv: HTMLElement | null = document.getElementById(
+  "color-picker-preview-div"
 );
 // 이미지가 첨부되면 실행
 colorPickerImage?.addEventListener("change", (e) => {
@@ -2160,9 +2160,9 @@ if (colorPickerPanel) {
   const obsesrver: MutationObserver = new MutationObserver(() => {
     // panel이 blind면 같이 blind하기
     if (colorPickerPanel.classList.contains("blind")) {
-      colorPickerPreview?.classList.add("blind");
+      colorPickerPreviewDiv?.classList.add("blind");
     } else {
-      colorPickerPreview?.classList.remove("blind");
+      colorPickerPreviewDiv?.classList.remove("blind");
     }
   });
 
@@ -2174,66 +2174,74 @@ if (colorPickerPanel) {
 
 // 사진을 popup.html에서 보여주기
 function colorPickerImageShow(e: Event) {
-  const reader: FileReader = new FileReader();
-
-  if (!e.target) return;
-
-  const input: HTMLInputElement = e.target as HTMLInputElement;
-  if (input.files && input.files[0]) {
-    reader.readAsDataURL(input.files[0]);
+  const target: EventTarget | null = e.target;
+  if (!target) {
+    console.error("colorPickerImageShow target이 null입니다.");
+    return;
   }
 
-  const image: HTMLImageElement = new Image();
+  const exiting: HTMLElement | null = document.getElementById(
+    "color-picker-preview-overlay"
+  );
+  if (exiting) exiting.remove();
+
+  // 스크롤바를 위한 wrapper 처리
+  const wrapper: HTMLDivElement = document.createElement("div");
+  // wrapper.style.cssText = ``;
+
+  // 이미지, 캔버스 생성
+  const overlay: HTMLDivElement = document.createElement("div");
+  overlay.id = "color-picker-preview-overlay";
+  /*   overlay.style.cssText = overlay.style.cssText = `
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+`; */
+
+  const canvas: HTMLCanvasElement = document.createElement("canvas");
+  const ctx: CanvasRenderingContext2D | null = canvas.getContext("2d");
+  const img: HTMLImageElement = new Image();
+  /*   canvas.style.cssText = `
+  max-width: 90%;
+  max-height: 90%;
+  border: 2px solid white;
+`; */
+
+  // 파일 읽기
+  const reader: FileReader = new FileReader();
+  const file: FileList | null = (target as HTMLInputElement).files;
 
   reader.onload = (e) => {
-    let base64Data: string = reader.result as string;
-
-    if (colorPickerPreview) {
-      (colorPickerPreview as HTMLImageElement).src = base64Data;
+    img.onload = () => {
+      canvas.width = img.width;
+      canvas.height = img.height;
+      ctx?.drawImage(img, 0, 0);
+    };
+    if (e.target?.result) {
+      img.src = e.target.result as string;
     } else {
-      console.error("colorPickerPreview가 null입니다.");
+      console.error("FileReader의 result가 null이거나 undefined입니다.");
       return;
     }
-
-    image.onload = () => {
-      colorPickerListShow(image);
-    };
-
-    image.src = base64Data;
   };
-}
-
-// 이미지의 모든 색상 나열하기
-function colorPickerListShow(image: HTMLImageElement) {
-  const canvas: HTMLCanvasElement = document.createElement("canvas");
-  const ctx: CanvasRenderingContext2D = canvas.getContext("2d")!;
-  canvas.width = image.width;
-  canvas.height = image.height;
-  ctx.drawImage(image, 0, 0);
-
-  const imageData: ImageData = ctx.getImageData(
-    0,
-    0,
-    canvas.width,
-    canvas.height
-  );
-  const data: Uint8ClampedArray = imageData.data;
-
-  const colors: string[] = [];
-
-  for (let i = 0; i < data.length; i += 4) {
-    const r = data[i];
-    const g = data[i + 1];
-    const b = data[i + 2];
-    const a = data[i + 3]; // 필요 없다면 무시 가능
-
-    const hex = `#${r.toString(16).padStart(2, "0")}${g
-      .toString(16)
-      .padStart(2, "0")}${b.toString(16).padStart(2, "0")}`.toUpperCase();
-
-    colors.push(hex);
+  if (file && file[0]) {
+    reader.readAsDataURL(file[0]);
+  } else {
+    console.error("파일이 선택되지 않았거나 file 변수가 null인 것 같습니다.");
+    return;
   }
 
-  const uniqueColors = new Set(colors);
-  console.log([...uniqueColors]);
+  // dom에 추가
+  wrapper.appendChild(canvas);
+  overlay.appendChild(wrapper);
+  colorPickerPreviewDiv?.appendChild(overlay);
 }
+
+// 이미지에서 클릭한 곳 색상 보여주기
+function colorPickShow() {}
