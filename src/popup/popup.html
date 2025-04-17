@@ -15,7 +15,7 @@
       <button id="number-system-convert" type="button">진수 변환</button>
       <button id="hangul-alphabet-convert" type="button">한영타 변환</button>
       <button id="full-juso-finder" type="button">통합 주소 검색</button>
-      <button id="color-extractor" type="button">이미지 색상 추출</button>
+      <button id="color-picker" type="button">사진에서 색 추출</button>
       <button id="date-calculate" type="button">날짜 계산</button>
       <button id="options-btn" type="button">설정</button>
     </div>
@@ -233,11 +233,20 @@
         <ol id="full-juso-finder-search-result-field"></ol>
       </div>
     </div>
-    <div id="color-extractor-panel" class="blind">
-      <p>이미지 색상 추출</p>
+    <div id="color-picker-panel" class="blind">
+      <p>사진에서 색 추출</p>
       <button class="back-btn" type="button">돌아가기</button>
+      <form method="post" enctype="multipart/form-data">
+        <input
+          type="file"
+          id="color-picker-choose-image"
+          name="chooseImage"
+          accept="image/*"
+          aria-label="파일 첨부하기"
+        />
+      </form>
     </div>
-
+    <img id="color-picker-preview" src="" title="preview" class="blind" />
     <div id="date-calculate-panel" class="blind">
       <p>날짜 계산</p>
       <button class="back-btn" type="button">돌아가기</button>

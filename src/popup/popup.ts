@@ -23,8 +23,8 @@ document
 document.getElementById("full-juso-finder")?.addEventListener("click", () => {
   panelToggle("full-juso-finder-panel");
 });
-document.getElementById("color-extractor")?.addEventListener("click", () => {
-  panelToggle("color-extractor-panel");
+document.getElementById("color-picker")?.addEventListener("click", () => {
+  panelToggle("color-picker-panel");
 });
 document.getElementById("date-calculate")?.addEventListener("click", () => {
   panelToggle("date-calculate-panel");
@@ -2139,5 +2139,101 @@ function errorCodeTask(errorCode: string) {
   }
 }
 
-/** 색 추출하기 */
-function colorExtract() {}
+/** 첨부된 사진에서 색 추출 */
+const colorPickerImage: HTMLElement | null = document.getElementById(
+  "color-picker-choose-image"
+);
+const colorPickerPreview: HTMLElement | null = document.getElementById(
+  "color-picker-preview"
+);
+// 이미지가 첨부되면 실행
+colorPickerImage?.addEventListener("change", (e) => {
+  colorPickerImageShow(e);
+});
+
+// 색 추출 panel의 blind 상태에 따른 preview blind 토글
+const colorPickerPanel: HTMLElement | null =
+  document.getElementById("color-picker-panel");
+
+// panel의 class 추적
+if (colorPickerPanel) {
+  const obsesrver: MutationObserver = new MutationObserver(() => {
+    // panel이 blind면 같이 blind하기
+    if (colorPickerPanel.classList.contains("blind")) {
+      colorPickerPreview?.classList.add("blind");
+    } else {
+      colorPickerPreview?.classList.remove("blind");
+    }
+  });
+
+  obsesrver.observe(colorPickerPanel, {
+    attributes: true,
+    attributeFilter: ["class"],
+  });
+}
+
+// 사진을 popup.html에서 보여주기
+function colorPickerImageShow(e: Event) {
+  const reader: FileReader = new FileReader();
+
+  if (!e.target) return;
+
+  const input: HTMLInputElement = e.target as HTMLInputElement;
+  if (input.files && input.files[0]) {
+    reader.readAsDataURL(input.files[0]);
+  }
+
+  const image: HTMLImageElement = new Image();
+
+  reader.onload = (e) => {
+    let base64Data: string = reader.result as string;
+
+    if (colorPickerPreview) {
+      (colorPickerPreview as HTMLImageElement).src = base64Data;
+    } else {
+      console.error("colorPickerPreview가 null입니다.");
+      return;
+    }
+
+    image.onload = () => {
+      colorPickerListShow(image);
+    };
+
+    image.src = base64Data;
+  };
+}
+
+// 이미지의 모든 색상 나열하기
+function colorPickerListShow(image: HTMLImageElement) {
+  const canvas: HTMLCanvasElement = document.createElement("canvas");
+  const ctx: CanvasRenderingContext2D = canvas.getContext("2d")!;
+  canvas.width = image.width;
+  canvas.height = image.height;
+  ctx.drawImage(image, 0, 0);
+
+  const imageData: ImageData = ctx.getImageData(
+    0,
+    0,
+    canvas.width,
+    canvas.height
+  );
+  const data: Uint8ClampedArray = imageData.data;
+
+  const colors: string[] = [];
+
+  for (let i = 0; i < data.length; i += 4) {
+    const r = data[i];
+    const g = data[i + 1];
+    const b = data[i + 2];
+    const a = data[i + 3]; // 필요 없다면 무시 가능
+
+    const hex = `#${r.toString(16).padStart(2, "0")}${g
+      .toString(16)
+      .padStart(2, "0")}${b.toString(16).padStart(2, "0")}`.toUpperCase();
+
+    colors.push(hex);
+  }
+
+  const uniqueColors = new Set(colors);
+  console.log([...uniqueColors]);
+}
