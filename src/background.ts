@@ -182,7 +182,9 @@ function injectImageAndColorPicker(dataURL: string) {
 `;
 
   const canvas: HTMLCanvasElement = document.createElement("canvas");
-  const ctx: CanvasRenderingContext2D | null = canvas.getContext("2d");
+  const ctx: CanvasRenderingContext2D | null = canvas.getContext("2d", {
+    willReadFrequently: true,
+  });
   const img: HTMLImageElement = new Image();
 
   img.src = dataURL;

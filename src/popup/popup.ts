@@ -2150,6 +2150,9 @@ const colorPickerPreviewDiv: HTMLElement | null = document.getElementById(
 colorPickerImage?.addEventListener("change", (e) => {
   colorPickerImageShow(e);
 });
+const colorPickerValueSpan: HTMLElement | null = document.getElementById(
+  "color-picker-click-value"
+);
 
 // 색 추출 panel의 blind 상태에 따른 preview blind 토글
 const colorPickerPanel: HTMLElement | null =
@@ -2172,6 +2175,9 @@ if (colorPickerPanel) {
   });
 }
 
+// 이전에 선택한 파일을 저장해둘 변수
+let previousFile: File | null = null;
+
 // 사진을 popup.html에서 보여주기
 function colorPickerImageShow(e: Event) {
   const target: EventTarget | null = e.target;
@@ -2180,19 +2186,66 @@ function colorPickerImageShow(e: Event) {
     return;
   }
 
-  const exiting: HTMLElement | null = document.getElementById(
-    "color-picker-preview-overlay"
-  );
-  if (exiting) exiting.remove();
+  // 파일 읽기 준비
+  const fileList: FileList | null = (target as HTMLInputElement).files;
+  let fileToRead: File | null = null;
 
-  // 스크롤바를 위한 wrapper 처리
-  const wrapper: HTMLDivElement = document.createElement("div");
-  // wrapper.style.cssText = ``;
+  // 새 파일이 선택된 경우
+  if (fileList && fileList[0]) {
+    fileToRead = fileList[0];
+    previousFile = fileToRead;
+  } else if (previousFile) {
+    // 이전에 선택했던 파일이 있는 경우
+    // fileToRead = previousFile;
+    return;
+  } else {
+    console.warn("fileToRead 변수가 null인 것 같습니다.");
+    return;
+  }
 
-  // 이미지, 캔버스 생성
-  const overlay: HTMLDivElement = document.createElement("div");
-  overlay.id = "color-picker-preview-overlay";
-  /*   overlay.style.cssText = overlay.style.cssText = `
+  const reader: FileReader = new FileReader();
+
+  reader.onload = (e) => {
+    const img: HTMLImageElement = new Image();
+    /*   canvas.style.cssText = `
+    max-width: 90%;
+    max-height: 90%;
+    border: 2px solid white;
+  `; */
+    const canvas: HTMLCanvasElement = document.createElement("canvas");
+    const ctx: CanvasRenderingContext2D | null = canvas.getContext("2d", {
+      willReadFrequently: true,
+    }); // { willReadFrequently: true }로 자주 읽어올 것이라 브라우저에 고지하면 최적화 가능
+    // 동일 객체를 활용할 경우 첫 호출 때 한 번만 하면 됨. 두 번째 고지는 불필요
+
+    img.onload = () => {
+      canvas.width = img.width;
+      canvas.height = img.height;
+      ctx?.drawImage(img, 0, 0);
+    };
+
+    if (e.target?.result) {
+      img.src = e.target.result as string;
+    } else {
+      console.error("FileReader의 result가 null이거나 undefined입니다.");
+      return;
+    }
+
+    // 기존 오버레이 삭제
+    const exiting: HTMLElement | null = document.getElementById(
+      "color-picker-preview-overlay"
+    );
+    if (exiting) exiting.remove();
+
+    // DOM 구성
+    // 스크롤바를 위한 wrapper 처리
+    const wrapper: HTMLDivElement = document.createElement("div");
+    // wrapper.style.cssText = ``;
+
+    // 이미지, 캔버스 생성
+    const overlay: HTMLDivElement = document.createElement("div");
+    overlay.id = "color-picker-preview-overlay";
+    /*   overlay.style.cssText = overlay.style.cssText = `
   position: fixed;
   top: 0; left: 0;
   width: 100vw;
@@ -2204,44 +2257,42 @@ function colorPickerImageShow(e: Event) {
   z-index: 9999;
 `; */
 
-  const canvas: HTMLCanvasElement = document.createElement("canvas");
-  const ctx: CanvasRenderingContext2D | null = canvas.getContext("2d");
-  const img: HTMLImageElement = new Image();
-  /*   canvas.style.cssText = `
-  max-width: 90%;
-  max-height: 90%;
-  border: 2px solid white;
-`; */
+    // dom에 추가
+    wrapper.appendChild(canvas);
+    overlay.appendChild(wrapper);
+    colorPickerPreviewDiv?.appendChild(overlay);
 
-  // 파일 읽기
-  const reader: FileReader = new FileReader();
-  const file: FileList | null = (target as HTMLInputElement).files;
-
-  reader.onload = (e) => {
-    img.onload = () => {
-      canvas.width = img.width;
-      canvas.height = img.height;
-      ctx?.drawImage(img, 0, 0);
-    };
-    if (e.target?.result) {
-      img.src = e.target.result as string;
-    } else {
-      console.error("FileReader의 result가 null이거나 undefined입니다.");
-      return;
-    }
+    // 이벤트리스너 추가
+    canvas.addEventListener("click", (e: MouseEvent) => {
+      colorPickShow(e);
+    });
   };
-  if (file && file[0]) {
-    reader.readAsDataURL(file[0]);
-  } else {
-    console.error("파일이 선택되지 않았거나 file 변수가 null인 것 같습니다.");
-    return;
-  }
 
-  // dom에 추가
-  wrapper.appendChild(canvas);
-  overlay.appendChild(wrapper);
-  colorPickerPreviewDiv?.appendChild(overlay);
+  // 읽기 실행
+  reader.readAsDataURL(fileToRead);
 }
 
 // 이미지에서 클릭한 곳 색상 보여주기
-function colorPickShow() {}
+function colorPickShow(e: MouseEvent) {
+  const canvas: HTMLCanvasElement | null = e.target as HTMLCanvasElement;
+  // e.target이 상위 함수의 canvas와 동일한 객체
+  const ctx: CanvasRenderingContext2D | null = canvas.getContext("2d")!; // 두 번째 고지
+  // 여기서 ctx로 getImageData 호출 때 경고가 나온다면 두 canvas 변수가 가리키는 대상이 동일하지 않을 가능성 있음
+
+  const rect: DOMRect = canvas.getBoundingClientRect();
+  const x: number = Math.floor(e.clientX - rect.left);
+  const y: number = Math.floor(e.clientY - rect.top);
+  const pixel: Uint8ClampedArray = ctx.getImageData(x, y, 1, 1).data;
+  const hex: string = `#${[pixel[0], pixel[1], pixel[2]]
+    .map((c) => c.toString(16).padStart(2, "0"))
+    .join("")}`;
+
+  // 선택한 색상 hex값 표기
+  if (!colorPickerValueSpan) {
+    console.error("colorPickerValueSpan가 dom 요소가 없습니다.");
+    return;
+  }
+  colorPickerValueSpan.innerText = hex;
+
+  // 일단 최대 5개까지만?
+}
