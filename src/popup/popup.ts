@@ -64,6 +64,15 @@ if (optionsBtn) {
   });
 }
 
+/** 사용법 & 도움말 */
+const helpBtn = document.getElementById("help-btn");
+
+if (helpBtn) {
+  helpBtn.addEventListener("click", () => {
+    window.open(chrome.runtime.getURL("src/help/help.html"));
+  });
+}
+
 /** 글자 수 세기 */
 document
   .getElementById("character-count-textarea")
@@ -2176,7 +2185,8 @@ if (colorPickerPanel) {
 }
 
 // 이전에 선택한 파일을 저장해둘 변수
-let previousFile: File | null = null;
+// 파일 선택 취소 시 사용됨
+let isFileExist: boolean = false;
 
 // 사진을 popup.html에서 보여주기
 function colorPickerImageShow(e: Event) {
@@ -2193,10 +2203,11 @@ function colorPickerImageShow(e: Event) {
   // 새 파일이 선택된 경우
   if (fileList && fileList[0]) {
     fileToRead = fileList[0];
-    previousFile = fileToRead;
-  } else if (previousFile) {
+    isFileExist = true;
+  } else if (isFileExist) {
     // 이전에 선택했던 파일이 있는 경우
     // fileToRead = previousFile;
+    // 굳이 재구성할 필요 없이 그냥 return하면 됨
     return;
   } else {
     console.warn("fileToRead 변수가 null인 것 같습니다.");
@@ -2219,9 +2230,11 @@ function colorPickerImageShow(e: Event) {
     // 동일 객체를 활용할 경우 첫 호출 때 한 번만 하면 됨. 두 번째 고지는 불필요
 
     img.onload = () => {
-      canvas.width = img.width;
-      canvas.height = img.height;
-      ctx?.drawImage(img, 0, 0);
+      // canvas.width = img.width;
+      // canvas.height = img.height;
+      canvas.width = 400;
+      canvas.height = 300;
+      ctx?.drawImage(img, 0, 0, canvas.width, canvas.height);
     };
 
     if (e.target?.result) {
@@ -2231,45 +2244,122 @@ function colorPickerImageShow(e: Event) {
       return;
     }
 
-    // 기존 오버레이 삭제
+    // 기존 프리뷰 삭제
     const exiting: HTMLElement | null = document.getElementById(
       "color-picker-preview-overlay"
     );
     if (exiting) exiting.remove();
 
-    // DOM 구성
-    // 스크롤바를 위한 wrapper 처리
-    const wrapper: HTMLDivElement = document.createElement("div");
-    // wrapper.style.cssText = ``;
-
-    // 이미지, 캔버스 생성
-    const overlay: HTMLDivElement = document.createElement("div");
-    overlay.id = "color-picker-preview-overlay";
-    /*   overlay.style.cssText = overlay.style.cssText = `
-  position: fixed;
-  top: 0; left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.6);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
-`; */
+    // 새 프리뷰 생성
+    const preview: HTMLDivElement = document.createElement("div");
+    preview.id = "color-picker-preview-overlay";
+    preview.style.cssText = `
+    `;
 
     // dom에 추가
-    wrapper.appendChild(canvas);
-    overlay.appendChild(wrapper);
-    colorPickerPreviewDiv?.appendChild(overlay);
+    preview.appendChild(canvas);
+    colorPickerPreviewDiv?.appendChild(preview);
 
     // 이벤트리스너 추가
     canvas.addEventListener("click", (e: MouseEvent) => {
-      colorPickShow(e);
+      // colorPickShow(e);
+      const imgsrc: string = img.src;
+      fullImageShow(e, imgsrc);
     });
   };
 
   // 읽기 실행
   reader.readAsDataURL(fileToRead);
+}
+
+// 전체 이미지 보여주기
+function fullImageShow(e: MouseEvent, imgsrc: string) {
+  // 스크롤바를 위한 wrapper 처리
+  const wrapper: HTMLDivElement = document.createElement("div");
+  wrapper.style.cssText = `
+  max-width: 90vw;
+  max-height: 85vh;
+  overflow: auto;
+  border: 2px solid rgba(0, 0, 0, 0.2);
+  background: white;
+`;
+
+  // 이미지, 캔버스 생성
+  const overlay: HTMLDivElement = document.createElement("div");
+  overlay.id = "color-picker-full-image";
+  overlay.style.cssText = `
+  position: fixed;
+  padding-top: 10%;
+  inset: 0;
+  background: rgba(0,0,0,0.3);
+  z-index: 999999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+  const canvas: HTMLCanvasElement = document.createElement("canvas");
+  const ctx: CanvasRenderingContext2D | null = canvas.getContext("2d", {
+    willReadFrequently: true,
+  });
+  const img: HTMLImageElement = new Image();
+
+  img.src = imgsrc;
+  canvas.style.cursor = "crosshair"; // 커서 스타일 조정
+  canvas.style.cssText = `
+  `;
+
+  if (!ctx) {
+    console.error("ctx가 null입니다.");
+    return;
+  }
+
+  img.onload = () => {
+    canvas.width = img.width;
+    canvas.height = img.height;
+
+    // css 스타일 상에서 실제 보이는 크기도 동일하게
+    canvas.style.width = `${img.width}px`;
+    canvas.style.height = `${img.height}px`;
+
+    ctx.drawImage(img, 0, 0);
+  };
+
+  // 모드 활성화
+  wrapper.appendChild(canvas);
+  overlay.appendChild(wrapper);
+  document.body.appendChild(overlay);
+
+  // x키 누르면 오버레이 닫기
+  // 나중에 ui에 설명 추가하기
+  const escHandler = (e: KeyboardEvent) => {
+    if (e.key === "x" || e.key === "X") {
+      overlay.remove();
+      document.removeEventListener("keydown", escHandler);
+    }
+  };
+
+  // 닫기 버튼
+  const closeButton: HTMLButtonElement = document.createElement("button");
+  closeButton.innerText = "✕";
+  closeButton.style.cssText = `
+      background: transparent;
+      position: fixed;
+      top: 4%;
+      border: none;
+      font-size: 16px;
+      cursor: pointer;
+      color: #ffffff;
+    `;
+  const xButtonHandler = () => {
+    overlay.remove();
+    document.removeEventListener("click", xButtonHandler);
+  };
+
+  overlay.appendChild(closeButton);
+  closeButton.addEventListener("click", xButtonHandler);
+
+  document.addEventListener("keydown", escHandler);
+  document.addEventListener("click", colorPickShow);
 }
 
 // 이미지에서 클릭한 곳 색상 보여주기
