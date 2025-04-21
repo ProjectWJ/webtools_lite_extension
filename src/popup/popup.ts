@@ -35,20 +35,6 @@ const openInNewTab = (url: string) => {
   chrome.tabs.create({ url });
 };
 
-window.addEventListener("DOMContentLoaded", () => {
-  const termsLink = document.getElementById("terms-link");
-  const privacyLink = document.getElementById("privacy-link");
-
-  termsLink?.addEventListener(
-    "click",
-    () => openInNewTab(chrome.runtime.getURL("src/terms.html")) // 링크 수정해야 함
-  );
-  privacyLink?.addEventListener(
-    "click",
-    () => openInNewTab(chrome.runtime.getURL("src/privacy.html")) // 링크 수정해야 함
-  );
-});
-
 /** 돌아가기 버튼 */
 document.querySelectorAll(".back-btn").forEach((button) => {
   button.addEventListener("click", () => {
