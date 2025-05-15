@@ -7,17 +7,59 @@
     <title>Document</title>
   </head>
   <body>
-    <div id="tab-panel">
-      <h2>WebTools Lite Extension</h2>
-      <button id="character-count" type="button">글자 수 세기</button>
-      <button id="capital-lower-convert" type="button">대소문자 변환</button>
-      <button id="unit-convert" type="button">단위 변환</button>
-      <button id="number-system-convert" type="button">진수 변환</button>
-      <button id="hangul-alphabet-convert" type="button">한영타 변환</button>
-      <button id="full-juso-finder" type="button">통합 주소 검색</button>
-      <button id="color-picker" type="button">사진에서 색 추출</button>
-      <button id="options-btn" type="button">설정</button>
-      <button id="help-btn" type="button">사용법 & 도움말</button>
+    <div id="tab-panel" class="card-content">
+      <div class="card">
+        <header class="card-header">
+          <p class="card-header-title">WebTools Lite Extension</p>
+        </header>
+
+        <div class="buttons is-flex is-flex-wrap-wrap">
+          <button id="character-count" type="button" class="button">
+            글자 수 세기
+          </button>
+          <button id="capital-lower-convert" type="button" class="button">
+            대소문자 변환
+          </button>
+          <button id="unit-convert" type="button" class="button">
+            단위 변환
+          </button>
+          <button id="number-system-convert" type="button" class="button">
+            진수 변환
+          </button>
+          <button id="hangul-alphabet-convert" type="button" class="button">
+            한영타 변환
+          </button>
+          <button id="full-juso-finder" type="button" class="button">
+            통합 주소 검색
+          </button>
+          <button id="color-picker" type="button" class="button">
+            사진에서 색 추출
+          </button>
+          <!-- <button id="options-btn" type="button"       class="button"  >설정</button> 임시 비활성화 -->
+          <button id="help-btn" type="button" class="button">
+            사용법 & 도움말
+          </button>
+        </div>
+
+        <footer class="card-footer">
+          <a
+            href="https://webtools-docs.projectwj.uk/terms"
+            id="terms-link"
+            target="_blank"
+            rel="noopener"
+            class="card-footer-item is-size-7"
+            >이용약관</a
+          >
+          <a
+            href="https://webtools-docs.projectwj.uk/privacy"
+            id="privacy-link"
+            target="_blank"
+            rel="noopener"
+            class="card-footer-item is-size-7"
+            >개인정보처리방침</a
+          >
+        </footer>
+      </div>
     </div>
 
     <div id="character-count-panel" class="blind">
@@ -227,6 +269,7 @@
       </span>
       <hr />
       <span id="full-juso-finder-result-totalcount">검색결과</span>
+      <span class="bulma-loader-mixin"></span>
       <br />
       <span id="full-juso-finder-result-message"></span>
       <div id="full-juso-finder-search-result-div">
@@ -248,24 +291,6 @@
       <span id="color-picker-click-value"></span>
     </div>
     <div id="color-picker-preview-div" class="blind"></div>
-
-    <div>
-      <a
-        href="https://webtools-docs.projectwj.uk/terms"
-        id="terms-link"
-        target="_blank"
-        rel="noopener"
-        >이용약관</a
-      >
-      ·
-      <a
-        href="https://webtools-docs.projectwj.uk/privacy"
-        id="privacy-link"
-        target="_blank"
-        rel="noopener"
-        >개인정보처리방침</a
-      >
-    </div>
   </body>
   <!-- 검색 아이콘 -->
   <link

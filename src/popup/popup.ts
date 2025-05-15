@@ -1,3 +1,6 @@
+import "bulma/css/bulma.min.css";
+import "./popup.scss";
+
 /** 웹툴 버튼(글자 수 세기, 대소문자 변환, 단위 변환...) */
 document.getElementById("character-count")?.addEventListener("click", () => {
   panelToggle("character-count-panel");
@@ -44,6 +47,9 @@ document.querySelectorAll(".back-btn").forEach((button) => {
 
 /** 버튼 이벤트 토글 */
 const panels = document.querySelectorAll("[id$=-panel]"); // -panel로 끝나는 단어 검색 $
+const termsPrivacyContainer = document.getElementById(
+  "terms-privacy-container"
+);
 
 function panelToggle(id: string) {
   panels.forEach((panel) => {
@@ -53,6 +59,13 @@ function panelToggle(id: string) {
       panel.classList.add("blind");
     }
   });
+  if (termsPrivacyContainer) {
+    if (termsPrivacyContainer.classList.contains("blind")) {
+      termsPrivacyContainer.classList.remove("blind");
+    } else {
+      termsPrivacyContainer.classList.add("blind");
+    }
+  }
 }
 
 /** 옵션 */
