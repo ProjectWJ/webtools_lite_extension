@@ -1,5 +1,6 @@
 import "bulma/css/bulma.min.css";
 import "./popup.scss";
+import "./popup.css";
 
 /** 웹툴 버튼(글자 수 세기, 대소문자 변환, 단위 변환...) */
 document.getElementById("character-count")?.addEventListener("click", () => {

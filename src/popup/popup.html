@@ -3,62 +3,114 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="popup.css" />
     <title>Document</title>
   </head>
   <body>
     <div id="tab-panel" class="card-content">
       <div class="card">
         <header class="card-header">
-          <p class="card-header-title">WebTools Lite Extension</p>
+          <p class="card-header-title">WebTools Lite Extension 1.0</p>
         </header>
 
-        <div class="buttons is-flex is-flex-wrap-wrap">
-          <button id="character-count" type="button" class="button">
+        <div
+          class="buttons is-flex is-flex-wrap-wrap container is-fluid paddingtop paddingbottom"
+        >
+          <!-- container가 justify-content: center; 속성 가지고 있음-->
+          <button
+            id="character-count"
+            type="button"
+            class="button is-light container justifystart"
+          >
+            <img
+              src="/charcount.png"
+              alt="글자 수 세기"
+              class="is-block image is-64x64"
+            />
             글자 수 세기
           </button>
-          <button id="capital-lower-convert" type="button" class="button">
+
+          <button
+            id="capital-lower-convert"
+            type="button"
+            class="button is-light container justifystart"
+          >
+            <img
+              src="/capitallower.png"
+              alt="대소문자 변환"
+              class="is-block image is-64x64"
+            />
             대소문자 변환
           </button>
-          <button id="unit-convert" type="button" class="button">
+
+          <button
+            id="unit-convert"
+            type="button"
+            class="button is-light container justifystart"
+          >
+            <img
+              src="/unit.png"
+              alt="단위 변환"
+              class="is-block image is-64x64"
+            />
             단위 변환
           </button>
-          <button id="number-system-convert" type="button" class="button">
+          <button
+            id="number-system-convert"
+            type="button"
+            class="button is-light container justifystart"
+          >
+            <img
+              src="/numbersystem.png"
+              alt="진수 변환"
+              class="is-block image is-64x64"
+            />
             진수 변환
           </button>
-          <button id="hangul-alphabet-convert" type="button" class="button">
+          <button
+            id="hangul-alphabet-convert"
+            type="button"
+            class="button is-light container justifystart"
+          >
+            <img
+              src="/hangulalphabet.png"
+              alt="한영타 변환"
+              class="is-block image is-64x64"
+            />
             한영타 변환
           </button>
-          <button id="full-juso-finder" type="button" class="button">
+          <button
+            id="full-juso-finder"
+            type="button"
+            class="button is-light container justifystart"
+          >
+            <img
+              src="/fulljuso.png"
+              alt="통합 주소 검색"
+              class="is-block image is-64x64"
+            />
             통합 주소 검색
           </button>
-          <button id="color-picker" type="button" class="button">
-            사진에서 색 추출
+          <button
+            id="color-picker"
+            type="button"
+            class="button is-light container justifystart"
+          >
+            <img
+              src="/colorpicker.png"
+              alt="색 추출"
+              class="is-block image is-64x64"
+            />
+            색 추출
           </button>
           <!-- <button id="options-btn" type="button"       class="button"  >설정</button> 임시 비활성화 -->
-          <button id="help-btn" type="button" class="button">
+          <button
+            id="help-btn"
+            type="button"
+            class="button is-light container justifystart"
+          >
             사용법 & 도움말
           </button>
         </div>
-
-        <footer class="card-footer">
-          <a
-            href="https://webtools-docs.projectwj.uk/terms"
-            id="terms-link"
-            target="_blank"
-            rel="noopener"
-            class="card-footer-item is-size-7"
-            >이용약관</a
-          >
-          <a
-            href="https://webtools-docs.projectwj.uk/privacy"
-            id="privacy-link"
-            target="_blank"
-            rel="noopener"
-            class="card-footer-item is-size-7"
-            >개인정보처리방침</a
-          >
-        </footer>
       </div>
     </div>
 
@@ -277,7 +329,7 @@
       </div>
     </div>
     <div id="color-picker-panel" class="blind">
-      <p>사진에서 색 추출</p>
+      <p>색 추출</p>
       <button class="back-btn" type="button">돌아가기</button>
       <form method="post" enctype="multipart/form-data">
         <input

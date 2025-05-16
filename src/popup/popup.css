@@ -9,6 +9,18 @@
   margin: -1px;
 }
 
+.justifystart {
+  justify-content: flex-start;
+}
+
+.paddingtop {
+  padding-top: 10px;
+}
+
+.paddingbottom {
+  padding-bottom: 10px;
+}
+
 #character-count-textarea {
   height: 400px;
   width: 700px;
@@ -29,4 +41,17 @@
 #unit-convert-searchbox #material-icons {
   left: 15px;
   position: absolute;
+}
+
+/* 스크롤바 */
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: #ddd;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #989898;
 }
