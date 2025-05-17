@@ -99,11 +99,11 @@ function showModal(selectedText: string, textWithoutSpaces: string): void {
       `공백 포함 ${selectedText.length} 자 | ${byteCounter(
         selectedText,
         1
-      )} Byte\n` +
-      `공백 미포함 ${textWithoutSpaces.length} 자 | ${byteCounter(
+      )} byte\n` +
+      `공백 제외 ${textWithoutSpaces.length} 자 | ${byteCounter(
         textWithoutSpaces,
         0
-      )} Byte`;
+      )} byte`;
 
     // 모달을 body에 추가
     document.body.appendChild(modal);

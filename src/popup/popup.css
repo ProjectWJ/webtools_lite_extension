@@ -42,6 +42,33 @@
   );
 }
 
+.capital-lower-convert-copy-div {
+  display: flex;
+  align-items: center;
+}
+
+.copy-message-fadeinout {
+  position: absolute;
+  right: 54%;
+  animation: fadeInOut 2s ease-in-out forwards;
+  animation-fill-mode: forwards;
+}
+
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
 .character-count-width {
   width: 300px;
 }

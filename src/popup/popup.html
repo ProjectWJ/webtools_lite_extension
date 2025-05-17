@@ -223,20 +223,61 @@
         />
       </div>
       <hr class="titlehr" />
-      <textarea
-        id="capital-lower-convert-textarea-input"
-        placeholder="내용을 입력해주세요."
-      ></textarea>
-      <select id="capital-lower-convert-select" aria-label="대소문자 선택">
-        <option value="capital">대문자</option>
-        <option value="lower">소문자</option>
-      </select>
-      <textarea
-        id="capital-lower-convert-textarea-output"
-        placeholder="이곳에 결과가 표시됩니다."
-        readonly
-      ></textarea>
-      <button class="back-btn" type="button">돌아가기</button>
+      <div class="container px-4 py-4 character-count-width">
+        <textarea
+          id="capital-lower-convert-textarea-input"
+          placeholder="이곳에 내용을 입력해주세요."
+          class="textarea has-fixed-size"
+        ></textarea>
+        <div class="px-4 py-4 is-flex is-justify-content-space-between">
+          <button
+            type="button"
+            id="capital-lower-convert-btn-capital"
+            class="button is-light is-active"
+            value="capital"
+          >
+            대문자
+          </button>
+          <button
+            type="button"
+            id="capital-lower-convert-btn-lower"
+            class="button is-light"
+            value="lower"
+          >
+            소문자
+          </button>
+        </div>
+        <textarea
+          id="capital-lower-convert-textarea-output"
+          placeholder="이곳에 결과가 표시됩니다."
+          class="textarea has-fixed-size"
+          readonly
+        ></textarea>
+        <div class="py-4 is-flex is-justify-content-end">
+          <div
+            id="capital-lower-convert-copy-div"
+            class="capital-lower-convert-copy-div pr-4"
+          ></div>
+          <button
+            type="button"
+            id="capital-lower-convert-copy"
+            class="button is-light mr-2"
+          >
+            <img src="/copy.png" alt="복사" class="is-block image is-24x24" />
+          </button>
+          <button
+            type="button"
+            id="capital-lower-convert-reset"
+            class="button is-light mr-2"
+          >
+            <img
+              src="/reset.png"
+              alt="초기화"
+              class="is-block image is-24x24"
+            />
+          </button>
+        </div>
+      </div>
     </div>
 
     <div id="unit-convert-panel" class="blind">

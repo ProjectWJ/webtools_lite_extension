@@ -213,6 +213,20 @@ document
 document
   .getElementById("capital-lower-convert-select")
   ?.addEventListener("change", capitalLowerConvertAction);
+document
+  .getElementById("capital-lower-convert-btn-capital")
+  ?.addEventListener("click", capitalLowerConvertSelect);
+document
+  .getElementById("capital-lower-convert-btn-lower")
+  ?.addEventListener("click", capitalLowerConvertSelect);
+document
+  .getElementById("capital-lower-convert-reset")
+  ?.addEventListener("click", capitalLowerConvertReset);
+document
+  .getElementById("capital-lower-convert-copy")
+  ?.addEventListener("click", capitalLowerConvertCopy);
+
+// 대소문자 변환 액션
 function capitalLowerConvertAction() {
   const textAreaInput: HTMLTextAreaElement = document.getElementById(
     "capital-lower-convert-textarea-input"
@@ -221,16 +235,87 @@ function capitalLowerConvertAction() {
     "capital-lower-convert-textarea-output"
   ) as HTMLTextAreaElement;
 
-  // 대문자, 소문자 선택
-  const selectCapitalLower: HTMLElement | null = document.getElementById(
-    "capital-lower-convert-select"
+  const capitalbtn: HTMLElement | null = document.getElementById(
+    "capital-lower-convert-btn-capital"
+  );
+  const lowerbtn: HTMLElement | null = document.getElementById(
+    "capital-lower-convert-btn-lower"
   );
 
-  if ((selectCapitalLower as HTMLSelectElement)?.value === "capital") {
+  if (!capitalbtn || !lowerbtn) {
+    return;
+  }
+
+  if (capitalbtn.classList.contains("is-active")) {
     textAreaOutput.innerText = textAreaInput.value.toUpperCase();
   } else {
     textAreaOutput.innerText = textAreaInput.value.toLowerCase();
   }
+}
+
+// 변환 선택
+function capitalLowerConvertSelect(event: Event) {
+  const capitalbtn: HTMLElement | null = document.getElementById(
+    "capital-lower-convert-btn-capital"
+  );
+  const lowerbtn: HTMLElement | null = document.getElementById(
+    "capital-lower-convert-btn-lower"
+  );
+
+  if (!capitalbtn || !lowerbtn) {
+    return;
+  }
+
+  if (event.target === capitalbtn) {
+    capitalbtn.classList.add("is-active");
+    lowerbtn.classList.remove("is-active");
+  } else if (event.target === lowerbtn) {
+    lowerbtn.classList.add("is-active");
+    capitalbtn.classList.remove("is-active");
+  }
+
+  capitalLowerConvertAction();
+}
+
+// 복사
+function capitalLowerConvertCopy() {
+  const textAreaOutput: HTMLTextAreaElement = document.getElementById(
+    "capital-lower-convert-textarea-output"
+  ) as HTMLTextAreaElement;
+
+  if (!textAreaOutput) return;
+  if (textAreaOutput.value === "") return;
+
+  navigator.clipboard.writeText(textAreaOutput.value).then(() => {
+    const messageDiv: HTMLElement | null = document.getElementById(
+      "capital-lower-convert-copy-div"
+    );
+
+    if (!messageDiv) return;
+
+    const copyMessage: HTMLSpanElement = document.createElement("span");
+    copyMessage.className = "copy-message-fadeinout";
+    copyMessage.innerText = "복사되었습니다.";
+
+    messageDiv.appendChild(copyMessage);
+
+    setTimeout(() => {
+      messageDiv.removeChild(copyMessage);
+    }, 2000);
+  });
+}
+
+// 초기화
+function capitalLowerConvertReset() {
+  const textAreaInput: HTMLTextAreaElement = document.getElementById(
+    "capital-lower-convert-textarea-input"
+  ) as HTMLTextAreaElement;
+  const textAreaOutput: HTMLTextAreaElement = document.getElementById(
+    "capital-lower-convert-textarea-output"
+  ) as HTMLTextAreaElement;
+
+  textAreaInput.value = "";
+  textAreaOutput.value = "";
 }
 
 /** 단위 변환 */
