@@ -6,128 +6,223 @@
     <title>Document</title>
   </head>
   <body>
-    <div id="tab-panel" class="card-content">
-      <div class="card">
-        <header class="card-header">
-          <p class="card-header-title">WebTools Lite Extension 1.0</p>
-        </header>
-
-        <div
-          class="buttons is-flex is-flex-wrap-wrap container is-fluid paddingtop paddingbottom"
+    <div id="tab-panel" class="">
+      <div class="container titlepadding">
+        <h3 class="is-size-5 has-text-weight-semibold has-text-centered">
+          WebTools Lite Extension 1.0
+        </h3>
+      </div>
+      <hr class="titlehr" />
+      <div
+        class="buttons is-flex is-flex-wrap-wrap container is-fluid paddingtop paddingbottom"
+      >
+        <!-- container가 justify-content: center; 속성 가지고 있음-->
+        <button
+          id="character-count"
+          type="button"
+          class="button is-light container justifystart"
         >
-          <!-- container가 justify-content: center; 속성 가지고 있음-->
-          <button
-            id="character-count"
-            type="button"
-            class="button is-light container justifystart"
-          >
-            <img
-              src="/charcount.png"
-              alt="글자 수 세기"
-              class="is-block image is-64x64"
-            />
-            글자 수 세기
-          </button>
+          <img
+            src="/charcount.png"
+            alt="글자 수 세기"
+            class="is-block image is-64x64"
+          />
+          글자 수 세기
+        </button>
 
-          <button
-            id="capital-lower-convert"
-            type="button"
-            class="button is-light container justifystart"
-          >
-            <img
-              src="/capitallower.png"
-              alt="대소문자 변환"
-              class="is-block image is-64x64"
-            />
-            대소문자 변환
-          </button>
+        <button
+          id="capital-lower-convert"
+          type="button"
+          class="button is-light container justifystart"
+        >
+          <img
+            src="/capitallower.png"
+            alt="대소문자 변환"
+            class="is-block image is-64x64"
+          />
+          대소문자 변환
+        </button>
 
-          <button
-            id="unit-convert"
-            type="button"
-            class="button is-light container justifystart"
-          >
-            <img
-              src="/unit.png"
-              alt="단위 변환"
-              class="is-block image is-64x64"
-            />
-            단위 변환
-          </button>
-          <button
-            id="number-system-convert"
-            type="button"
-            class="button is-light container justifystart"
-          >
-            <img
-              src="/numbersystem.png"
-              alt="진수 변환"
-              class="is-block image is-64x64"
-            />
-            진수 변환
-          </button>
-          <button
-            id="hangul-alphabet-convert"
-            type="button"
-            class="button is-light container justifystart"
-          >
-            <img
-              src="/hangulalphabet.png"
-              alt="한영타 변환"
-              class="is-block image is-64x64"
-            />
-            한영타 변환
-          </button>
-          <button
-            id="full-juso-finder"
-            type="button"
-            class="button is-light container justifystart"
-          >
-            <img
-              src="/fulljuso.png"
-              alt="통합 주소 검색"
-              class="is-block image is-64x64"
-            />
-            통합 주소 검색
-          </button>
-          <button
-            id="color-picker"
-            type="button"
-            class="button is-light container justifystart"
-          >
-            <img
-              src="/colorpicker.png"
-              alt="색 추출"
-              class="is-block image is-64x64"
-            />
-            색 추출
-          </button>
-          <!-- <button id="options-btn" type="button"       class="button"  >설정</button> 임시 비활성화 -->
-          <button
-            id="help-btn"
-            type="button"
-            class="button is-light container justifystart"
-          >
-            사용법 & 도움말
-          </button>
-        </div>
+        <button
+          id="unit-convert"
+          type="button"
+          class="button is-light container justifystart"
+        >
+          <img
+            src="/unit.png"
+            alt="단위 변환"
+            class="is-block image is-64x64"
+          />
+          단위 변환
+        </button>
+        <button
+          id="number-system-convert"
+          type="button"
+          class="button is-light container justifystart"
+        >
+          <img
+            src="/numbersystem.png"
+            alt="진수 변환"
+            class="is-block image is-64x64"
+          />
+          진수 변환
+        </button>
+        <button
+          id="hangul-alphabet-convert"
+          type="button"
+          class="button is-light container justifystart"
+        >
+          <img
+            src="/hangulalphabet.png"
+            alt="한영타 변환"
+            class="is-block image is-64x64"
+          />
+          한영타 변환
+        </button>
+        <button
+          id="full-juso-finder"
+          type="button"
+          class="button is-light container justifystart"
+        >
+          <img
+            src="/fulljuso.png"
+            alt="통합 주소 검색"
+            class="is-block image is-64x64"
+          />
+          통합 주소 검색
+        </button>
+        <button
+          id="color-picker"
+          type="button"
+          class="button is-light container justifystart"
+        >
+          <img
+            src="/colorpicker.png"
+            alt="색 추출"
+            class="is-block image is-64x64"
+          />
+          색 추출
+        </button>
+        <!-- <button id="options-btn" type="button"       class="button"  >설정</button> 임시 비활성화 -->
+        <button
+          id="help-btn"
+          type="button"
+          class="button is-light container justifystart"
+        >
+          사용법 & 도움말
+        </button>
       </div>
     </div>
 
-    <div id="character-count-panel" class="blind">
-      <p>글자 수 세기</p>
-      <textarea
-        id="character-count-textarea"
-        placeholder="내용을 입력해주세요."
-      ></textarea>
-      <p>영문자, 숫자, 기호: 1Byte | 한글, 일본어, 한자: 2Byte로 계산</p>
-      <p id="blank-include">공백 포함 0 자 | 0 byte</p>
-      <p id="blank-ignore">공백 제외 0 자 | 0 byte</p>
-      <button class="back-btn" type="button">돌아가기</button>
+    <div id="character-count-panel" class="card-content blind">
+      <div class="container titlepadding titlearg">
+        <button class="back-btn button is-light" type="button">
+          <img src="/home.png" alt="홈" class="image is-24x24" />
+        </button>
+
+        <p class="is-size-5 has-text-weight-semibold has-text-centered">
+          글자 수 세기
+        </p>
+        <img
+          src="/charcount.png"
+          alt="글자 수 세기"
+          class="is-block image is-48x48"
+        />
+      </div>
+      <hr class="titlehr" />
+      <div class="container px-4 py-4 character-count-width">
+        <textarea
+          id="character-count-textarea"
+          placeholder="내용을 입력해주세요."
+          class="textarea has-fixed-size"
+        ></textarea>
+        <div class="py-4 is-flex is-justify-content-end">
+          <button
+            type="button"
+            id="character-count-reset"
+            class="button is-light mr-2"
+          >
+            <img
+              src="/reset.png"
+              alt="초기화"
+              class="is-block image is-24x24"
+            />
+          </button>
+          <!-- 
+          <button
+            type="button"
+            id="character-count-zoom"
+            class="button is-light"
+          >
+            <img src="/zoom.png" alt="확대" class="is-block image is-24x24" />
+          </button>
+
+          <div id="character-count-zoom-view" class="blind">
+            <div class="modal">
+              <div class="modal-background"></div>
+              <div calss="modal-card">
+                <header class="modal-card-head">
+                  <p class="modal-card-title">Modal title</p>
+                  <button
+                    type="button"
+                    class="delete"
+                    aria-label="close"
+                  ></button>
+                </header>
+                <section class="modal-card-body">
+                  <span
+                    id="character-count-zoom-modal-content"
+                    class="modal-content"
+                  >
+                  </span>
+                </section>
+                <footer class="modal-card-foot">
+                  <div class="buttons">
+                    <button type="button" class="button is-success">
+                      Save changes
+                    </button>
+                    <button type="button" class="button">Cancel</button>
+                  </div>
+                </footer>
+              </div>
+            </div>
+          </div>
+          <span></span>
+          -->
+        </div>
+        <p>알파벳, 숫자, 기호, 공백: 1 byte</p>
+        <p>한글, 히라가나, 가타카나, 한자: 2 byte</p>
+        <br />
+        <span>공백 포함</span>
+        <span id="blank-include" class="has-text-warning has-text-weight-bold"
+          >0</span
+        >
+        <span id="blank-include-byte">자 | 0 byte</span>
+        <br />
+        <span>공백 제외</span>
+        <span id="blank-ignore" class="has-text-warning has-text-weight-bold"
+          >0</span
+        >
+        <span id="blank-ignore-byte">자 | 0 byte</span>
+      </div>
     </div>
 
     <div id="capital-lower-convert-panel" class="blind">
-      <p>대소문자 변환</p>
+      <div class="container titlepadding titlearg">
+        <button class="back-btn button is-light" type="button">
+          <img src="/home.png" alt="홈" class="image is-24x24" />
+        </button>
+
+        <p class="is-size-5 has-text-weight-semibold has-text-centered">
+          대소문자 변환
+        </p>
+        <img
+          src="/capitallower.png"
+          alt="대소문자 변환"
+          class="is-block image is-48x48"
+        />
+      </div>
+      <hr class="titlehr" />
       <textarea
         id="capital-lower-convert-textarea-input"
         placeholder="내용을 입력해주세요."

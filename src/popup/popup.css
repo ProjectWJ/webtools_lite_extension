@@ -9,6 +9,43 @@
   margin: -1px;
 }
 
+.titlepadding {
+  height: 54px;
+  padding: 12px 10px 12px 10px;
+}
+
+.titlearg {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* 또는 flex-start, center 등 원하는 정렬로 */
+}
+
+.titlehr {
+  position: relative;
+  height: 1px;
+  margin: 0 0 0 0;
+}
+
+.titlehr:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 5%;
+  right: 5%;
+  width: 90%;
+  height: 1px;
+  background-image: linear-gradient(
+    to right,
+    transparent,
+    rgb(48, 49, 51),
+    transparent
+  );
+}
+
+.character-count-width {
+  width: 300px;
+}
+
 .justifystart {
   justify-content: flex-start;
 }
@@ -19,11 +56,6 @@
 
 .paddingbottom {
   padding-bottom: 10px;
-}
-
-#character-count-textarea {
-  height: 400px;
-  width: 700px;
 }
 
 #unit-convert-selectbox {

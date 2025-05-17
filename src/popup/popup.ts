@@ -48,25 +48,30 @@ document.querySelectorAll(".back-btn").forEach((button) => {
 
 /** 버튼 이벤트 토글 */
 const panels = document.querySelectorAll("[id$=-panel]"); // -panel로 끝나는 단어 검색 $
-const termsPrivacyContainer = document.getElementById(
+/* const termsPrivacyContainer = document.getElementById(
   "terms-privacy-container"
-);
+); */
 
 function panelToggle(id: string) {
   panels.forEach((panel) => {
     if (panel.id === id) {
       panel.classList.remove("blind");
+
+      // 글자 수 세기 자동 포커스 실행
+      if (panel.id === "character-count-panel") {
+        characterCountAutoFocus();
+      }
     } else {
       panel.classList.add("blind");
     }
   });
-  if (termsPrivacyContainer) {
+  /*   if (termsPrivacyContainer) {
     if (termsPrivacyContainer.classList.contains("blind")) {
       termsPrivacyContainer.classList.remove("blind");
     } else {
       termsPrivacyContainer.classList.add("blind");
     }
-  }
+  } */
 }
 
 /** 옵션 */
@@ -96,34 +101,93 @@ if (helpBtn) {
 document
   .getElementById("character-count-textarea")
   ?.addEventListener("input", characterCountAction);
+document
+  .getElementById("character-count-reset")
+  ?.addEventListener("click", characterCountReset);
+/* document
+  .getElementById("character-count-zoom")
+  ?.addEventListener("click", characterCountZoom); */
+// 자동 포커스
+function characterCountAutoFocus() {
+  const textArea: HTMLTextAreaElement = document.getElementById(
+    "character-count-textarea"
+  ) as HTMLTextAreaElement;
+  if (textArea) {
+    textArea.focus();
+  }
+}
+
+// 초기화
+function characterCountReset() {
+  const textArea: HTMLTextAreaElement = document.getElementById(
+    "character-count-textarea"
+  ) as HTMLTextAreaElement;
+  textArea.value = "";
+  characterCountAction();
+}
+
+// 크게 보기
+/* function characterCountZoom() {
+  const textArea: HTMLTextAreaElement = document.getElementById(
+    "character-count-textarea"
+  ) as HTMLTextAreaElement;
+  const modalView: HTMLDivElement = document.getElementById(
+    "character-count-zoom-view"
+  ) as HTMLDivElement;
+  const modalSpan: HTMLSpanElement = document.getElementById(
+    "character-count-zoom-modal-content"
+  ) as HTMLSpanElement;
+  const inputvalue: string = textArea.value;
+
+  modalSpan.innerText = inputvalue;
+
+  if (modalView) {
+    modalView.classList.remove("blind");
+  }
+  console.log(inputvalue);
+} */
+
+// 글자 수 세기 액션
 function characterCountAction() {
   const textArea: HTMLTextAreaElement = document.getElementById(
     "character-count-textarea"
   ) as HTMLTextAreaElement;
   const blankInclude: HTMLElement | null =
     document.getElementById("blank-include");
+  const blankIncludeByte: HTMLElement | null =
+    document.getElementById("blank-include-byte");
   const blankIgnore: HTMLElement | null =
     document.getElementById("blank-ignore");
+  const blankIgnoreByte: HTMLElement | null =
+    document.getElementById("blank-ignore-byte");
 
-  if (textArea && blankInclude && blankIgnore) {
+  if (
+    textArea &&
+    blankInclude &&
+    blankIncludeByte &&
+    blankIgnore &&
+    blankIgnoreByte
+  ) {
     const textValue: string = textArea.value;
     const textWithoutSpaces: string = textValue.replace(/\s+/g, "");
 
-    blankInclude.innerText = `공백 포함 ${textValue.length} 자 | ${byteCounter(
-      textValue,
-      1
-    )} Byte`;
-    blankIgnore.innerText = `공백 미포함 ${
-      textWithoutSpaces.length
-    } 자 | ${byteCounter(textWithoutSpaces, 0)} Byte`;
+    blankInclude.innerText = textValue.length.toString();
+    blankIncludeByte.innerText = ` 자 | ${byteCounter(textValue, 1)} byte`;
+
+    blankIgnore.innerText = textWithoutSpaces.length.toString();
+    blankIgnoreByte.innerText = ` 자 | ${byteCounter(
+      textWithoutSpaces,
+      0
+    )} byte`;
   }
 }
 
+// 바이트 계산
 function byteCounter(text: string, blank: number = 0) {
   let byte: number = 0;
 
   if (blank === 0) {
-    // 공백이 미포함이면 미리 줄바꿈과 공백을 빈칸으로 처리
+    // 공백 제외면 미리 줄바꿈과 공백을 빈칸으로 처리
     text = text.replace(/\s+/g, "");
   }
 
