@@ -707,10 +707,17 @@ function unitFilterAction(this: HTMLElement, e: Event) {
     newUnitCategory = unitConvertCategory;
   }
 
-  const listItems: string = newUnitCategory
-    .map((data: string) => `<li class="unit-option-item">${data}</li>`)
-    .join("");
-  unitOptions.innerHTML = listItems;
+  const listItems: HTMLElement[] = newUnitCategory.map(
+    (data: string, index: number) => {
+      const li = document.createElement("li");
+      li.id = `unit-option-item-${index}`;
+      li.className = "unit-option-item";
+      li.innerText = data;
+      return li;
+    }
+  );
+  unitOptions.innerText = ""; // 기존 목록 초기화
+  unitOptions.append(...listItems);
 }
 
 // unit-filter에서 엔터키 눌렀을 때
@@ -802,9 +809,17 @@ unitOptionsClick("길이");
 
 // 모든 대단위 카테고리 초기화
 function allUnitCategoryShow() {
-  unitOptions.innerHTML = unitConvertCategory
-    .map((unit: string) => `<li class="unit-option-item">${unit}</li>`)
-    .join("");
+  const listItems: HTMLElement[] = unitConvertCategory.map(
+    (data: string, index: number) => {
+      const li = document.createElement("li");
+      li.id = `unit-option-item-${index}`;
+      li.className = "unit-option-item";
+      li.innerText = data;
+      return li;
+    }
+  );
+  unitOptions.innerText = ""; // 기존 목록 초기화
+  unitOptions.append(...listItems);
 }
 
 // 처음에 모든 대단위 카테고리 초기화하기

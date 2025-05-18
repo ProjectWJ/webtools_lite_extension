@@ -3,6 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css"
+    />
     <title>Document</title>
   </head>
   <body>
@@ -130,10 +134,10 @@
         />
       </div>
       <hr class="titlehr" />
-      <div class="container px-4 py-4 character-count-width">
+      <div class="container px-4 py-4 global-width">
         <textarea
           id="character-count-textarea"
-          placeholder="내용을 입력해주세요."
+          placeholder="이곳에 내용을 입력하세요."
           class="textarea has-fixed-size"
         ></textarea>
         <div class="py-4 is-flex is-justify-content-end">
@@ -223,10 +227,10 @@
         />
       </div>
       <hr class="titlehr" />
-      <div class="container px-4 py-4 character-count-width">
+      <div class="container px-4 py-4 global-width">
         <textarea
           id="capital-lower-convert-textarea-input"
-          placeholder="이곳에 내용을 입력해주세요."
+          placeholder="이곳에 내용을 입력하세요."
           class="textarea has-fixed-size"
         ></textarea>
         <div class="px-4 py-4 is-flex is-justify-content-space-between">
@@ -281,58 +285,118 @@
     </div>
 
     <div id="unit-convert-panel" class="blind">
-      <p>단위 변환</p>
-      <div id="unit-convert-selectbox">
-        <span id="unit-convert-select-unit"></span>
-        <span id="unit-convert-select-unit-icon" class="material-icons"
-          >expand_more</span
+      <div class="container titlepadding titlearg">
+        <button class="back-btn button is-light" type="button">
+          <img src="/home.png" alt="홈" class="image is-24x24" />
+        </button>
+
+        <p class="is-size-5 has-text-weight-semibold has-text-centered">
+          단위 변환
+        </p>
+        <img src="/unit.png" alt="단위 변환" class="is-block image is-48x48" />
+      </div>
+      <hr class="titlehr" />
+
+      <div class="container px-4 py-4 global-width">
+        <!-- 대단위 선택 박스 -->
+        <div
+          id="unit-convert-selectbox"
+          class="mb-2 is-flex unit-selectbox"
+          tabindex="0"
         >
-      </div>
-      <!-- 검색 박스 -->
-      <div id="unit-convert-searchbox" class="blind">
-        <span id="unit-filter-icon" class="material-icons">search</span>
-        <input id="unit-filter" type="text" placeholder="검색" />
-        <ul id="unit-options"></ul>
-      </div>
-      <div>
-        <input
-          type="input"
-          id="unit-convert-detail-input-left"
-          aria-label="unit-convert-input-left"
-        />
-      </div>
-      <div id="unit-convert-detail-select-leftbox">
-        <span id="unit-convert-detail-select-left"></span>
-        <span id="unit-convert-detail-select-left-icon" class="material-icons"
-          >expand_more</span
+          <!-- div는 focus 미적용이라 tabindex="0"으로 받을 수 있게 해줘야 한다. -->
+          <span id="unit-convert-select-unit"></span>
+          <span class="mdi mdi-chevron-down mdi-icon-design"></span>
+        </div>
+
+        <!-- 대단위 목록 탐색 박스 -->
+        <div
+          id="unit-convert-searchbox"
+          class="px-2 pt-2 blind unit-searchbox custom-select-dropdown custom-select-dropdown"
         >
+          <input
+            id="unit-filter"
+            type="text"
+            placeholder="검색"
+            class="input"
+          />
+          <ul id="unit-options" class="py-1 unit-ul-design"></ul>
+        </div>
+        <!-- 왼쪽(상단) 선택 박스 -->
+        <div class="my-2 is-flex unit-selectbox-small">
+          <!-- 진행중....... -->
+          <select
+            id="unit-convert-detail-select-leftbox"
+            aria-label="unit-convert-select-left"
+          >
+            <option id="unit-convert-detail-select-left"></option>
+          </select>
+        </div>
+
+        <!-- 왼쪽(상단) 목록 탐색 박스 -->
+        <div id="unit-convert-detail-search-left" class="blind">
+          <input
+            id="unit-detail-filter-left"
+            type="input"
+            placeholder="검색"
+            class="input"
+          />
+          <ul id="unit-detail-options-left"></ul>
+        </div>
+
+        <!-- 왼쪽(상단) 값 입력 -->
+        <div class="my-2">
+          <input
+            type="input"
+            id="unit-convert-detail-input-left"
+            aria-label="unit-convert-input-left"
+            placeholder="이곳에 값을 입력하세요."
+            class="input"
+          />
+        </div>
+        <!-- = -->
+
+        <!-- 오른쪽(하단) 목록 탐색 박스 -->
+        <div class="select my-2">
+          <select
+            id="unit-convert-detail-select-rightbox"
+            aria-label="unit-convert-select-right"
+          >
+            <option id="unit-convert-detail-select-right"></option>
+          </select>
+        </div>
+
+        <!-- 오른쪽(하단) 목록 탐색 박스 -->
+        <div id="unit-convert-detail-search-right" class="blind">
+          <input
+            id="unit-detail-filter-right"
+            type="text"
+            placeholder="검색"
+            class="input"
+          />
+          <ul id="unit-detail-options-right"></ul>
+        </div>
+
+        <!-- 오른쪽(하단) 값 입력 -->
+        <div class="mt-2">
+          <input
+            type="input"
+            id="unit-convert-detail-input-right"
+            aria-label="unit-convert-input-right"
+            placeholder="이곳에 값을 입력하세요."
+            class="input"
+          />
+        </div>
+
+        <!-- 더미 -->
+        <span id="unit-convert-formula"></span>
+
+        <!-- 여유 공간 확보용 div -->
+        <div class=""></div>
+
+        <!-- 테스트 -->
+        <!-- 테스트 끝 -->
       </div>
-      <div id="unit-convert-detail-search-left" class="blind">
-        <span class="material-icons">search</span>
-        <input id="unit-detail-filter-left" type="text" placeholder="검색" />
-        <ul id="unit-detail-options-left"></ul>
-      </div>
-      =
-      <div>
-        <input
-          type="input"
-          id="unit-convert-detail-input-right"
-          aria-label="unit-convert-input-right"
-        />
-      </div>
-      <div id="unit-convert-detail-select-rightbox">
-        <span id="unit-convert-detail-select-right"></span>
-        <span id="unit-convert-detail-select-right-icon" class="material-icons"
-          >expand_more</span
-        >
-      </div>
-      <div id="unit-convert-detail-search-right" class="blind">
-        <span class="material-icons">search</span>
-        <input id="unit-detail-filter-right" type="text" placeholder="검색" />
-        <ul id="unit-detail-options-right"></ul>
-      </div>
-      <span id="unit-convert-formula"></span>
-      <button class="back-btn" type="button">돌아가기</button>
     </div>
 
     <div id="number-system-convert-panel" class="blind">
