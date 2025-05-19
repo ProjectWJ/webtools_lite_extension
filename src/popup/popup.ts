@@ -948,16 +948,29 @@ function switchConversion(selectedText: string): conversionRecord {
 
 // 모든 소단위 카테고리 초기화
 function allDetailCategoryShow(keys: string[]) {
-  unitDetailOptionsLeft.innerHTML = keys
-    .map(
-      (key: string) => `<li class="unit-detail-option-left-item">${key}</li>`
-    )
-    .join("");
-  unitDetailOptionsRight.innerHTML = keys
-    .map(
-      (key: string) => `<li class="unit-detail-option-right-item">${key}</li>`
-    )
-    .join("");
+  // 왼쪽
+  const leftItems = keys.map((key: string, index: number) => {
+    const li = document.createElement("li");
+    li.id = `unit-detail-option-left-item-${index}`;
+    li.className = "unit-detail-option-left-item";
+    li.className += " unit-option-item";
+    li.innerText = key;
+    return li;
+  });
+  unitDetailOptionsLeft.innerText = "";
+  unitDetailOptionsLeft.append(...leftItems);
+
+  // 오른쪽
+  const rightItems = keys.map((key: string, index: number) => {
+    const li = document.createElement("li");
+    li.id = `unit-detail-option-right-item-${index}`;
+    li.className = "unit-detail-option-right-item";
+    li.className += " unit-option-item";
+    li.innerText = key;
+    return li;
+  });
+  unitDetailOptionsRight.innerText = "";
+  unitDetailOptionsRight.append(...rightItems);
 }
 
 // 소단위 카테고리 토글
@@ -1047,22 +1060,32 @@ function unitDetailFilterAction(this: HTMLElement, e: Event) {
   // left right 구별
   if ((target as HTMLElement).id.includes("left")) {
     // 왼쪽의 경우
-    const listItems: string = newUnitDetailCategory
-      .map(
-        (data: string) =>
-          `<li class="unit-detail-option-left-item">${data}</li>`
-      )
-      .join("");
-    unitDetailOptionsLeft.innerHTML = listItems;
+    const listItems: HTMLElement[] = newUnitDetailCategory.map(
+      (data: string, index: number) => {
+        const li = document.createElement("li");
+        li.id = `unit-detail-option-left-item-${index}`;
+        li.className = "unit-detail-option-left-item";
+        li.className += " unit-option-item";
+        li.innerText = data;
+        return li;
+      }
+    );
+    unitDetailOptionsLeft.innerText = ""; // 기존 목록 초기화
+    unitDetailOptionsLeft.append(...listItems);
   } else {
     // 오른쪽의 경우
-    const listItems: string = newUnitDetailCategory
-      .map(
-        (data: string) =>
-          `<li class="unit-detail-option-right-item">${data}</li>`
-      )
-      .join("");
-    unitDetailOptionsRight.innerHTML = listItems;
+    const listItems: HTMLElement[] = newUnitDetailCategory.map(
+      (data: string, index: number) => {
+        const li = document.createElement("li");
+        li.id = `unit-detail-option-right-item-${index}`;
+        li.className = "unit-detail-option-right-item";
+        li.className += " unit-option-item";
+        li.innerText = data;
+        return li;
+      }
+    );
+    unitDetailOptionsRight.innerText = "";
+    unitDetailOptionsRight.append(...listItems);
   }
 }
 
@@ -1110,7 +1133,7 @@ function unitDetailOptionsClick(selectedText: string, event: Event) {
   // left right 구분하고 그 검색창 비우기
   if (
     (target as HTMLElement).id === "unit-detail-filter-left" ||
-    (target as HTMLElement).className === "unit-detail-option-left-item"
+    (target as HTMLElement).className.includes("unit-detail-option-left-item")
   ) {
     leftRight = "left";
     const unitDetailFilter: HTMLElement | null = document.getElementById(
@@ -1121,7 +1144,7 @@ function unitDetailOptionsClick(selectedText: string, event: Event) {
     }
   } else if (
     (target as HTMLElement).id === "unit-detail-filter-right" ||
-    (target as HTMLElement).className === "unit-detail-option-right-item"
+    (target as HTMLElement).className.includes("unit-detail-option-right-item")
   ) {
     leftRight = "right";
     const unitDetailFilter: HTMLElement | null = document.getElementById(

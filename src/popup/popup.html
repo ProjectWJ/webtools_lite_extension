@@ -301,7 +301,7 @@
         <!-- 대단위 선택 박스 -->
         <div
           id="unit-convert-selectbox"
-          class="mb-2 is-flex unit-selectbox"
+          class="mb-2 unit-selectbox display-flex"
           tabindex="0"
         >
           <!-- div는 focus 미적용이라 tabindex="0"으로 받을 수 있게 해줘야 한다. -->
@@ -312,7 +312,7 @@
         <!-- 대단위 목록 탐색 박스 -->
         <div
           id="unit-convert-searchbox"
-          class="px-2 pt-2 blind unit-searchbox custom-select-dropdown custom-select-dropdown"
+          class="px-2 pt-2 blind unit-searchbox custom-select-dropdown"
         >
           <input
             id="unit-filter"
@@ -322,26 +322,33 @@
           />
           <ul id="unit-options" class="py-1 unit-ul-design"></ul>
         </div>
+        <div class="my-5"></div>
+
         <!-- 왼쪽(상단) 선택 박스 -->
-        <div class="my-2 is-flex unit-selectbox-small">
-          <!-- 진행중....... -->
-          <select
-            id="unit-convert-detail-select-leftbox"
-            aria-label="unit-convert-select-left"
-          >
-            <option id="unit-convert-detail-select-left"></option>
-          </select>
+        <div
+          id="unit-convert-detail-select-leftbox"
+          class="mt-2 unit-selectbox display-inline-flex"
+          tabindex="0"
+        >
+          <span id="unit-convert-detail-select-left"></span>
+          <span
+            id="unit-convert-detail-select-left-icon"
+            class="mdi mdi-chevron-down mdi-icon-design"
+          ></span>
         </div>
 
         <!-- 왼쪽(상단) 목록 탐색 박스 -->
-        <div id="unit-convert-detail-search-left" class="blind">
+        <div
+          id="unit-convert-detail-search-left"
+          class="px-2 pt-2 blind unit-searchbox custom-select-dropdown"
+        >
           <input
             id="unit-detail-filter-left"
             type="input"
             placeholder="검색"
             class="input"
           />
-          <ul id="unit-detail-options-left"></ul>
+          <ul id="unit-detail-options-left" class="py-1 unit-ul-design"></ul>
         </div>
 
         <!-- 왼쪽(상단) 값 입력 -->
@@ -356,25 +363,31 @@
         </div>
         <!-- = -->
 
-        <!-- 오른쪽(하단) 목록 탐색 박스 -->
-        <div class="select my-2">
-          <select
-            id="unit-convert-detail-select-rightbox"
-            aria-label="unit-convert-select-right"
-          >
-            <option id="unit-convert-detail-select-right"></option>
-          </select>
+        <!-- 오른쪽(하단) 선택 박스 -->
+        <div
+          id="unit-convert-detail-select-rightbox"
+          class="mt-2 unit-selectbox display-inline-flex"
+          tabindex="0"
+        >
+          <span id="unit-convert-detail-select-right"></span>
+          <span
+            id="unit-convert-detail-select-right-icon"
+            class="mdi mdi-chevron-down mdi-icon-design"
+          ></span>
         </div>
 
         <!-- 오른쪽(하단) 목록 탐색 박스 -->
-        <div id="unit-convert-detail-search-right" class="blind">
+        <div
+          id="unit-convert-detail-search-right"
+          class="px-2 pt-2 blind unit-searchbox custom-select-dropdown"
+        >
           <input
             id="unit-detail-filter-right"
             type="text"
             placeholder="검색"
             class="input"
           />
-          <ul id="unit-detail-options-right"></ul>
+          <ul id="unit-detail-options-right" class="py-1 unit-ul-design"></ul>
         </div>
 
         <!-- 오른쪽(하단) 값 입력 -->

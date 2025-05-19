@@ -85,7 +85,6 @@ trim()을 사용하여 해결
 
 todo
 - popup.ts에 남아있는 innerHTML 제거하기
-- 탭키로 요소 이동하는 거 고민해보기
 
 suggest
 - 사용법 설명하는 페이지 만들기. 굳이 페이지 아니더라도 간단하게 안내하는 것도 괜찮음
@@ -95,6 +94,8 @@ suggest
 - 한영타 변환 단축키에 등록?
 - 글자 수 세기에 정규화 기능 추가?
 https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Global_Objects/String/normalize
+- 탭키로 요소 이동하는 거 고민해보기
+- 단위 변환 검색창에서 엔터키를 누를 때 일치하는 요소가 없을 경우, item이 존재한다면 가장 위에 있는 item return하기
 
 suggest(complete)
 - 드롭다운 박스에 검색 기능이 추가된 select2를 사용할 수 있음(https://select2.org/)(직접 구현함)
