@@ -20,7 +20,6 @@
       <div
         class="buttons is-flex is-flex-wrap-wrap container is-fluid paddingtop paddingbottom"
       >
-        <!-- container가 justify-content: center; 속성 가지고 있음-->
         <button
           id="character-count"
           type="button"
@@ -107,7 +106,7 @@
           />
           색 추출
         </button>
-        <!-- <button id="options-btn" type="button"       class="button"  >설정</button> 임시 비활성화 -->
+        <!-- <button id="options-btn" type="button"       class="button"  >설정</button> 더미 -->
         <button
           id="help-btn"
           type="button"
@@ -301,10 +300,10 @@
         <!-- 대단위 선택 박스 -->
         <div
           id="unit-convert-selectbox"
-          class="mb-2 unit-selectbox display-flex"
+          class="mb-1 unit-selectbox display-flex"
           tabindex="0"
         >
-          <!-- div는 focus 미적용이라 tabindex="0"으로 받을 수 있게 해줘야 한다. -->
+          <!-- div는 focus 미적용. tabindex="0"으로 받을 수 있게 해줘야 한다. -->
           <span id="unit-convert-select-unit"></span>
           <span class="mdi mdi-chevron-down mdi-icon-design"></span>
         </div>
@@ -327,7 +326,7 @@
         <!-- 왼쪽(상단) 선택 박스 -->
         <div
           id="unit-convert-detail-select-leftbox"
-          class="mt-2 unit-selectbox display-inline-flex"
+          class="mt-2 mb-1 unit-selectbox display-inline-flex"
           tabindex="0"
         >
           <span id="unit-convert-detail-select-left"></span>
@@ -366,7 +365,7 @@
         <!-- 오른쪽(하단) 선택 박스 -->
         <div
           id="unit-convert-detail-select-rightbox"
-          class="mt-2 unit-selectbox display-inline-flex"
+          class="mt-2 mb-1 unit-selectbox display-inline-flex"
           tabindex="0"
         >
           <span id="unit-convert-detail-select-right"></span>
@@ -403,12 +402,6 @@
 
         <!-- 더미 -->
         <span id="unit-convert-formula"></span>
-
-        <!-- 여유 공간 확보용 div -->
-        <div class=""></div>
-
-        <!-- 테스트 -->
-        <!-- 테스트 끝 -->
       </div>
     </div>
 
