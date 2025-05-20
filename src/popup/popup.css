@@ -42,15 +42,21 @@
   );
 }
 
-.capital-lower-convert-copy-div {
+/** 글자 수 세기 초기화 메시지 */
+.char-count-clear-message {
+  left: 50%;
+  transform: translateX(-60%);
+  position: absolute;
+  animation: fadeInOut 2s ease-in-out forwards;
+  animation-fill-mode: forwards;
+}
+
+.capital-lower-convert-message-div {
   display: flex;
   align-items: center;
 }
 
 .copy-message-fadeinout {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-115%);
   animation: fadeInOut 2s ease-in-out forwards;
   animation-fill-mode: forwards;
 }
@@ -196,4 +202,12 @@ li:hover {
 
 .number-system-convert-input {
   width: 75%;
+}
+
+.hangul-alphabet-message {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-65%);
+  animation: fadeInOut 2s ease-in-out forwards;
+  animation-fill-mode: forwards;
 }

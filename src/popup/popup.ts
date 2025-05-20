@@ -122,7 +122,17 @@ function characterCountReset() {
   const textArea: HTMLTextAreaElement = document.getElementById(
     "character-count-textarea"
   ) as HTMLTextAreaElement;
+  const clearMessage: HTMLSpanElement = document.getElementById(
+    "character-count-reset-message"
+  ) as HTMLSpanElement;
   textArea.value = "";
+  clearMessage.innerText = "초기화되었습니다.";
+  clearMessage.className = "char-count-clear-message";
+  setTimeout(() => {
+    clearMessage.innerText = "";
+    clearMessage.classList.remove("char-count-clear-message");
+  }, 2000);
+
   characterCountAction();
 }
 
@@ -287,20 +297,18 @@ function capitalLowerConvertCopy() {
   if (textAreaOutput.value === "") return;
 
   navigator.clipboard.writeText(textAreaOutput.value).then(() => {
-    const messageDiv: HTMLElement | null = document.getElementById(
-      "capital-lower-convert-copy-div"
+    const copyMessage: HTMLElement | null = document.getElementById(
+      "capital-lower-convert-message"
     );
 
-    if (!messageDiv) return;
+    if (!copyMessage) return;
 
-    const copyMessage: HTMLSpanElement = document.createElement("span");
-    copyMessage.className = "copy-message-fadeinout";
     copyMessage.innerText = "복사되었습니다.";
-
-    messageDiv.appendChild(copyMessage);
+    copyMessage.className = "copy-message-fadeinout";
 
     setTimeout(() => {
-      messageDiv.removeChild(copyMessage);
+      copyMessage.innerText = "";
+      copyMessage.classList.remove("copy-message-fadeinout");
     }, 2000);
   });
 }
@@ -310,12 +318,24 @@ function capitalLowerConvertReset() {
   const textAreaInput: HTMLTextAreaElement = document.getElementById(
     "capital-lower-convert-textarea-input"
   ) as HTMLTextAreaElement;
-  const textAreaOutput: HTMLTextAreaElement = document.getElementById(
-    "capital-lower-convert-textarea-output"
-  ) as HTMLTextAreaElement;
+  const copyMessage: HTMLElement | null = document.getElementById(
+    "capital-lower-convert-message"
+  );
+
+  if (textAreaInput.value === "") return;
 
   textAreaInput.value = "";
-  textAreaOutput.value = "";
+  capitalLowerConvertAction();
+
+  if (!copyMessage) return;
+
+  copyMessage.innerText = "초기화되었습니다.";
+  copyMessage.className = "copy-message-fadeinout";
+
+  setTimeout(() => {
+    copyMessage.innerText = "";
+    copyMessage.classList.remove("copy-message-fadeinout");
+  }, 2000);
 }
 
 /** 단위 변환 */
@@ -1940,9 +1960,9 @@ function hangulAlphabetCopyAction(e: Event) {
   const target: HTMLElement = e.target as HTMLElement;
   let copyTarget = "";
 
-  if (target.id === "hangul-alphabet-convert-copy-btn-kor") {
+  if (target.id.includes("hangul-alphabet-convert-copy-btn-kor")) {
     copyTarget = "hangul-alphabet-convert-input-kor";
-  } else if (target.id === "hangul-alphabet-convert-copy-btn-eng") {
+  } else if (target.id.includes("hangul-alphabet-convert-copy-btn-eng")) {
     copyTarget = "hangul-alphabet-convert-input-eng";
   }
 
@@ -1953,11 +1973,16 @@ function hangulAlphabetCopyAction(e: Event) {
     navigator.clipboard
       .writeText(copyText)
       .then(() => {
-        const messageTarget = document.getElementById(`${target.id}-message`);
+        let targetid = target.id;
+        if (targetid.includes("-img")) targetid = targetid.replace("-img", "");
+
+        const messageTarget = document.getElementById(`${targetid}-message`);
         if (messageTarget) {
           messageTarget.innerText = "복사되었습니다.";
+          messageTarget.className = "hangul-alphabet-message";
           setTimeout(() => {
             messageTarget.innerText = ""; // 2초 후에 메시지 초기화
+            messageTarget.classList.remove("hangul-alphabet-message");
           }, 2000);
         }
       })
@@ -1969,12 +1994,33 @@ function hangulAlphabetCopyAction(e: Event) {
 
 // 비우기
 function hangulAlphabetClearAction() {
-  const korInput = document.getElementById("hangul-alphabet-convert-input-kor");
-  const engInput = document.getElementById("hangul-alphabet-convert-input-eng");
+  const korInput: HTMLElement | null = document.getElementById(
+    "hangul-alphabet-convert-input-kor"
+  );
+  const engInput: HTMLElement | null = document.getElementById(
+    "hangul-alphabet-convert-input-eng"
+  );
+  const clearMessage: HTMLElement | null = document.getElementById(
+    "hangul-alphabet-convert-clear-message"
+  );
 
   if (korInput && engInput) {
+    if (
+      (korInput as HTMLTextAreaElement).value == "" &&
+      (engInput as HTMLTextAreaElement).value == ""
+    )
+      return;
+
     (korInput as HTMLTextAreaElement).value = "";
     (engInput as HTMLTextAreaElement).value = "";
+
+    if (!clearMessage) return;
+    clearMessage.innerText = "초기화되었습니다.";
+    clearMessage.className = "hangul-alphabet-message";
+    setTimeout(() => {
+      clearMessage.innerText = ""; // 2초 후에 메시지 초기화
+      clearMessage.classList.remove("hangul-alphabet-message");
+    }, 2000);
   } else {
     console.error("textArea를 찾을 수 없습니다.");
     return;

@@ -140,7 +140,8 @@
           placeholder="이곳에 내용을 입력하세요."
           class="textarea has-fixed-size"
         ></textarea>
-        <div class="py-4 is-flex is-justify-content-end">
+        <div class="py-4 is-flex is-justify-content-end is-align-items-center">
+          <span id="character-count-reset-message"></span>
           <button
             type="button"
             id="character-count-reset"
@@ -259,10 +260,9 @@
           readonly
         ></textarea>
         <div class="py-4 is-flex is-justify-content-end">
-          <div
-            id="capital-lower-convert-copy-div"
-            class="capital-lower-convert-copy-div pr-4"
-          ></div>
+          <div class="capital-lower-convert-message-div pr-4">
+            <span id="capital-lower-convert-message"></span>
+          </div>
           <button
             type="button"
             id="capital-lower-convert-copy"
@@ -495,46 +495,75 @@
         />
       </div>
       <hr class="titlehr" />
-      <span>한글</span>
-      <br />
-      <textarea
-        id="hangul-alphabet-convert-input-kor"
-        aria-label="hangul"
-        placeholder="한글을 입력해주세요"
-      ></textarea>
-      <button
-        id="hangul-alphabet-convert-copy-btn-kor"
-        class="hangul-alphabet-convert-copy-btn"
-        type="button"
-      >
-        복사
-      </button>
-      <span id="hangul-alphabet-convert-copy-btn-kor-message"></span>
-      <br />
-      <span>영어</span>
-      <br />
-      <textarea
-        id="hangul-alphabet-convert-input-eng"
-        aria-label="alphabet"
-        placeholder="영어를 입력해주세요"
-      ></textarea>
-      <button
-        id="hangul-alphabet-convert-copy-btn-eng"
-        class="hangul-alphabet-convert-copy-btn"
-        type="button"
-      >
-        복사
-      </button>
-      <span id="hangul-alphabet-convert-copy-btn-eng-message"></span>
-      <br />
-      <button
-        id="hangul-alphabet-convert-clear-btn"
-        class="hangul-alphabet-convert-clear-btn"
-        type="button"
-      >
-        비우기
-      </button>
-      <button class="back-btn" type="button">돌아가기</button>
+      <div class="container px-4 py-4">
+        <div
+          class="is-flex pl-2 is-align-items-center is-justify-content-space-between"
+        >
+          <span class="pl-2">한글</span>
+          <span id="hangul-alphabet-convert-copy-btn-kor-message"></span>
+          <button
+            id="hangul-alphabet-convert-copy-btn-kor"
+            class="button is-light mr-2 hangul-alphabet-convert-copy-btn"
+            type="button"
+          >
+            <img
+              id="hangul-alphabet-convert-copy-btn-kor-img"
+              src="/copy.png"
+              alt="복사"
+              class="is-block image is-24x24"
+            />
+          </button>
+        </div>
+        <textarea
+          id="hangul-alphabet-convert-input-kor"
+          aria-label="hangul"
+          placeholder="한글을 입력해주세요."
+          class="textarea has-fixed-size my-2"
+        ></textarea>
+
+        <div
+          class="is-flex pt-2 pl-2 is-align-items-center is-justify-content-space-between"
+        >
+          <span class="pl-2">영어</span>
+          <span id="hangul-alphabet-convert-copy-btn-eng-message"></span>
+          <button
+            id="hangul-alphabet-convert-copy-btn-eng"
+            class="button is-light mr-2 hangul-alphabet-convert-copy-btn"
+            type="button"
+          >
+            <img
+              id="hangul-alphabet-convert-copy-btn-eng-img"
+              src="/copy.png"
+              alt="복사"
+              class="is-block image is-24x24"
+            />
+          </button>
+        </div>
+
+        <textarea
+          id="hangul-alphabet-convert-input-eng"
+          aria-label="alphabet"
+          placeholder="영어를 입력해주세요."
+          class="textarea has-fixed-size my-2"
+        ></textarea>
+
+        <div
+          class="is-justify-content-flex-end is-align-items-center display-flex"
+        >
+          <span id="hangul-alphabet-convert-clear-message" class=""></span>
+          <button
+            id="hangul-alphabet-convert-clear-btn"
+            class="button is-light mr-2 hangul-alphabet-convert-clear-btn"
+            type="button"
+          >
+            <img
+              src="/reset.png"
+              alt="초기화"
+              class="is-block image is-24x24"
+            />
+          </button>
+        </div>
+      </div>
     </div>
 
     <!-- 통합 주소 검색 패널 -->
