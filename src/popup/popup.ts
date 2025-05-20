@@ -1132,7 +1132,7 @@ function unitDetailOptionsClick(selectedText: string, event: Event) {
 
   // left right 구분하고 그 검색창 비우기
   if (
-    (target as HTMLElement).id === "unit-detail-filter-left" ||
+    (target as HTMLElement).id === "unit-detail-filter-left" || // <- 불필요?
     (target as HTMLElement).className.includes("unit-detail-option-left-item")
   ) {
     leftRight = "left";
@@ -1143,7 +1143,7 @@ function unitDetailOptionsClick(selectedText: string, event: Event) {
       (unitDetailFilter as HTMLInputElement).value = "";
     }
   } else if (
-    (target as HTMLElement).id === "unit-detail-filter-right" ||
+    (target as HTMLElement).id === "unit-detail-filter-right" || // <- 불필요?
     (target as HTMLElement).className.includes("unit-detail-option-right-item")
   ) {
     leftRight = "right";

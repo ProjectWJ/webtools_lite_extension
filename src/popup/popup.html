@@ -117,6 +117,7 @@
       </div>
     </div>
 
+    <!-- 글자 수 세기 패널 -->
     <div id="character-count-panel" class="card-content blind">
       <div class="container titlepadding titlearg">
         <button class="back-btn button is-light" type="button">
@@ -210,6 +211,7 @@
       </div>
     </div>
 
+    <!-- 대소문자 변환 패널 -->
     <div id="capital-lower-convert-panel" class="blind">
       <div class="container titlepadding titlearg">
         <button class="back-btn button is-light" type="button">
@@ -283,6 +285,7 @@
       </div>
     </div>
 
+    <!-- 단위 변환 패널 -->
     <div id="unit-convert-panel" class="blind">
       <div class="container titlepadding titlearg">
         <button class="back-btn button is-light" type="button">
@@ -405,47 +408,77 @@
       </div>
     </div>
 
+    <!-- 진수 변환 패널 -->
     <div id="number-system-convert-panel" class="blind">
-      <p>진수 변환</p>
-      <span>10진수</span>
-      <input
-        id="decimal-input"
-        aria-label="decimal-input"
-        placeholder="10진수 값을 입력하세요"
-      />
-      <br />
-      <span>2진수</span>
-      <input
-        id="binary-input"
-        aria-label="binary-input"
-        placeholder="2진수 값을 입력하세요"
-      />
-      <br />
-      <span>8진수</span>
-      <input
-        id="octal-input"
-        aria-label="octal-input"
-        placeholder="8진수 값을 입력하세요"
-      />
-      <br />
-      <span>16진수</span>
-      <input
-        id="hexadecimal-input"
-        aria-label="hexadecimal-input"
-        placeholder="16진수 값을 입력하세요"
-      />
-      <br />
-      <span>10진수 : 0 ~ 9</span>
-      <br />
-      <span>2진수 : 0 ~ 1</span>
-      <br />
-      <span>8진수 : 0 ~ 7</span>
-      <br />
-      <span>16진수 : 0 ~ F (10 = A, 11 = B, 12 = C...)</span>
-      <br />
-      <button class="back-btn" type="button">돌아가기</button>
+      <div class="container titlepadding titlearg">
+        <button class="back-btn button is-light" type="button">
+          <img src="/home.png" alt="홈" class="image is-24x24" />
+        </button>
+
+        <p class="is-size-5 has-text-weight-semibold has-text-centered">
+          진수 변환
+        </p>
+        <img
+          src="/numbersystem.png"
+          alt="진수 변환"
+          class="is-block image is-48x48"
+        />
+      </div>
+      <hr class="titlehr" />
+
+      <div
+        class="container px-4 py-4 is-justify-content-space-between is-align-items-center display-flex"
+      >
+        <span>10진수</span>
+        <input
+          id="decimal-input"
+          aria-label="decimal-input"
+          placeholder="10진수 값을 입력하세요."
+          class="input number-system-convert-input"
+        />
+      </div>
+      <div
+        class="container px-4 py-4 is-justify-content-space-between is-align-items-center display-flex"
+      >
+        <span>2진수</span>
+        <input
+          id="binary-input"
+          aria-label="binary-input"
+          placeholder="2진수 값을 입력하세요."
+          class="input number-system-convert-input"
+        />
+      </div>
+      <div
+        class="container px-4 py-4 is-justify-content-space-between is-align-items-center display-flex"
+      >
+        <span>8진수</span>
+        <input
+          id="octal-input"
+          aria-label="octal-input"
+          placeholder="8진수 값을 입력하세요."
+          class="input number-system-convert-input"
+        />
+      </div>
+      <div
+        class="container px-4 py-4 is-justify-content-space-between is-align-items-center display-flex"
+      >
+        <span>16진수</span>
+        <input
+          id="hexadecimal-input"
+          aria-label="hexadecimal-input"
+          placeholder="16진수 값을 입력하세요."
+          class="input number-system-convert-input"
+        />
+      </div>
+      <div class="px-4 py-4">
+        <p class="pb-1">10진수: 0 - 9</p>
+        <p class="pb-1">2진수: 0 - 1</p>
+        <p class="pb-1">8진수: 0 - 7</p>
+        <p class="pb-1">16진수: 0 - F (F = 10진수 15)</p>
+      </div>
     </div>
 
+    <!-- 한영타 변환 패널 -->
     <div id="hangul-alphabet-convert-panel" class="blind">
       <p>한영타 변환</p>
       <span>한글</span>
@@ -489,6 +522,8 @@
       </button>
       <button class="back-btn" type="button">돌아가기</button>
     </div>
+
+    <!-- 통합 주소 검색 패널 -->
     <div id="full-juso-finder-panel" class="blind">
       <span>통합 주소 검색</span>
       <button class="back-btn" type="button">돌아가기</button>
@@ -534,6 +569,8 @@
         <ol id="full-juso-finder-search-result-field"></ol>
       </div>
     </div>
+
+    <!-- 색 추출 패널 -->
     <div id="color-picker-panel" class="blind">
       <p>색 추출</p>
       <button class="back-btn" type="button">돌아가기</button>
@@ -550,10 +587,5 @@
     </div>
     <div id="color-picker-preview-div" class="blind"></div>
   </body>
-  <!-- 검색 아이콘 -->
-  <link
-    href="https://fonts.googleapis.com/icon?family=Material+Icons"
-    rel="stylesheet"
-  />
   <script type="module" src="popup.ts"></script>
 </html>

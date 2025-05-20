@@ -188,3 +188,12 @@ li:hover {
   background-color: transparent;
   border-radius: 8px;
 }
+
+/** 진수 변환 */
+.display-flex {
+  display: flex;
+}
+
+.number-system-convert-input {
+  width: 75%;
+}
