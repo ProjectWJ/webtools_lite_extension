@@ -94,13 +94,14 @@ suggest
 - 한영타 변환 단축키에 등록?
 - 글자 수 세기에 정규화 기능 추가?
 https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Global_Objects/String/normalize
-- 탭키로 요소 이동하는 거 고민해보기
 - 단위 변환 검색창에서 엔터키를 누를 때 일치하는 요소가 없을 경우, item이 존재한다면 가장 위에 있는 item return하기
 
 suggest(complete)
 - 드롭다운 박스에 검색 기능이 추가된 select2를 사용할 수 있음(https://select2.org/)(직접 구현함)
 - 단위 변환기 초기 세팅을 길이로 하기(적용)
 - 대단위에서 엔터키 누르면 검색한 거 입력필드에 넣기(적용)
+- 단위 변환 탭키로 요소 이동하는 거 고민해보기(적용)
+- 패널 변경 시 자동 포커스(적용)
 
 Reference
 - 글자수 세는 방법

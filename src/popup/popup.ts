@@ -30,9 +30,6 @@ document.getElementById("full-juso-finder")?.addEventListener("click", () => {
 document.getElementById("color-picker")?.addEventListener("click", () => {
   panelToggle("color-picker-panel");
 });
-document.getElementById("date-calculate")?.addEventListener("click", () => {
-  panelToggle("date-calculate-panel");
-});
 
 /** 개인정보처리방침 및 이용약관 */
 const openInNewTab = (url: string) => {
@@ -56,22 +53,113 @@ function panelToggle(id: string) {
   panels.forEach((panel) => {
     if (panel.id === id) {
       panel.classList.remove("blind");
+      // panel.className = "";
 
-      // 글자 수 세기 자동 포커스 실행
+      // 패널 변경 시 실행할 자동 프로세스
+      // 글자 수 세기
       if (panel.id === "character-count-panel") {
-        characterCountAutoFocus();
+        autoFocus(panel.id); // 인풋창에 자동 포커스
+      }
+      // 대소문자 변환
+      else if (panel.id === "capital-lower-convert-panel") {
+        autoFocus(panel.id);
+      }
+      // 단위 변환
+      else if (panel.id === "unit-convert-panel") {
+        autoFocus(panel.id);
+      }
+      // 진수 변환
+      else if (panel.id === "number-system-convert-panel") {
+        autoFocus(panel.id);
+      }
+      // 한영타 변환
+      else if (panel.id === "hangul-alphabet-convert-panel") {
+        autoFocus(panel.id);
+      }
+      // 통합 주소 검색
+      else if (panel.id === "full-juso-finder-panel") {
+        // fullJusoFinderAutoFocus(); // 검색창에 자동 포커스
+        // body에 global-width class 제거
+        if (document.body.classList.contains("global-width")) {
+          document.body.classList.remove("global-width");
+        }
+        autoFocus(panel.id);
+      }
+      // 색 추출
+      else if (panel.id === "color-picker-panel") {
       }
     } else {
       panel.classList.add("blind");
+      // panel.className = "blind";
     }
   });
-  /*   if (termsPrivacyContainer) {
-    if (termsPrivacyContainer.classList.contains("blind")) {
-      termsPrivacyContainer.classList.remove("blind");
-    } else {
-      termsPrivacyContainer.classList.add("blind");
+
+  // 통합 주소 검색 패널 아니면 body에 global-width class 추가
+  if (
+    document
+      .getElementById("full-juso-finder-panel")
+      ?.classList.contains("blind")
+  ) {
+    document.body.className = "global-width";
+  }
+}
+
+/** 자동 포커스 */
+function autoFocus(panelId: string) {
+  // 글자 수 세기
+  if (panelId === "character-count-panel") {
+    const textArea: HTMLTextAreaElement = document.getElementById(
+      "character-count-textarea"
+    ) as HTMLTextAreaElement;
+    if (textArea) {
+      textArea.focus();
     }
-  } */
+  }
+  // 대소문자 변환
+  else if (panelId === "capital-lower-convert-panel") {
+    const textArea: HTMLTextAreaElement = document.getElementById(
+      "capital-lower-convert-textarea-input"
+    ) as HTMLTextAreaElement;
+    if (textArea) {
+      textArea.focus();
+    }
+  }
+  // 단위 변환
+  else if (panelId === "unit-convert-panel") {
+    const selectBox: HTMLElement | null = document.getElementById(
+      "unit-convert-selectbox"
+    );
+    if (selectBox) {
+      selectBox.focus();
+    }
+  }
+  // 진수 변환
+  else if (panelId === "number-system-convert-panel") {
+    const input: HTMLInputElement = document.getElementById(
+      "decimal-input"
+    ) as HTMLInputElement;
+    if (input) {
+      input.focus();
+    }
+  }
+  // 한영타 변환
+  else if (panelId === "hangul-alphabet-convert-panel") {
+    const input: HTMLInputElement = document.getElementById(
+      "hangul-alphabet-convert-input-kor"
+    ) as HTMLInputElement;
+    if (input) {
+      input.focus();
+    }
+  }
+  // 통합 주소 검색
+  else if (panelId === "full-juso-finder-panel") {
+    const input: HTMLInputElement = document.getElementById(
+      "full-juso-finder-input"
+    ) as HTMLInputElement;
+    if (input) {
+      input.focus();
+    }
+  }
 }
 
 /** 옵션 */
@@ -107,15 +195,6 @@ document
 /* document
   .getElementById("character-count-zoom")
   ?.addEventListener("click", characterCountZoom); */
-// 자동 포커스
-function characterCountAutoFocus() {
-  const textArea: HTMLTextAreaElement = document.getElementById(
-    "character-count-textarea"
-  ) as HTMLTextAreaElement;
-  if (textArea) {
-    textArea.focus();
-  }
-}
 
 // 초기화
 function characterCountReset() {
@@ -125,6 +204,9 @@ function characterCountReset() {
   const clearMessage: HTMLSpanElement = document.getElementById(
     "character-count-reset-message"
   ) as HTMLSpanElement;
+
+  if (textArea.value === "") return;
+
   textArea.value = "";
   clearMessage.innerText = "초기화되었습니다.";
   clearMessage.className = "char-count-clear-message";
@@ -531,6 +613,11 @@ let selectedUnit: string[] = []; // 현재 선택된 대단위의 소단위 배�
 document
   .getElementById("unit-convert-selectbox")
   ?.addEventListener("mousedown", unitConvertSelectBoxToggle);
+document
+  .getElementById("unit-convert-selectbox")
+  ?.addEventListener("keydown", (e: KeyboardEvent) => {
+    if (e.key === "Enter") unitConvertSelectBoxToggle();
+  });
 document.addEventListener("mousedown", unitConvertSearchboxOutsideClick);
 document.addEventListener("mousedown", unitConvertDetailSearchboxOutsideClick);
 document
@@ -555,8 +642,18 @@ document
   .getElementById("unit-convert-detail-select-leftbox")
   ?.addEventListener("mousedown", unitDetailSearchBoxToggle);
 document
+  .getElementById("unit-convert-detail-select-leftbox")
+  ?.addEventListener("keydown", (e: KeyboardEvent) => {
+    if (e.key === "Enter") unitDetailSearchBoxToggle(e);
+  });
+document
   .getElementById("unit-convert-detail-select-rightbox")
   ?.addEventListener("mousedown", unitDetailSearchBoxToggle);
+document
+  .getElementById("unit-convert-detail-select-rightbox")
+  ?.addEventListener("keydown", (e: KeyboardEvent) => {
+    if (e.key === "Enter") unitDetailSearchBoxToggle(e);
+  });
 document
   .getElementById("unit-convert-detail-input-left")
   ?.addEventListener("input", unitDetailInputAction);

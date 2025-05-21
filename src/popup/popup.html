@@ -13,7 +13,7 @@
     <div id="tab-panel" class="">
       <div class="container titlepadding">
         <h3 class="is-size-5 has-text-weight-semibold has-text-centered">
-          WebTools Lite Extension 1.0
+          WebTools Lite 1.0
         </h3>
       </div>
       <hr class="titlehr" />
@@ -567,16 +567,28 @@
     </div>
 
     <!-- 통합 주소 검색 패널 -->
-    <div id="full-juso-finder-panel" class="blind">
-      <span>통합 주소 검색</span>
-      <button class="back-btn" type="button">돌아가기</button>
-      <br />
+    <div id="full-juso-finder-panel" class="full-juso-finder blind">
+      <div class="container titlepadding titlearg">
+        <button class="back-btn button is-light" type="button">
+          <img src="/home.png" alt="홈" class="image is-24x24" />
+        </button>
+
+        <p class="is-size-5 has-text-weight-semibold has-text-centered">
+          통합 주소 검색
+        </p>
+        <img
+          src="/fulljuso.png"
+          alt="통합 주소 검색"
+          class="is-block image is-48x48"
+        />
+      </div>
+      <hr class="titlehr" />
       <span>도로명주소, 지번주소, 영문주소, 우편번호를 제공합니다.</span>
       <input
         id="full-juso-finder-input"
         type="text"
         aria-label="full-juso-finder-input"
-        placeholder="검색할 주소 입력"
+        placeholder="검색할 주소를 입력하세요."
       />
       <button id="full-juso-finder-btn" type="button">검색</button>
       <hr />

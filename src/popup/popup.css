@@ -211,3 +211,9 @@ li:hover {
   animation: fadeInOut 2s ease-in-out forwards;
   animation-fill-mode: forwards;
 }
+
+/** 통합 주소 검색 */
+.full-juso-finder {
+  width: 400px;
+  overflow-x: auto;
+}
