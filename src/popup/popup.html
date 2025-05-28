@@ -583,24 +583,132 @@
         />
       </div>
       <hr class="titlehr" />
-      <span>도로명주소, 지번주소, 영문주소, 우편번호를 제공합니다.</span>
-      <input
-        id="full-juso-finder-input"
-        type="text"
-        aria-label="full-juso-finder-input"
-        placeholder="검색할 주소를 입력하세요."
-      />
-      <button id="full-juso-finder-btn" type="button">검색</button>
-      <hr />
-      <span>도로명: </span><span id="full-juso-finder-result-roadname"></span
-      ><br />
-      <span>지번: </span><span id="full-juso-finder-result-jibun"></span><br />
-      <span>영문: </span><span id="full-juso-finder-result-roadnameeng"></span
-      ><br />
-      <span>우편번호: </span><span id="full-juso-finder-result-zipcode"></span
-      ><br />
-      <hr />
-      <span
+      <div class="container px-4 py-4">
+        <div class="has-text-centered pb-4">
+          <span>도로명, 지번, 영문 주소와 우편번호를 제공합니다.</span>
+        </div>
+
+        <div class="is-flex">
+          <input
+            id="full-juso-finder-input"
+            type="text"
+            aria-label="full-juso-finder-input"
+            placeholder="검색할 주소를 입력하세요."
+            class="input mx-2"
+          />
+          <button
+            id="full-juso-finder-btn"
+            type="button"
+            class="button is-dark full-juso-btn-width"
+          >
+            <span id="full-juso-finder-btn-value" class="">검색</span>
+          </button>
+        </div>
+
+        <div class="py-4 full-juso-line-height">
+          <div
+            class="is-flex py-1 full-juso-finder-result-div is-justify-content-space-between"
+          >
+            <p class="full-juso-finder-result-p">도로명</p>
+            <input
+              id="full-juso-finder-result-roadname"
+              aria-label="roadname"
+              class="input full-juso-finder-result-input"
+              readonly
+            />
+            <button
+              id="full-juso-finder-result-roadname-copy-btn"
+              type="button"
+              aria-label="roadname-copy"
+              class="button is-light ml-2"
+            >
+              <img
+                id="full-juso-finder-result-roadname-copy-btn-img"
+                src="/copy.png"
+                title="copy"
+                class="is-block image is-24x24"
+              />
+            </button>
+          </div>
+
+          <div
+            class="is-flex py-1 full-juso-finder-result-div is-justify-content-space-between"
+          >
+            <p class="full-juso-finder-result-p">지번</p>
+            <input
+              id="full-juso-finder-result-jibun"
+              aria-label="jibun"
+              class="input full-juso-finder-result-input"
+              readonly
+            />
+            <button
+              id="full-juso-finder-result-jibun-copy-btn"
+              type="button"
+              aria-label="jibun-copy"
+              class="button is-light ml-2"
+            >
+              <img
+                id="full-juso-finder-result-jibun-copy-btn-img"
+                src="/copy.png"
+                title="copy"
+                class="is-block image is-24x24"
+              />
+            </button>
+          </div>
+
+          <div
+            class="is-flex py-1 full-juso-finder-result-div is-justify-content-space-between"
+          >
+            <p class="full-juso-finder-result-p">영문</p>
+            <input
+              id="full-juso-finder-result-roadnameeng"
+              aria-label="roadnameeng"
+              class="input full-juso-finder-result-input"
+              readonly
+            />
+            <button
+              id="full-juso-finder-result-roadnameeng-copy-btn"
+              type="button"
+              aria-label="roadnameeng-copy"
+              class="button is-light ml-2"
+            >
+              <img
+                id="full-juso-finder-result-roadnameeng-copy-btn-img"
+                src="/copy.png"
+                title="copy"
+                class="is-block image is-24x24"
+              />
+            </button>
+          </div>
+
+          <div
+            class="is-flex py-1 full-juso-finder-result-div is-justify-content-space-between"
+          >
+            <p class="full-juso-finder-result-p">우편번호</p>
+            <input
+              id="full-juso-finder-result-zipcode"
+              aria-label="zipcode"
+              class="input full-juso-finder-result-input"
+              readonly
+            />
+            <button
+              id="full-juso-finder-result-zipcode-copy-btn"
+              type="button"
+              aria-label="zipcode-copy"
+              class="button is-light ml-2"
+            >
+              <img
+                id="full-juso-finder-result-zipcode-copy-btn-img"
+                src="/copy.png"
+                title="copy"
+                class="is-block image is-24x24"
+              />
+            </button>
+          </div>
+        </div>
+
+        <!-- 
+            <span
         >요청이 실패하거나 더 많은 데이터가 필요하다면
         <a
           href="https://www.juso.go.kr/openIndexPage.do"
@@ -615,20 +723,37 @@
           >이곳</a
         >을 이용해주세요
       </span>
-      <hr />
-      <span id="full-juso-finder-result-totalcount">검색결과</span>
-      <span class="bulma-loader-mixin"></span>
-      <br />
-      <span id="full-juso-finder-result-message"></span>
-      <div id="full-juso-finder-search-result-div">
-        <ol id="full-juso-finder-search-result-field"></ol>
+      -->
+        <div class="py-4">
+          <p
+            id="full-juso-finder-result-totalcount"
+            class="is-size-5 has-text-weight-bold"
+          ></p>
+        </div>
+        <span id="full-juso-finder-result-message"></span>
+        <div id="full-juso-finder-search-result-div">
+          <ol id="full-juso-finder-search-result-field"></ol>
+        </div>
       </div>
     </div>
 
     <!-- 색 추출 패널 -->
     <div id="color-picker-panel" class="blind">
-      <p>색 추출</p>
-      <button class="back-btn" type="button">돌아가기</button>
+      <div class="container titlepadding titlearg">
+        <button class="back-btn button is-light" type="button">
+          <img src="/home.png" alt="홈" class="image is-24x24" />
+        </button>
+
+        <p class="is-size-5 has-text-weight-semibold has-text-centered">
+          색 추출
+        </p>
+        <img
+          src="/colorpicker.png"
+          alt="색 추출"
+          class="is-block image is-48x48"
+        />
+      </div>
+      <hr class="titlehr" />
       <form method="post" enctype="multipart/form-data">
         <input
           type="file"

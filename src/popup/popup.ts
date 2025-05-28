@@ -54,45 +54,44 @@ function panelToggle(id: string) {
     if (panel.id === id) {
       panel.classList.remove("blind");
       // panel.className = "";
-
-      // 패널 변경 시 실행할 자동 프로세스
-      // 글자 수 세기
-      if (panel.id === "character-count-panel") {
-        autoFocus(panel.id); // 인풋창에 자동 포커스
-      }
-      // 대소문자 변환
-      else if (panel.id === "capital-lower-convert-panel") {
-        autoFocus(panel.id);
-      }
-      // 단위 변환
-      else if (panel.id === "unit-convert-panel") {
-        autoFocus(panel.id);
-      }
-      // 진수 변환
-      else if (panel.id === "number-system-convert-panel") {
-        autoFocus(panel.id);
-      }
-      // 한영타 변환
-      else if (panel.id === "hangul-alphabet-convert-panel") {
-        autoFocus(panel.id);
-      }
-      // 통합 주소 검색
-      else if (panel.id === "full-juso-finder-panel") {
-        // fullJusoFinderAutoFocus(); // 검색창에 자동 포커스
-        // body에 global-width class 제거
-        if (document.body.classList.contains("global-width")) {
-          document.body.classList.remove("global-width");
-        }
-        autoFocus(panel.id);
-      }
-      // 색 추출
-      else if (panel.id === "color-picker-panel") {
-      }
     } else {
       panel.classList.add("blind");
       // panel.className = "blind";
     }
   });
+  // 패널 변경 시 실행할 자동 프로세스
+  // 글자 수 세기
+  if (id === "character-count-panel") {
+    autoFocus(id); // 인풋창에 자동 포커스
+  }
+  // 대소문자 변환
+  else if (id === "capital-lower-convert-panel") {
+    autoFocus(id);
+  }
+  // 단위 변환
+  else if (id === "unit-convert-panel") {
+    autoFocus(id);
+  }
+  // 진수 변환
+  else if (id === "number-system-convert-panel") {
+    autoFocus(id);
+  }
+  // 한영타 변환
+  else if (id === "hangul-alphabet-convert-panel") {
+    autoFocus(id);
+  }
+  // 통합 주소 검색
+  else if (id === "full-juso-finder-panel") {
+    // fullJusoFinderAutoFocus(); // 검색창에 자동 포커스
+    // body에 global-width class 제거
+    if (document.body.classList.contains("global-width")) {
+      document.body.classList.remove("global-width");
+    }
+    autoFocus(id);
+  }
+  // 색 추출
+  else if (id === "color-picker-panel") {
+  }
 
   // 통합 주소 검색 패널 아니면 body에 global-width class 추가
   if (
@@ -2154,6 +2153,10 @@ const jusoResultTotalCount: HTMLElement | null = document.getElementById(
   "full-juso-finder-result-totalcount"
 );
 
+const jusoBtnValue: HTMLElement | null = document.getElementById(
+  "full-juso-finder-btn-value"
+);
+
 document
   .getElementById("full-juso-finder-btn")
   ?.addEventListener("click", () => roadAddressSearchAction());
@@ -2172,6 +2175,19 @@ document
       roadAddressSearchAction();
     }
   });
+
+document
+  .getElementById("full-juso-finder-result-roadname-copy-btn")
+  ?.addEventListener("click", roadAddressCopy);
+document
+  .getElementById("full-juso-finder-result-jibun-copy-btn")
+  ?.addEventListener("click", roadAddressCopy);
+document
+  .getElementById("full-juso-finder-result-roadnameeng-copy-btn")
+  ?.addEventListener("click", roadAddressCopy);
+document
+  .getElementById("full-juso-finder-result-zipcode-copy-btn")
+  ?.addEventListener("click", roadAddressCopy);
 
 type Common = {
   errorMessage: string; // 에러 메시지
@@ -2217,12 +2233,99 @@ type AddressApiResponse = {
   };
 };
 
+// 검색 버튼 내용 토글
+function roadAddressSearchBtnToggle(request: boolean) {
+  if (!jusoBtnValue) return;
+  // request가 true면 진행 요청, false면 진행 종료
+
+  // bulma의 button 페이지에 Loading 부문 있었음
+  // 그러나 지금도 문제없이 동작하므로 굳이 수정 x
+  if (request === false) {
+    jusoBtnValue.classList.remove("bulma-loader-mixin");
+    (jusoBtnValue as HTMLSpanElement).innerText = "검색";
+  } else {
+    (jusoBtnValue as HTMLSpanElement).innerText = "";
+    jusoBtnValue.classList.add("bulma-loader-mixin");
+  }
+}
+
+// 더보기 버튼 내용 토글
+function roadAddressNextBtnToggle(request: boolean) {
+  // 초기에 존재하는 dom이 아니라 여기서 호출
+  const nextBtn: HTMLElement | null = document.getElementById(
+    "full-juso-finder-next-btn-value"
+  );
+  if (!nextBtn) return;
+
+  if (request === false) {
+    nextBtn.classList.remove("bulma-loader-mixin");
+    (nextBtn as HTMLSpanElement).innerText = "더보기";
+  } else {
+    (nextBtn as HTMLSpanElement).innerText = "";
+    nextBtn.classList.add("bulma-loader-mixin");
+  }
+}
+
+// 복사 버튼
+function roadAddressCopy(e: Event) {
+  if (!e.target) return;
+  const targetId = (e.target as HTMLElement).id;
+  let whoRequest = "";
+
+  if (targetId.includes("full-juso-finder-result-roadname-copy-btn")) {
+    whoRequest = "roadname";
+  } else if (targetId.includes("full-juso-finder-result-jibun-copy-btn")) {
+    whoRequest = "jibun";
+  } else if (
+    targetId.includes("full-juso-finder-result-roadnameeng-copy-btn")
+  ) {
+    whoRequest = "roadnameeng";
+  } else if (targetId.includes("full-juso-finder-result-zipcode-copy-btn")) {
+    whoRequest = "zipcode";
+  }
+
+  if (whoRequest === "") {
+    console.error("복사하려는 target의 id를 찾을 수 없습니다.");
+    return;
+  }
+
+  const copyInputValue = (
+    document.getElementById(
+      "full-juso-finder-result-" + whoRequest
+    ) as HTMLInputElement
+  ).value;
+
+  if (copyInputValue !== "") {
+    navigator.clipboard
+      .writeText(copyInputValue)
+      .then(() => {
+        // 복사 완료
+        const copyImg = document.getElementById(
+          `full-juso-finder-result-${whoRequest}-copy-btn-img`
+        ) as HTMLImageElement;
+        if (!copyImg) return;
+
+        // 2초간 체크 이미지 보이기
+        copyImg.src = "/check.png";
+
+        setTimeout(() => {
+          copyImg.src = "/copy.png";
+        }, 3000);
+      })
+      .catch((err) => {
+        console.error("복사 실패:", err);
+      });
+  }
+}
+
+// 검색 작업
 let roadAddressSearchActionErrorCount: number = 0;
 async function roadAddressSearchAction(nextPageNum: number = 1) {
   const jusoInputValue: string = (jusoInput as HTMLInputElement).value;
 
   // 입력값 검증
   if (jusoInputValue === "") {
+    roadAddressSearchBtnToggle(false);
     return;
   }
 
@@ -2231,6 +2334,7 @@ async function roadAddressSearchAction(nextPageNum: number = 1) {
     jusoSearchResultMessage
       ? (jusoSearchResultMessage.innerText = "입력이 너무 많습니다.")
       : alert("입력이 너무 많습니다.");
+    roadAddressSearchBtnToggle(false);
     return;
   }
 
@@ -2240,6 +2344,7 @@ async function roadAddressSearchAction(nextPageNum: number = 1) {
       ? (jusoSearchResultMessage.innerText =
           "검색어는 두 글자 이상이어야 합니다.")
       : alert("검색어는 두 글자 이상이어야 합니다.");
+    roadAddressSearchBtnToggle(false);
     return;
   }
 
@@ -2249,6 +2354,7 @@ async function roadAddressSearchAction(nextPageNum: number = 1) {
     jusoSearchResultMessage
       ? (jusoSearchResultMessage.innerText = "한글, 숫자, -만 입력 가능합니다.")
       : alert("한글, 숫자, -만 입력 가능합니다.");
+        roadAddressSearchBtnToggle();
     return;
   } */
 
@@ -2257,6 +2363,7 @@ async function roadAddressSearchAction(nextPageNum: number = 1) {
   // const clientToken = "abc123xyz-secret-token";
   // API 호출
   try {
+    roadAddressSearchBtnToggle(true);
     const response: Response = await fetch(
       `https://api.projectwj.uk/jusorequest?q=${jusoInputValue}&page=${nextPageNum}`,
       {
@@ -2273,6 +2380,7 @@ async function roadAddressSearchAction(nextPageNum: number = 1) {
 
     // response로 온 모든 데이터
     const responseData: AddressApiResponse = await response.json();
+    roadAddressSearchBtnToggle(false);
     roadAddressSearchActionErrorCount = 0;
 
     // 검색 결과 1차 처리 및 리스트에 보여줄 dom 요소
@@ -2298,7 +2406,7 @@ async function roadAddressSearchAction(nextPageNum: number = 1) {
 
 // 받은 json에서 필요한 데이터 추출
 function jusoDataField(responseData: AddressApiResponse) {
-  return new Promise((resolve) => {
+  return new Promise((resolve, error) => {
     const { common, juso }: { common: Common; juso: Juso[] } =
       responseData.result.results;
 
@@ -2309,7 +2417,7 @@ function jusoDataField(responseData: AddressApiResponse) {
       const countPerPage: string = common.countPerPage; // 페이지당 출력할 결과 row 수
 
       if (jusoResultTotalCount) {
-        jusoResultTotalCount.innerText = `검색결과 총 ${totalCount}건`;
+        jusoResultTotalCount.innerText = `검색 결과 ${totalCount}건`;
 
         // 검색 결과가 없는 경우
         if (totalCount === "0") {
@@ -2349,6 +2457,8 @@ function jusoDataField(responseData: AddressApiResponse) {
           const zipcodeSpan: HTMLSpanElement = document.createElement("span");
 
           li.id = `full-juso-finder-result-li-${index}`;
+          li.style = "list-style-type: none; border-radius: 6px;";
+          li.className = "px-2 py-1 full-juso-li-hover";
           roadAddrSpan.id = `full-juso-finder-result-road-${index}`;
           jibunAddrSpan.id = `full-juso-finder-result-jibun-${index}`;
           zipcodeSpan.id = `full-juso-finder-result-zipcode-${index}`;
@@ -2383,24 +2493,38 @@ function jusoDataField(responseData: AddressApiResponse) {
           nextButton.id = `full-juso-finder-next-btn`; // id
           nextButton.value = nextPage.toString(); // 더보기 검색 value
           nextButton.type = "button"; // 타입
-          nextButton.innerText = "더보기";
+          nextButton.className = "my-2 button is-dark full-juso-next-btn";
 
           jusoSearchResultDiv?.appendChild(nextButton);
+
+          // 버튼 내용
+          const span = document.createElement("span");
+          span.id = "full-juso-finder-next-btn-value";
+          span.innerText = "더보기";
+
+          nextButton.appendChild(span);
+
           const nextButtonElement = document.getElementById(
             "full-juso-finder-next-btn"
           );
           if (nextButtonElement)
             nextButtonElement.addEventListener("click", () => {
               roadAddressSearchAction(nextPage);
+              roadAddressNextBtnToggle(true);
             });
         }
       }
+
+      // 정상 처리
+      return resolve;
     } else {
       errorCodeTask(common.errorCode);
+      return error;
     }
   });
 }
 
+// 주소 선택 시
 function jusoElementClick(event: Event, responseData: AddressApiResponse) {
   const target: EventTarget | null = event.target;
   if (!target) {
@@ -2438,15 +2562,28 @@ function jusoElementClick(event: Event, responseData: AddressApiResponse) {
       jusoArray[i].jibunAddr === clkedJibun &&
       jusoArray[i].zipNo === clkedZipcode
     ) {
-      if (roadnameResultDOM)
-        roadnameResultDOM.innerText = jusoArray[i].roadAddrPart1;
-      if (roadnameengResultDOM)
+      if (!roadnameResultDOM) return;
+      (roadnameResultDOM as HTMLInputElement).value =
+        jusoArray[i].roadAddrPart1;
+
+      if (!roadnameengResultDOM) return;
+      (roadnameengResultDOM as HTMLInputElement).value =
         roadnameengResultDOM.innerText = jusoArray[i].engAddr;
-      if (jibunResultDOM) jibunResultDOM.innerText = jusoArray[i].jibunAddr;
-      if (zipcodeResultDOM) zipcodeResultDOM.innerText = jusoArray[i].zipNo;
+
+      if (!jibunResultDOM) return;
+      (jibunResultDOM as HTMLInputElement).value = jibunResultDOM.innerText =
+        jusoArray[i].jibunAddr;
+
+      if (!zipcodeResultDOM) return;
+      (zipcodeResultDOM as HTMLInputElement).value =
+        zipcodeResultDOM.innerText = jusoArray[i].zipNo;
+
       break;
     }
   }
+
+  // 스크롤 맨 위로
+  window.scrollTo(0, 0);
 }
 
 // 에러코드 처리
@@ -2458,10 +2595,10 @@ function errorCodeTask(errorCode: string) {
   }
   if (errorCode === "-999") {
     jusoSearchResultMessage.innerText =
-      "-999	시스템에러	도로명주소 도움센터로 문의하시기 바랍니다.";
+      "-999	시스템에러 도로명주소 도움센터로 문의하시기 바랍니다.";
   } else if (errorCode === "E0001") {
     jusoSearchResultMessage.innerText =
-      "E0001	승인되지 않은 KEY 입니다.	정확한 승인키를 입력하세요.(팝업API 승인키 사용불가)";
+      "E0001	승인되지 않은 KEY입니다.	정확한 승인키를 입력하세요. (팝업API 승인키 사용불가)";
   } else if (errorCode === "E0005") {
     jusoSearchResultMessage.innerText =
       "E0005	검색어가 입력되지 않았습니다.	검색어를 입력해주세요.";
@@ -2470,28 +2607,28 @@ function errorCodeTask(errorCode: string) {
       "E0006	주소를 상세히 입력해 주시기 바랍니다.	시도명으로는 검색이 불가합니다.";
   } else if (errorCode === "E0008") {
     jusoSearchResultMessage.innerText =
-      "E0008	검색어는 두글자 이상 입력되어야 합니다.	한 글자만으로는 검색이 불가합니다.";
+      "E0008	검색어는 두 글자 이상 입력되어야 합니다.	한 글자만으로는 검색이 불가합니다.";
   } else if (errorCode === "E0009") {
     jusoSearchResultMessage.innerText =
-      "E0009  검색어는 문자와 숫자 같이 입력되어야 합니다.	숫자만으로는 검색이 불가합니다.";
+      "E0009  숫자만으로는 검색이 불가합니다.";
   } else if (errorCode === "E0010") {
     jusoSearchResultMessage.innerText =
-      "E0010	검색어가 너무 깁니다. (한글40자, 영문,숫자 80자 이하)	80글자를 초과한 검색어는 검색이 불가합니다.";
+      "E0010	검색어가 너무 깁니다. (한글 40자, 영문 / 숫자 80자 이하)	80자를 초과한 검색어는 검색이 불가합니다.";
   } else if (errorCode === "E0011") {
     jusoSearchResultMessage.innerText =
-      "E0011	검색어에 너무 긴 숫자가 포함되어 있습니다. (숫자10자 이하)	10자리를 초과하는 숫자가 포함된 검색어는 검색이 불가합니다.";
+      "E0011	검색어에 너무 긴 숫자가 포함되어 있습니다. (숫자 10자 이하)	10자를 초과하는 숫자가 포함된 검색어는 검색이 불가합니다.";
   } else if (errorCode === "E0012") {
     jusoSearchResultMessage.innerText =
-      "E0012	특수문자 + 숫자만으로는 검색이 불가능 합니다.	특수문자와 숫자만으로 이루어진 검색어는 검색이 불가합니다.";
+      "E0012	특수문자 + 숫자만으로는 검색이 불가합니다.";
   } else if (errorCode === "E0013") {
     jusoSearchResultMessage.innerText =
-      "E0013	SQL 예약어 또는 특수문자( %,=,>,<,[,] )는 검색이 불가능 합니다.	SQL예약어 또는 특수문자를 제거 후 검색합니다.";
+      "E0013	SQL 예약어 또는 특수문자( %,=,>,<,[,] )는 검색이 불가합니다.	SQL예약어 또는 특수문자를 제거 후 검색하시기 바랍니다..";
   } else if (errorCode === "E0014") {
     jusoSearchResultMessage.innerText =
-      "E0014	개발승인키 기간이 만료되어 서비스를 이용하실 수 없습니다.	개발승인키를 다시 발급받아 API서비스를 호출합니다.";
+      "E0014	개발 승인키 기간이 만료되어 서비스를 이용하실 수 없습니다.	개발 승인키를 다시 발급받아 API서비스를 호출하시기 바랍니다.";
   } else if (errorCode === "E0015") {
     jusoSearchResultMessage.innerText =
-      "검색 범위를 초과하였습니다.	검색결과가 9천건이 초과하는 검색은 불가합니다.";
+      "검색 범위를 초과하였습니다. 결과 수가 9000건을 초과하는 검색은 불가합니다.";
   } else {
     jusoSearchResultMessage.innerText = "알 수 없는 에러입니다.";
   }

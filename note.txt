@@ -95,6 +95,8 @@ suggest
 - 글자 수 세기에 정규화 기능 추가?
 https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Global_Objects/String/normalize
 - 단위 변환 검색창에서 엔터키를 누를 때 일치하는 요소가 없을 경우, item이 존재한다면 가장 위에 있는 item return하기
+- 단위 변환 검색창에서 아래, 위 키보드 누르면 항목 이동할 수 있게 하기?
+- css 교통정리 필요
 
 suggest(complete)
 - 드롭다운 박스에 검색 기능이 추가된 select2를 사용할 수 있음(https://select2.org/)(직접 구현함)
