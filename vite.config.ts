@@ -12,6 +12,7 @@ export default defineConfig({
         options: "src/options/options.html",
         background: "src/background.ts",
         help: "src/help/help.html", // 라우팅 해줘야 동작
+        canvas: "src/canvas/canvas.html",
       },
       output: {
         entryFileNames: "src/[name].js", // 파일명 유지하기

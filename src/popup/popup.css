@@ -162,6 +162,7 @@ li:hover {
 /* 메인화면 스크롤바 */
 ::-webkit-scrollbar {
   width: 5px;
+  height: 5px;
 }
 
 ::-webkit-scrollbar-track {
@@ -248,3 +249,11 @@ li:hover {
 }
 
 /** 색 추출 */
+.zoomin:hover {
+  cursor: zoom-in;
+}
+
+.color-picker-scroll::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}

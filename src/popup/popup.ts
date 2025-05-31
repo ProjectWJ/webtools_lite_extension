@@ -2670,11 +2670,33 @@ if (colorPickerPanel) {
   });
 }
 
+function colorPickerImageShow(e: Event) {
+  const target = e.target as HTMLInputElement | null;
+  if (!target || !target.files || target.files.length === 0) {
+    alert("이미지 파일을 선택해주세요.");
+    return;
+  }
+  const file = target.files[0];
+  if (file) {
+    const blob = new Blob([file], { type: file.type });
+    const blobUrl = URL.createObjectURL(blob);
+    chrome.tabs.create({
+      url: chrome.runtime.getURL(
+        `src/canvas/canvas.html#${encodeURIComponent(blobUrl)}`
+      ),
+    });
+  }
+}
+
+document.getElementById("tempbtn")?.addEventListener("click", (e) => {
+  chrome.tabs.create({ url: "src/canvas/canvas.html" });
+});
+
+/*
 // 이전에 선택한 파일을 저장해둘 변수
 // 파일 선택 취소 시 사용됨
 let isFileExist: boolean = false;
-
-// 사진을 popup.html에서 보여주기
+ // 사진을 popup.html에서 보여주기
 function colorPickerImageShow(e: Event) {
   const target: EventTarget | null = e.target;
   if (!target) {
@@ -2704,11 +2726,11 @@ function colorPickerImageShow(e: Event) {
 
   reader.onload = (e) => {
     const img: HTMLImageElement = new Image();
-    /*   canvas.style.cssText = `
-    max-width: 90%;
-    max-height: 90%;
-    border: 2px solid white;
-  `; */
+    //   canvas.style.cssText = `
+    //   max-width: 90%;
+    //   max-height: 90%;
+    //   border: 2px solid white;
+    // `;
     const canvas: HTMLCanvasElement = document.createElement("canvas");
     const ctx: CanvasRenderingContext2D | null = canvas.getContext("2d", {
       willReadFrequently: true,
@@ -2718,6 +2740,7 @@ function colorPickerImageShow(e: Event) {
     img.onload = () => {
       // canvas.width = img.width;
       // canvas.height = img.height;
+      canvas.classList = "zoomin";
       canvas.width = 400;
       canvas.height = 300;
       ctx?.drawImage(img, 0, 0, canvas.width, canvas.height);
@@ -2750,7 +2773,7 @@ function colorPickerImageShow(e: Event) {
     canvas.addEventListener("click", (e: MouseEvent) => {
       // colorPickShow(e);
       const imgsrc: string = img.src;
-      fullImageShow(e, imgsrc);
+      fullImageShow(imgsrc);
     });
   };
 
@@ -2759,9 +2782,10 @@ function colorPickerImageShow(e: Event) {
 }
 
 // 전체 이미지 보여주기
-function fullImageShow(e: MouseEvent, imgsrc: string) {
+function fullImageShow(imgsrc: string) {
   // 스크롤바를 위한 wrapper 처리
   const wrapper: HTMLDivElement = document.createElement("div");
+  wrapper.classList = "color-picker-scroll"; // 스크롤 적용
   wrapper.style.cssText = `
   max-width: 90vw;
   max-height: 85vh;
@@ -2776,6 +2800,7 @@ function fullImageShow(e: MouseEvent, imgsrc: string) {
   overlay.style.cssText = `
   position: fixed;
   padding-top: 10%;
+  padding-bottom: 10%;
   inset: 0;
   background: rgba(0,0,0,0.3);
   z-index: 999999;
@@ -2783,6 +2808,7 @@ function fullImageShow(e: MouseEvent, imgsrc: string) {
   justify-content: center;
   align-items: center;
 `;
+
   const canvas: HTMLCanvasElement = document.createElement("canvas");
   const ctx: CanvasRenderingContext2D | null = canvas.getContext("2d", {
     willReadFrequently: true,
@@ -2810,6 +2836,11 @@ function fullImageShow(e: MouseEvent, imgsrc: string) {
     ctx.drawImage(img, 0, 0);
   };
 
+  // height, width 조절
+  document.body.classList.remove("global-width");
+  document.body.style.width = img.width.toString() + "px";
+  document.body.style.height = img.height.toString() + "px";
+
   // 모드 활성화
   wrapper.appendChild(canvas);
   overlay.appendChild(wrapper);
@@ -2830,7 +2861,7 @@ function fullImageShow(e: MouseEvent, imgsrc: string) {
   closeButton.style.cssText = `
       background: transparent;
       position: fixed;
-      top: 4%;
+      top: 3%;
       border: none;
       font-size: 16px;
       cursor: pointer;
@@ -2838,6 +2869,8 @@ function fullImageShow(e: MouseEvent, imgsrc: string) {
     `;
   const xButtonHandler = () => {
     overlay.remove();
+    document.body.classList.add("global-width");
+    document.body.style = "";
     document.removeEventListener("click", xButtonHandler);
   };
 
@@ -2852,6 +2885,7 @@ function fullImageShow(e: MouseEvent, imgsrc: string) {
 function colorPickShow(e: MouseEvent) {
   const canvas: HTMLCanvasElement | null = e.target as HTMLCanvasElement;
   // e.target이 상위 함수의 canvas와 동일한 객체
+  if (!(canvas instanceof HTMLCanvasElement)) return; // 이미지 바깥부분 클릭하면 getContext에서 error나는 거 방지
   const ctx: CanvasRenderingContext2D | null = canvas.getContext("2d")!; // 두 번째 고지
   // 여기서 ctx로 getImageData 호출 때 경고가 나온다면 두 canvas 변수가 가리키는 대상이 동일하지 않을 가능성 있음
 
@@ -2872,3 +2906,4 @@ function colorPickShow(e: MouseEvent) {
 
   // 일단 최대 5개까지만?
 }
+ */
