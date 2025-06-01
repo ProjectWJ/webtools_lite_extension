@@ -2670,6 +2670,7 @@ if (colorPickerPanel) {
   });
 }
 
+// 이미지를 업로드받아 새 탭을 열고 이미지 전송
 function colorPickerImageShow(e: Event) {
   const target = e.target as HTMLInputElement | null;
   if (!target || !target.files || target.files.length === 0) {
@@ -2687,10 +2688,6 @@ function colorPickerImageShow(e: Event) {
     });
   }
 }
-
-document.getElementById("tempbtn")?.addEventListener("click", (e) => {
-  chrome.tabs.create({ url: "src/canvas/canvas.html" });
-});
 
 /*
 // 이전에 선택한 파일을 저장해둘 변수

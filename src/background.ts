@@ -134,23 +134,39 @@ chrome.runtime.onInstalled.addListener(() => {
 });
 
 // 색 추출 이벤트 감지 및 실행
-chrome.contextMenus.onClicked.addListener((info, tab) => {
-  if (info.menuItemId === "pick-color" && tab?.id) {
-    chrome.tabs.captureVisibleTab({ format: "png" }, (dataURL) => {
-      if (!dataURL) return;
+chrome.contextMenus.onClicked.addListener(async (info, tab) => {
+  if (info.menuItemId !== "pick-color" || !tab?.id) return;
 
-      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        const tabId = tabs[0].id!;
-        chrome.scripting.executeScript({
-          target: { tabId },
-          func: injectImageAndColorPicker,
-          args: [dataURL],
-        });
-      });
-    });
-  }
+  // 현재 탭 캡처(기본 인코딩 base64). blob는 URL.createObjectURL(); 써야 하는데 background.ts에서는 사용 불가능
+  const dataUrl = await chrome.tabs.captureVisibleTab(tab.windowId, {
+    format: "png",
+  });
+
+  let newPageTabId = 0;
+  chrome.tabs.create(
+    { url: chrome.runtime.getURL("src/canvas/canvas.html") },
+    (newTab) => {
+      newPageTabId = newTab.id!;
+    }
+  );
+
+  // 캔버스 페이지가 열리고 난 후 sendMessage로 전송
+  const onMessageListener = (
+    message: any
+    // sender: chrome.runtime.MessageSender,
+    // sendResponse: (response?: any) => void
+  ) => {
+    if (message.type === "canvas.html-is-ready") {
+      chrome.tabs.sendMessage(newPageTabId, { type: "image", data: dataUrl });
+
+      // 리스너 제거
+      chrome.runtime.onMessage.removeListener(onMessageListener);
+    }
+  };
+
+  chrome.runtime.onMessage.addListener(onMessageListener);
 });
-
+/* 
 // 색 추출 모드
 function injectImageAndColorPicker(dataURL: string) {
   const exiting: HTMLElement | null = document.getElementById(
@@ -294,7 +310,7 @@ function injectImageAndColorPicker(dataURL: string) {
     overlay.remove();
     document.removeEventListener("keydown", escHandler); // 이 둘은 세트로 따라다녀야 함
   });
-}
+} */
 
 /*
   하얀 색상의 경우 글씨가 안 보이는 문제 있음
