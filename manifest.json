@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Web Tools Extension",
+  "name": "Webtools Lite",
   "version": "1.0",
   "description": "글자수 세기, 대소문자 변환 등 간단한 도구 모음",
   "permissions": [
