@@ -39,54 +39,61 @@ body {
   height: 24px;
 }
 
-/* 세로 길이가 더 긴 경우 */
-@media (max-aspect-ratio: 1/1) {
-  .display-design {
-    width: 90vw;
-    height: 60vh;
-    border-radius: 1%;
-    margin: 2% 5% 2% 5%;
-    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
-    display: flex; /* 있어야 중앙정렬 가능 */
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-    -webkit-user-select: none; /* Safari 호환성 문제 방지용 */
-    user-select: none; /* 드래그되는 것 방지 */
-  }
+.display-design {
+  width: 90vw;
+  height: 60vh;
+  border-radius: 1%;
+  margin: 2% 5% 2% 5%;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+  display: flex; /* 있어야 중앙정렬 가능 */
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  -webkit-user-select: none; /* Safari 호환성 문제 방지용 */
+  user-select: none; /* 드래그되는 것 방지 */
+}
 
-  .picked-color-container-design {
-    margin: 2% 5% 2% 5%;
-    border-radius: 10px;
-    padding: 2%;
-    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
-    display: flex;
-    align-items: center;
-  }
+.picked-color-container-design {
+  margin: 2% 5% 2% 5%;
+  border-radius: 10px;
+  padding: 2%;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+  display: flex;
+  align-items: center;
+}
 
-  .picked-color-div-design {
-    width: 120px;
-    height: 100px;
-    background-color: black;
-    border-radius: 10%;
-  }
+.picked-color-div-design {
+  width: 120px;
+  height: 100px;
+  background-color: black;
+  border-radius: 10%;
+}
 
-  .picked-color-value-design {
-    width: 100%;
-    margin-left: 2%;
-    font-size: 20px;
-  }
+.picked-color-value-design {
+  width: 100%;
+  margin-left: 2%;
+  font-size: 20px;
+}
 
-  .container-content {
-    height: 40px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
+.container-content {
+  height: 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.how-to-use {
+  width: 90vw;
+  margin: 3% 5% 2% 5%;
+  display: block;
+  font-size: 16px;
 }
 
 /* 가로 길이가 더 긴 경우 */
 @media (min-aspect-ratio: 1.001/1) {
+  .display-design {
+    height: 70vh;
+  }
 }
 
 /* footer */

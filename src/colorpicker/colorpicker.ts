@@ -16,11 +16,13 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   img.src = message.data;
 });
 
+// 이미지, 컨테이너 dom
 const displaycontainer = document.getElementById(
   "display-container"
 ) as HTMLDivElement;
 const img = document.getElementById("display-image") as HTMLImageElement;
 
+// 이미지 크기를 컨테이너 너비에 맞게 조절
 const resizeImage = () => {
   const { width } = displaycontainer.getBoundingClientRect();
   img.style.width = `${width}px`;
@@ -28,24 +30,30 @@ const resizeImage = () => {
 window.addEventListener("resize", resizeImage);
 window.addEventListener("load", resizeImage);
 
+// 확대 / 축소와 이동에 사용할 변수
 let scale = 1;
 let translate = { x: 0, y: 0 };
 
+// 소수점 한 자리까지 반올림
 const roundToOneDecimal = (num: number) => Math.round(num * 10) / 10;
+
+// 최소 / 최대 범위로 값 제한
 const clamp = (val: number, min: number, max: number) =>
   Math.min(Math.max(val, min), max);
 
+// 현재 스케일, 위치를 transform 스타일로 반영
 function updateTransform() {
   img.style.transform = `translate(${translate.x}px, ${translate.y}px) scale(${scale})`;
   img.style.transformOrigin = "center";
 }
 
-// 휠 확대/축소
+// 휠을 이용해 확대/축소
 img.addEventListener("wheel", (event: WheelEvent) => {
-  event.preventDefault();
+  event.preventDefault(); // 스크롤 기본동작 방지
 
   // img.style.transition = "transform 0.2s ease";
 
+  // 이미지 중심 좌표 계산
   const containerRect = img.getBoundingClientRect();
   const containerCenterX = containerRect.left + containerRect.width / 2;
   const containerCenterY = containerRect.top + containerRect.height / 2;
@@ -53,18 +61,21 @@ img.addEventListener("wheel", (event: WheelEvent) => {
   const mouseX = event.clientX;
   const mouseY = event.clientY;
 
+  // 마우스 위치가 이미지 중심에서 얼마나 떨어졌는지 계산
   const offsetX = mouseX - containerCenterX;
   const offsetY = mouseY - containerCenterY;
 
   const prevScale = scale;
 
+  // 위는 확대 아래는 축소
   if (event.deltaY < 0) {
     scale = roundToOneDecimal(scale * 1.1);
   } else {
     scale = roundToOneDecimal(scale / 1.1);
   }
 
-  scale = clamp(scale, 0.01, 256);
+  // 최소, 최대 범위 제한
+  scale = clamp(scale, 0.001, 256);
 
   // 보정: center 기준으로 확대되므로, 중심과 커서 사이 거리만큼 이동
   translate.x -= offsetX * (scale / prevScale - 1);
@@ -79,13 +90,14 @@ img.addEventListener("wheel", (event: WheelEvent) => {
   }, 200); // 200ms 뒤 제거 */
 });
 
-// 드래그 이동
+// 드래그 이동 관련 상태 변수
 let isClicking = false;
 let isDragging = false;
 let mouseMovingCount = 0;
 let mouseSensitivity = 5; // 드래그 판단 감도. 나중에 임의로 설정할 수 있게
 let start = { x: 0, y: 0 };
 
+// 마우스 누름 시작, 드래그 시작 위치 기록
 img.addEventListener("mousedown", (e: MouseEvent) => {
   isClicking = true;
   start = { x: e.clientX, y: e.clientY };
@@ -94,16 +106,18 @@ img.addEventListener("mousedown", (e: MouseEvent) => {
   // img.style.transition = "none";
 });
 
+// 마우스 이동 처리
 img.addEventListener("mousemove", (e: MouseEvent) => {
   // 드래그중일 때
   if (isClicking === true) {
+    // 일정 감도 이하 움직임은 무시
     if (mouseMovingCount < mouseSensitivity) {
       mouseMovingCount++;
       return;
     }
     isDragging = true;
     img.style.cursor = "grabbing";
-    magnifier.style.display = "none";
+    magnifier.style.display = "none"; // 드래그 중 돋보기 숨김
 
     const dx = e.clientX - start.x;
     const dy = e.clientY - start.y;
@@ -111,22 +125,23 @@ img.addEventListener("mousemove", (e: MouseEvent) => {
     translate.x += dx;
     translate.y += dy;
 
-    start = { x: e.clientX, y: e.clientY };
+    start = { x: e.clientX, y: e.clientY }; // 다음 기준점 갱신
     updateTransform();
   }
-  // 그냥 마우스 움직일 때
+  // 클릭하지 않은 상태에서 마우스 이동 시
   else {
     mouseCanvasUpdate(e);
   }
 });
 
-// 위치 초기화
+// 더블클릭 시 위치 및 배율 초기화
 displaycontainer.addEventListener("dblclick", () => {
   scale = 1;
   translate = { x: 0, y: 0 };
   updateTransform();
 });
 
+// 색상정보 표기 요소들
 const pickedColorDiv = document.getElementById(
   "picked-color"
 ) as HTMLDivElement;
@@ -140,8 +155,11 @@ const pickedColorHEX = document.getElementById(
   "picked-color-value-hex"
 ) as HTMLSpanElement;
 
+// 마우스 클릭 시 색상 추출
 img.addEventListener("mouseup", (e: MouseEvent) => {
   img.style.cursor = "crosshair";
+
+  // 드래그 후 마우스 뗀 경우는 추출 x
   if (isDragging === true) {
     isDragging = false;
     isClicking = false;
@@ -166,6 +184,7 @@ img.addEventListener("mouseup", (e: MouseEvent) => {
   }
 });
 
+// 색상값 추출
 function getPixelColorFromImage(
   img: HTMLImageElement,
   x: number,
@@ -190,6 +209,7 @@ function getPixelColorFromImage(
   return { rgba, hex };
 }
 
+// 돋보기 설정
 const magnifier = document.getElementById("magnifier") as HTMLCanvasElement;
 const magnifierCtx = magnifier.getContext("2d")!;
 const gridSize = 12;
@@ -201,9 +221,13 @@ magnifier.style.borderRadius = "50%";
 magnifier.style.border = "solid";
 magnifier.style.display = "none";
 
+// 돋보기 내부에서 쓸 캔버스
 const mouseCanvas = document.createElement("canvas");
-const mouseCanvasCtx = mouseCanvas.getContext("2d")!;
+const mouseCanvasCtx = mouseCanvas.getContext("2d", {
+  willReadFrequently: true,
+})!;
 
+// 마우스 위치에 따라 돋보기에 확대된 이미지 렌더링
 function mouseCanvasUpdate(e: MouseEvent) {
   const rect = img.getBoundingClientRect();
   const scaleX = img.naturalWidth / rect.width;
@@ -232,6 +256,7 @@ function mouseCanvasUpdate(e: MouseEvent) {
 
   magnifierCtx.clearRect(0, 0, magnifier.width, magnifier.height);
 
+  // 각 픽셀 영역 확대해서 그리기
   for (let j = 0; j < gridSize; j++) {
     for (let i = 0; i < gridSize; i++) {
       const index = (j * gridSize + i) * 4;
@@ -243,7 +268,7 @@ function mouseCanvasUpdate(e: MouseEvent) {
       magnifierCtx.fillStyle = `rgba(${r},${g},${b},${a})`;
       magnifierCtx.fillRect(i * pixelSize, j * pixelSize, pixelSize, pixelSize);
 
-      // 각 픽셀 테두리
+      // 각 픽셀 경계선
       magnifierCtx.strokeStyle = "black";
       magnifierCtx.lineWidth = 0.2;
       magnifierCtx.strokeRect(
@@ -255,7 +280,7 @@ function mouseCanvasUpdate(e: MouseEvent) {
     }
   }
 
-  // 중심 도트 강조
+  // 중심 픽셀 강조
   magnifierCtx.strokeStyle = "red";
   magnifierCtx.lineWidth = 1;
   magnifierCtx.strokeRect(
@@ -265,7 +290,7 @@ function mouseCanvasUpdate(e: MouseEvent) {
     pixelSize
   );
 
-  // 마우스 오른쪽 아래에 위치
+  // 돋보기 위치
   magnifier.style.left = `${e.pageX + 20}px`;
   magnifier.style.top = `${e.pageY + 20}px`;
   magnifier.style.display = "block";
@@ -273,10 +298,12 @@ function mouseCanvasUpdate(e: MouseEvent) {
   magnifier.style.zIndex = "999";
 }
 
+// 이미지에서 나가면 돋보기 숨기기
 img.addEventListener("mouseleave", () => {
   magnifier.style.display = "none";
 });
 
+// 복사기능 관련
 const rgbaCopyBtn = document.getElementById(
   "rgba-copy-btn"
 ) as HTMLButtonElement;
@@ -294,7 +321,7 @@ hexCopyBtn.addEventListener("click", copyAction);
 hexCopyImage.addEventListener("click", copyAction);
 
 function copyAction(e: MouseEvent) {
-  e.stopPropagation();
+  e.stopPropagation(); // 이벤트버블링 방지
   const target = e.target as HTMLElement;
   if (!target) return;
 
