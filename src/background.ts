@@ -144,7 +144,7 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
 
   let newPageTabId = 0;
   chrome.tabs.create(
-    { url: chrome.runtime.getURL("src/canvas/canvas.html") },
+    { url: chrome.runtime.getURL("src/colorpicker/colorpicker.html") },
     (newTab) => {
       newPageTabId = newTab.id!;
     }
@@ -156,7 +156,7 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
     // sender: chrome.runtime.MessageSender,
     // sendResponse: (response?: any) => void
   ) => {
-    if (message.type === "canvas.html-is-ready") {
+    if (message.type === "colorpicker.html-is-ready") {
       chrome.tabs.sendMessage(newPageTabId, { type: "image", data: dataUrl });
 
       // 리스너 제거

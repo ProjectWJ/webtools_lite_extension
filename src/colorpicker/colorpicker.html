@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="colorpicker.css" />
+    <title>Webtools Lite - ColorPicker</title>
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <div id="display-container" class="container display-design">
+        <img
+          id="display-image"
+          aria-label="image"
+          class="image-design"
+          draggable="false"
+        />
+      </div>
+
+      <canvas id="magnifier" width="90" height="90"></canvas>
+
+      <div class="picked-color-container-design">
+        <div id="picked-color" class="picked-color-div-design"></div>
+        <div class="container picked-color-value-design">
+          <div class="container-content">
+            <span id="picked-color-value-pixel" class="">Clicked pixel:</span>
+          </div>
+
+          <div class="container-content">
+            <span id="picked-color-value-rgba" class="">RGBA:</span>
+            <button id="rgba-copy-btn" type="button" class="button-design">
+              <img
+                id="rgba-copy-image"
+                src="/copy.png"
+                alt="복사"
+                class="copy-btn-design"
+              />
+            </button>
+          </div>
+
+          <div class="container-content">
+            <span id="picked-color-value-hex" class="">HEX:</span>
+            <button id="hex-copy-btn" type="button" class="button-design">
+              <img
+                id="hex-copy-image"
+                src="/copy.png"
+                alt="복사"
+                class="copy-btn-design"
+              />
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+  <footer class="site-footer">
+    <p>© 2025. ProjectWJ | All rights reserved.</p>
+    <p>
+      Made by
+      <a href="https://github.com/ProjectWJ" target="_blank" rel="noopener"
+        >ProjectWJ</a
+      >
+      |
+      <a
+        href="https://webtools-docs.projectwj.uk/privacy"
+        target="_blank"
+        rel="noopener"
+        >개인정보처리방침</a
+      >
+      |
+      <a
+        href="https://webtools-docs.projectwj.uk/terms"
+        target="_blank"
+        rel="noopener"
+        >이용약관</a
+      >
+    </p>
+    <p>
+      <a href="about:blank">tempEmail@temp.com</a>
+    </p>
+  </footer>
+  <script type="module" src="./colorpicker.ts"></script>
+</html>

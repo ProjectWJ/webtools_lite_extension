@@ -98,7 +98,7 @@ trim()을 사용하여 해결
 base64 절차를 제거해서 해결
 
 문제:
-색 추출 작업 중 새 탭(canvas.html)으로 연 이미지가 있는 페이지에서 background.ts에서 색 추출 기능이 동작하지 않는 문제
+색 추출 작업 중 새 탭(colorpicker.html)으로 연 이미지가 있는 페이지에서 background.ts에서 색 추출 기능이 동작하지 않는 문제
 원인:
 chrome.scripting.executeScript같은 API는 외부 욉사이트(https://...)나 manifest에 명시적으로
 권한을 부연한 URL에 대해서만 사용할 수 있으나,
@@ -106,7 +106,7 @@ chrome.scripting.executeScript같은 API는 외부 욉사이트(https://...)나 
 확장 프로그램의 내부 페이지는 이미 자체적으로 로드되고 스크립트를 포함하고 있기 때문에
 크롬은 이 내부 페이지를 보호된 영역으로 보고 외부에서(background, popup)의 임의 코드 주입을 막는다.
 해결법:
-독립된 자체 스크립트 canvas.ts를 만들어 유사한 기능을 작성해 해결
+독립된 자체 스크립트 colorpicker.ts를 만들어 유사한 기능을 작성해 해결
 
 
 todo

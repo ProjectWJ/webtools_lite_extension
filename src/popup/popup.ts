@@ -2683,7 +2683,7 @@ function colorPickerImageShow(e: Event) {
     const blobUrl = URL.createObjectURL(blob);
     chrome.tabs.create({
       url: chrome.runtime.getURL(
-        `src/canvas/canvas.html#${encodeURIComponent(blobUrl)}`
+        `src/colorpicker/colorpicker.html#${encodeURIComponent(blobUrl)}`
       ),
     });
   }
