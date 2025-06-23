@@ -219,6 +219,10 @@ li:hover {
   overflow-x: auto;
 }
 
+.full-juso-finder-isnotservice {
+  font-size: 0.85rem;
+}
+
 .full-juso-line-height {
   line-height: 2rem;
 }

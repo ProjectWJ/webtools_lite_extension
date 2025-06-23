@@ -2233,6 +2233,59 @@ type AddressApiResponse = {
   };
 };
 
+// 최초 토큰 설정 및 저장
+let clientToken = "";
+async function getClientToken(): Promise<string> {
+  return new Promise((resolve) => {
+    chrome.storage.local.get("client_token", async (result) => {
+      if (result.client_token) {
+        clientToken = result.client_token;
+        resolve(result.client_token);
+      } else {
+        const res = await fetch(
+          `https://api.projectwj.uk/jusorequest/tkrequest`,
+          {
+            method: "GET",
+            headers: {
+              "X-Request-Source": "projectwj-jusorequest",
+            },
+            mode: "cors",
+          }
+        );
+        const data = await res.json();
+
+        chrome.storage.local.set({ client_token: data.token }, () => {
+          resolve(data.token);
+        });
+      }
+    });
+  });
+}
+
+// 통합 주소 검색 패널이 열리면 토큰 발급
+const fullJusoPanel = document.getElementById(
+  "full-juso-finder-panel"
+) as HTMLDivElement;
+
+// 감지할 옵션 설정
+const config = {
+  attributes: true,
+  attributeFilter: ["class"], // class 속성만 감지
+};
+const observer = new MutationObserver((mutationsList) => {
+  for (const mutation of mutationsList) {
+    if (mutation.type === "attributes" && mutation.attributeName === "class") {
+      const target = mutation.target as HTMLElement;
+
+      // classList에 'blind'가 없을 때만 실행
+      if (!target.classList.contains("blind")) {
+        getClientToken();
+      }
+    }
+  }
+});
+observer.observe(fullJusoPanel, config);
+
 // 검색 버튼 내용 토글
 function roadAddressSearchBtnToggle(request: boolean) {
   if (!jusoBtnValue) return;
@@ -2360,7 +2413,6 @@ async function roadAddressSearchAction(nextPageNum: number = 1) {
 
   // 익스텐션 id와 토큰
   const extensionId: string = chrome.runtime.id;
-  // const clientToken = "abc123xyz-secret-token";
   // API 호출
   try {
     roadAddressSearchBtnToggle(true);
@@ -2370,7 +2422,7 @@ async function roadAddressSearchAction(nextPageNum: number = 1) {
         method: "GET",
         headers: {
           "X-Extension-Id": extensionId,
-          // "X-Client-Token": clientToken,
+          "X-Client-Token": clientToken,
           "X-Request-Source": "projectwj-jusorequest",
         },
         mode: "cors",
@@ -2401,7 +2453,6 @@ async function roadAddressSearchAction(nextPageNum: number = 1) {
       return;
     }
   }
-  // 검색하면 새 페이지를 열어 검색 결과를 보여주고, 요소를 클릭하면 해당 정보를 webtool view에 보여주기?
 }
 
 // 받은 json에서 필요한 데이터 추출
