@@ -2233,32 +2233,58 @@ type AddressApiResponse = {
   };
 };
 
-// 최초 토큰 설정 및 저장
+// 토큰 변수 및 보유기한
 let clientToken = "";
-async function getClientToken(): Promise<string> {
-  return new Promise((resolve) => {
-    chrome.storage.local.get("client_token", async (result) => {
-      if (result.client_token) {
-        clientToken = result.client_token;
-        resolve(result.client_token);
-      } else {
-        const res = await fetch(
-          `https://api.projectwj.uk/jusorequest/tkrequest`,
-          {
-            method: "GET",
-            headers: {
-              "X-Request-Source": "projectwj-jusorequest",
-            },
-            mode: "cors",
-          }
-        );
-        const data = await res.json();
+// const TOKEN_EXPIRATION_MS = 24 * 60 * 60 * 1000;
 
-        chrome.storage.local.set({ client_token: data.token }, () => {
-          resolve(data.token);
-        });
-      }
+// 토큰 로드
+/* async function loadClientToken(): Promise<string> {
+  try {
+    const { client_token } = await chrome.storage.local.get("client_token");
+    const { date } = await chrome.storage.local.get("date");
+
+    if (!client_token || !date) {
+      await chrome.storage.local.clear();
+      return "";
+    }
+
+    const now = Date.now();
+    const isExpired = now - date > TOKEN_EXPIRATION_MS;
+
+    if (isExpired) {
+      await chrome.storage.local.clear();
+      return "";
+    }
+
+    clientToken = client_token;
+    return client_token;
+  } catch (error) {
+    console.error("Failed to load client token:", error);
+    await chrome.storage.local.clear();
+    return "";
+  }
+} */
+
+// 토큰 발급 함수
+async function getClientToken(): Promise<string> {
+  // chrome.storage.local.clear();
+  return new Promise(async (resolve) => {
+    const res = await fetch(`https://api.projectwj.uk/jusorequest/tkrequest`, {
+      method: "GET",
+      headers: {
+        "X-Request-Source": "projectwj-jusorequest",
+      },
+      mode: "cors",
     });
+    const data = await res.json();
+    // const now = Date.now();
+
+    /*     chrome.storage.local.set({ client_token: data.token }, () => {
+      clientToken = data.token;
+      resolve(data.token);
+    }); */
+    clientToken = data.token;
+    resolve(data.token);
   });
 }
 
@@ -2277,13 +2303,20 @@ const observer = new MutationObserver((mutationsList) => {
     if (mutation.type === "attributes" && mutation.attributeName === "class") {
       const target = mutation.target as HTMLElement;
 
-      // classList에 'blind'가 없을 때만 실행
       if (!target.classList.contains("blind")) {
-        getClientToken();
+        // 자동 토큰 확인 및 새 토큰 발급 실행
+        (async () => {
+          // const loadResult = await loadClientToken();
+          await getClientToken();
+          /*           if (loadResult === "") {
+            await getClientToken();
+          } */
+        })();
       }
     }
   }
 });
+
 observer.observe(fullJusoPanel, config);
 
 // 검색 버튼 내용 토글
@@ -2413,6 +2446,7 @@ async function roadAddressSearchAction(nextPageNum: number = 1) {
 
   // 익스텐션 id와 토큰
   const extensionId: string = chrome.runtime.id;
+  if (clientToken === "") await getClientToken();
   // API 호출
   try {
     roadAddressSearchBtnToggle(true);
@@ -2429,6 +2463,7 @@ async function roadAddressSearchAction(nextPageNum: number = 1) {
         // credentials: "include", // 쿠키 포함 여부 설정
       }
     );
+    console.log(response);
 
     // response로 온 모든 데이터
     const responseData: AddressApiResponse = await response.json();
@@ -2444,12 +2479,16 @@ async function roadAddressSearchAction(nextPageNum: number = 1) {
     if (roadAddressSearchActionErrorCount < 3) {
       console.warn(error);
       console.warn("재시도중...");
-      roadAddressSearchAction();
+      setTimeout(() => {
+        // 1.5초 뒤 재실행
+        roadAddressSearchAction();
+      }, 1500);
     } else {
       jusoSearchResultMessage
         ? (jusoSearchResultMessage.innerText = "API 요청 실패")
         : alert("API 요청 실패");
       console.error("API 요청 실패:", error);
+      roadAddressSearchBtnToggle(false);
       return;
     }
   }
