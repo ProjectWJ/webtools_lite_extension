@@ -175,12 +175,12 @@ if (optionsBtn) {
   });
 }
 
-/** 사용법 & 도움말 */
-const helpBtn = document.getElementById("help-btn");
+/** 설정 */
+const settingBtn = document.getElementById("setting-btn");
 
-if (helpBtn) {
-  helpBtn.addEventListener("click", () => {
-    window.open(chrome.runtime.getURL("src/help/help.html"));
+if (settingBtn) {
+  settingBtn.addEventListener("click", () => {
+    window.open(chrome.runtime.getURL("src/setting/setting.html"));
   });
 }
 
@@ -2463,7 +2463,6 @@ async function roadAddressSearchAction(nextPageNum: number = 1) {
         // credentials: "include", // 쿠키 포함 여부 설정
       }
     );
-    console.log(response);
 
     // response로 온 모든 데이터
     const responseData: AddressApiResponse = await response.json();
@@ -2477,17 +2476,12 @@ async function roadAddressSearchAction(nextPageNum: number = 1) {
     roadAddressSearchActionErrorCount++;
 
     if (roadAddressSearchActionErrorCount < 3) {
-      console.warn(error);
-      console.warn("재시도중...");
-      setTimeout(() => {
-        // 1.5초 뒤 재실행
-        roadAddressSearchAction();
-      }, 1500);
+      setTimeout(roadAddressSearchAction, 1500);
     } else {
       jusoSearchResultMessage
-        ? (jusoSearchResultMessage.innerText = "API 요청 실패")
+        ? (jusoSearchResultMessage.innerText = "요청 실패")
         : alert("API 요청 실패");
-      console.error("API 요청 실패:", error);
+      console.error("주소 검색 API 요청 실패:", error);
       roadAddressSearchBtnToggle(false);
       return;
     }

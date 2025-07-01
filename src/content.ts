@@ -1,3 +1,44 @@
+/* (() => {
+  // 복사, 우클릭, 키보드 등 이벤트 차단 해제
+  const events = [
+    "copy", // 복사
+    "cut", // 잘라내기
+    "paste", // 붙여넣기
+    "contextmenu", // 우클릭 메뉴 열기
+    "selectstart", // 텍스트 선택 시작
+    "mousedown", // 마우스 클릭
+    "mouseup", // 마우스 클릭 해제
+    "keydown", // 키보드 입력 (Ctrl+C, Ctrl+U 등)
+    "keypress", // 키보드 입력 (deprecated지만 여전히 쓰이는 곳 있음)
+  ];
+
+  for (const evt of events) {
+    document.addEventListener(
+      evt,
+      (e) => {
+        e.stopPropagation();
+      },
+      true // 캡처 단계에서 이벤트 차단. 페이지의 원래 스크립트보다 우선 실행
+    );
+  }
+
+  // 전역 CSS 방식 user-select 해제
+  const style = document.createElement("style");
+  // 모든 요소가 선택 가능하도록 재정의
+  // !important는 user-select: none보다 우선순위 높이는 용도
+  style.textContent = `
+    * {
+      user-select: text !important;
+    }
+  `;
+  document.head.appendChild(style);
+
+  // HTML 속성 제거 (불필요한 방해 요소)
+  document.oncontextmenu = null; // 우클릭 방지용 이벤트 핸들러 제거
+  document.body?.setAttribute("onselectstart", ""); // 텍스트 선택 방지용 inline 이벤트 제거
+  document.body?.setAttribute("oncontextmenu", ""); // 우클릭 방지용 inline 이벤트 제거
+})(); */
+
 // 이하 자모모자자 먼저 처리
 /*
         복자음 / 복모음 처리 단계(결합 생성 혹은 해제)

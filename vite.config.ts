@@ -9,8 +9,9 @@ export default defineConfig({
     rollupOptions: {
       input: {
         popup: "src/popup/popup.html",
-        options: "src/options/options.html",
+        setting: "src/setting/setting.html",
         background: "src/background.ts",
+        content: "src/content.ts",
         help: "src/help/help.html", // 라우팅 해줘야 동작
         colorpicker: "src/colorpicker/colorpicker.html",
       },

@@ -1,51 +1,66 @@
 chrome.runtime.onInstalled.addListener(() => {
   chrome.contextMenus.create({
     id: "character-count",
-    title: "글자 수 세기",
-    contexts: ["selection", "image"], // 사용자가 텍스트를 선택했을 때만 보이게
+    title: "글자 수 세기 (Ctrl+Shift+F)",
+    contexts: ["all"],
+    // contexts: ["selection"], // 사용자가 텍스트를 선택했을 때만 보이게
   });
 });
 
+// 우클릭 실행
 chrome.contextMenus.onClicked.addListener(
   (info: chrome.contextMenus.OnClickData, tab: chrome.tabs.Tab | undefined) => {
-    if (info.menuItemId === "character-count" && tab?.id) {
-      chrome.scripting.executeScript(
-        {
-          target: { tabId: tab.id },
-          func: () => {
-            const selection: Selection | null = window.getSelection();
-            if (!selection || selection.rangeCount === 0) return "";
-
-            const range: Range = selection.getRangeAt(0);
-            const fragment: DocumentFragment = range.cloneContents();
-            const div: HTMLDivElement = document.createElement("div");
-            div.appendChild(fragment);
-
-            // 선택된 텍스트의 끝 공백까지 포함한 정확한 값
-            return div.textContent || "";
-          },
-        },
-        (injectionResults) => {
-          if (chrome.runtime.lastError) {
-            console.error(chrome.runtime.lastError.message);
-            return;
-          }
-
-          const accurateText: string = injectionResults?.[0]?.result || "";
-          const textWithoutSpaces: string = accurateText.replace(/\s+/g, "");
-
-          if (tab?.id) {
-            chrome.scripting.executeScript({
-              target: { tabId: tab.id },
-              func: showModal,
-              args: [accurateText, textWithoutSpaces],
-            });
-          }
-        }
-      );
-    }
+    if (info.menuItemId !== "character-count") return;
+    if (!tab) return;
+    charCount(tab);
   }
 );
+
+// 단축키 실행
+chrome.commands.onCommand.addListener(
+  (command: string, tab: chrome.tabs.Tab | undefined) => {
+    if (command !== "count-chars") return;
+    if (!tab) return;
+    charCount(tab);
+  }
+);
+
+function charCount(tab: chrome.tabs.Tab): void {
+  chrome.scripting.executeScript(
+    {
+      target: { tabId: tab.id! },
+      func: () => {
+        const selection: Selection | null = window.getSelection();
+        if (!selection || selection.rangeCount === 0) return "";
+
+        const range: Range = selection.getRangeAt(0);
+        const fragment: DocumentFragment = range.cloneContents();
+        const div: HTMLDivElement = document.createElement("div");
+        div.appendChild(fragment);
+
+        // 선택된 텍스트의 끝 공백까지 포함한 정확한 값
+        return div.textContent || "";
+      },
+    },
+    (injectionResults) => {
+      if (chrome.runtime.lastError) {
+        console.error(chrome.runtime.lastError.message);
+        return;
+      }
+
+      const accurateText: string = injectionResults?.[0]?.result || "";
+      const textWithoutSpaces: string = accurateText.replace(/\s+/g, "");
+
+      if (tab?.id) {
+        chrome.scripting.executeScript({
+          target: { tabId: tab.id },
+          func: showModal,
+          args: [accurateText, textWithoutSpaces],
+        });
+      }
+    }
+  );
+}
 
 // 모달을 화면에 표시하는 함수
 function showModal(selectedText: string, textWithoutSpaces: string): void {
