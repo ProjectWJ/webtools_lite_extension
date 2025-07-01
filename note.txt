@@ -119,6 +119,18 @@ Workers KV나 Durable Object에 저장하는 것도 방법이지만,
 현재로서는 소규모의 트래픽이 예상되는 작업에 과하다고 판단하여
 매번 페이지를 열 때마다 토큰을 발급하게 수정 및 일정 조건을 걸어 과다 발급을 제한하여 해결
 
+문제:
+프로젝트 내에서 Bulma CSS를 여러 모듈(setting.ts, popup.ts)에서 중복 임포트할 경우
+popup.html의 버튼 레이아웃이 의도와 다르게 가로 중앙 정렬되어 UI가 깨지는 현상 발생
+
+원인:
+Bulma CSS가 여러 엔트리포인트에서 중복으로 임포트되면서 빌드 과정에서 CSS가 중복 적용되고
+그에 따른 스타일 우선순위 충돌로 인해 popup.html 내 버튼의 기본 정렬 스타일이 덮어씌워짐
+
+해결법:
+Bulma CSS 임포트를 별도의 파일(import-bulma.ts)로 분리하여 해당 파일에서 전역적으로 임포트하도록 구조 변경
+setting.ts과 popup.ts에서 import-bulma.ts를 임포트하여 Bulma 스타일을 불러오게 하여 해결
+
 todo
 - popup.ts에 남아있는 innerHTML 제거하기
 

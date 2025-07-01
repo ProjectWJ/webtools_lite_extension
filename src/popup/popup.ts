@@ -1,4 +1,4 @@
-import "bulma/css/bulma.min.css";
+import "../import-bulma";
 import "./popup.scss";
 import "./popup.css";
 
@@ -180,7 +180,8 @@ const settingBtn = document.getElementById("setting-btn");
 
 if (settingBtn) {
   settingBtn.addEventListener("click", () => {
-    window.open(chrome.runtime.getURL("src/setting/setting.html"));
+    chrome.runtime.openOptionsPage();
+    // window.open(chrome.runtime.getURL("src/setting/setting.html"));
   });
 }
 

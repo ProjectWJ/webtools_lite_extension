@@ -1,3 +1,2 @@
-import "bulma/css/bulma.min.css";
-
+import "../import-bulma";
 console.log("옵션 페이지");

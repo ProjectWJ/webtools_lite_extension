@@ -1,5 +1,6 @@
 import { defineConfig } from "vite";
 import { viteStaticCopy } from "vite-plugin-static-copy";
+import { resolve } from "path";
 
 export default defineConfig({
   build: {
@@ -14,6 +15,7 @@ export default defineConfig({
         content: "src/content.ts",
         help: "src/help/help.html", // 라우팅 해줘야 동작
         colorpicker: "src/colorpicker/colorpicker.html",
+        importbulma: resolve("src/import-bulma.ts"),
       },
       output: {
         entryFileNames: "src/[name].js", // 파일명 유지하기

@@ -39,5 +39,8 @@
       "description": "글자 수 세기 실행"
     }
   },
-  "setting_page": "src/setting/setting.html"
+  "options_ui": {
+    "page": "src/setting/setting.html",
+    "open_in_tab": true
+  }
 }
