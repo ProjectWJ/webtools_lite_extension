@@ -31,11 +31,6 @@ document.getElementById("color-picker")?.addEventListener("click", () => {
   panelToggle("color-picker-panel");
 });
 
-/** 개인정보처리방침 및 이용약관 */
-const openInNewTab = (url: string) => {
-  chrome.tabs.create({ url });
-};
-
 /** 돌아가기 버튼 */
 document.querySelectorAll(".back-btn").forEach((button) => {
   button.addEventListener("click", () => {
@@ -161,27 +156,17 @@ function autoFocus(panelId: string) {
   }
 }
 
-/** 옵션 */
-const optionsBtn = document.getElementById("options-btn");
+/** 설정 */
+const settingsBtn = document.getElementById("setting-btn");
 
-if (optionsBtn) {
-  optionsBtn.addEventListener("click", () => {
+if (settingsBtn) {
+  settingsBtn.addEventListener("click", () => {
     if (chrome.runtime.openOptionsPage) {
       chrome.runtime.openOptionsPage();
     } else {
       // openOptionsPage를 지원하지 않는 경우 (구버전 호환)
-      window.open(chrome.runtime.getURL("src/options/options.html"));
+      window.open(chrome.runtime.getURL("src/setting/setting.html"));
     }
-  });
-}
-
-/** 설정 */
-const settingBtn = document.getElementById("setting-btn");
-
-if (settingBtn) {
-  settingBtn.addEventListener("click", () => {
-    chrome.runtime.openOptionsPage();
-    // window.open(chrome.runtime.getURL("src/setting/setting.html"));
   });
 }
 

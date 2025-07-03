@@ -27,9 +27,9 @@
     "type": "module"
   },
   "icons": {
-    "16": "Ticon16.png",
-    "48": "Ticon48.png",
-    "128": "Ticon128.png"
+    "16": "16.png",
+    "48": "48.png",
+    "128": "128.png"
   },
   "commands": {
     "count-chars": {
