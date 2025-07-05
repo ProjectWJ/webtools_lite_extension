@@ -7,7 +7,69 @@
     <title>Webtools Lite - 설정</title>
   </head>
   <body>
-    <h1>설정</h1>
+    <div class="global-div">
+      <div class="sidebar">
+        <img
+          src="/popuphome.png"
+          alt="기본 이미지"
+          class="is-block image is-64x64 image-center"
+        />
+        <a
+          id="nav-general"
+          class="button is-light nav_item focus"
+          href="#/general"
+          >일반</a
+        >
+        <a
+          id="nav-information"
+          class="button is-light nav_item"
+          href="#/information"
+          >정보</a
+        >
+      </div>
+      <div class="inner">
+        <div id="general-panel" class="content">
+          <h2 class="is-large py-4">일반</h2>
+          <span>업데이트 예정입니다.</span>
+        </div>
+        <div id="information-panel" class="content blind">
+          <h2 class="is-large py-4">정보</h2>
+          <span class="info-title">Webtools Lite Extension</span>
+          <br />
+          v1.0.0<br /><br />간단한 웹 도구들을 제공하는 확장 프로그램
+          <hr />
+          Vite v6.2.2
+          <br />
+          TypeScript v5.8.2
+          <br />
+          Bulma v1.0.4
+          <hr />
+          <a href="" id="update-history-link" target="_blank">업데이트 내역</a>
+          <br /><br />
+          <a
+            href="https://webtools-docs.projectwj.uk/privacy"
+            id="privacy-link"
+            target="_blank"
+            rel="noopener"
+            >개인정보처리방침</a
+          >
+          <br /><br />
+          <a
+            href="https://github.com/ProjectWJ"
+            id="github-link"
+            target="_blank"
+            rel="noopener"
+            >Github</a
+          >
+        </div>
+      </div>
+    </div>
+  </body>
+  <script type="module" src="./setting.ts"></script>
+</html>
+
+<!--
+
     <div class="card-footer">
       <a
         href="https://webtools-docs.projectwj.uk/privacy"
@@ -18,6 +80,4 @@
         >개인정보처리방침</a
       >
     </div>
-  </body>
-  <script type="module" src="./setting.ts"></script>
-</html>
+    -->
