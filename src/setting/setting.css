@@ -8,9 +8,15 @@ hr {
   background: black;
 }
 
-.image-center {
+.sidebar-image {
   margin: 0 auto;
   margin-top: 10%;
+}
+
+.sidebar-title {
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
   margin-bottom: 10%;
 }
 
@@ -49,4 +55,17 @@ hr {
 .info-title {
   font-size: 20px;
   font-weight: bold;
+}
+
+.github-image {
+  width: 1em;
+  height: 1em;
+  vertical-align: middle;
+  margin-left: 3px;
+}
+
+.github-a {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
 }
