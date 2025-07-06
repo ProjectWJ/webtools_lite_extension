@@ -2,103 +2,143 @@
 
 # 📦 Changelog
 
+## [0.12.0] - 2025-07-06
+
+### manifest.json
+
+- description 문구 수정
+- permissions 불필요 권한 제거
+- host_permissions 최소한의 URL 경로만 사용하도록 수정
+- content_scripts 현재 미사용인 사유로 제거
+
+### vite.config.ts
+
+- rollupOptions에서 현재 불필요한 content, help 주석 처리
+
+### readme.md
+
+- 소개 문서 작성
+
+### changelog.md
+
+- 범주 헤딩(Added / Changed / Deleted)에서 파일명 기준으로 개선
+
 ## [0.11.0] - 2025-07-06
 
-### Added
+### setting.\*
 
-- `setting.html` 정보 패널 작성
-- `colorpicker.html` 하단에 누락된 이메일 주소 추가
-- `colorpicker.html` 하단에 라이센스 링크 추가
-- 라이센스 문서(LICENSE) root에 추가
+- 정보 패널 UI 작성
 
-### Changed
+### colorpicker.html
 
-- 업데이트 문서명 update-history.md -> changelog.md로 변경
-- changelog.md 내용 정리
+- 페이지 하단에 라이센스, 이메일 주소 추가
 
-### Deleted
+### LICENSE
+
+- root 경로에 신규 추가
+
+### update-history.md
+
+- 문서명 update-history.md -> changelog.md로 변경
+- 내용 정리
+
+### terms.html
 
 - 이용약관 문서 삭제
 
 ## [0.10.4] - 2025-07-05
 
-### Added
+### setting.\*
 
 - 설정 페이지 레이아웃 초안 작성
-- 업데이트 문서와 개인정보처리방침 문서 분리
+
+### update-history.md
+
+- 업데이트 문서 추가
+
+### privacy.html
+
 - 개인정보처리방침에 이메일 정보 추가
 
 ## [0.10.3] - 2025-07-03
 
-### Changed
+### public/
 
 - 메인 아이콘 이미지 교체
-- `popup.ts` 내 불필요한 코드 일부 정리
+
+### popup.ts
+
+- 불필요한 코드 일부 정리
 
 ## [0.10.2] - 2025-07-02
 
-### Fixed
+### manifest.json
+
+- 옵션 필드 오타 수정
+
+### privacy.html
+
+- 내용 업데이트
+
+### setting.\*
+
+- setting/에 신규 추가
+
+### Other
 
 - Bulma CSS 중복 임포트 문제 해결
-- `manifest.json` 옵션 필드 오타 수정 및 적용
-
-### Changed
-
-- 개인정보처리방침 업데이트
 - 이용약관 문서 폐기 예정
-- 설정 페이지 기능 및 관련 로직 개선
 
 ## [0.10.1] - 2025-06-24
 
-### Fixed
+### popup.ts
 
 - 서버 토큰 만료 문제 해결을 위한 로직 수정
 - 통합 주소 검색 토큰 발급 추가
 
 ## [0.10.0] - 2025-06-08
 
-### Changed
+### canvas.\*
 
-- 반응형 CSS 정리 및 주석 추가
+- `canvas` → `colorpicker`로 파일명 수정 및 기능 구현 완료
 - 성능 최적화 작업 수행
-
-### Added
-
-- `canvas.html` → `colorpicker`로 개편 및 기능 구현 완료
 
 ## [0.9.7] - 2025-06-02
 
-### Added
+### canvas.\*
 
-- 색상 추출 이미지 드래그 이동 및 휠로 확대/축소 기능 추가
+- 이미지 드래그 이동 및 휠로 확대/축소 기능 추가
 
 ## [0.9.6] - 2025-06-01
 
-### Changed
-
-- 프로젝트 이름을 "Web Tools Extension" → "Webtools Lite"로 변경
-
-### Fixed
+### canvas.\*
 
 - 업로드 및 우클릭 색상 추출 이미지 출력 문제 해결
 
+### Other
+
+- 프로젝트명을 "Web Tools Extension" → "Webtools Lite"로 변경
+
 ## [0.9.5] - 2025-05-31
 
-### Changed
+### popup.ts
 
 - 색 추출 로직 개선 중
+
+### public/
+
 - 아이콘 크기 균일화
 
 ## [0.9.4] - 2025-05-28
 
-### Added
+### popup.\*
 
 - 통합 주소 검색 UI 구성 완료 및 복사 기능 추가
 - 주소 검색 API 출처 명시
 
 ## [0.9.3] - 2025-05-21
 
-### Added
+### popup.\*
 
 - 한영타 변환 UI 및 초기화 메시지 추가
 - 진수 변환 UI 및 입력 간격 조정
@@ -106,136 +146,135 @@
 
 ## [0.9.2] - 2025-05-20
 
-### Fixed
+### popup.\*
 
 - 불필요한 주석 제거 및 마진 조정
 - `innerHTML` 제거 및 UI 구성 마무리
 
 ## [0.9.1] - 2025-05-19
 
-### Added
+### popup.\*
 
 - 단위 변환 UI 작업 진행
 
 ## [0.9.0] - 2025-05-18
 
-### Added
+### popup.\*
 
 - 대소문자 변환 기능 완성 및 초기화 버튼 추가
 
 ## [0.8.2] - 2025-05-17
 
-### Added
+### popup.\*
 
 - 글자 수 세기 UI 및 아이콘 업데이트
 
 ## [0.8.1] - 2025-05-16
 
-### Added
+### popup.\*
 
 - 기능 아이콘 및 popup 디자인 개선
 
 ## [0.8.0] - 2025-05-15
 
-### Added
+### Other
 
 - Bulma CSS 설치 및 UI 스타일 개선
 
 ## [0.7.6] - 2025-04-21
 
-### Added
+### privacy.html
 
-- 개인정보처리방침 및 이용약관 페이지 생성 및 문서 분리
-- 관련 링크 기능 구현 및 테스트
+- 개인정보처리방침 문서 신규 생성
+
+### terms.html
+
+- 이용약관 문서 신규 생성
 
 ## [0.7.5] - 2025-04-20
 
-### Added
+### popup.\*
 
 - 색상 추출 기능 1차 완성
-- 도움말 페이지 추가
+
+### help.html
+
+- 도움말 문서 신규 생성
 
 ## [0.7.4] - 2025-04-19
 
-### Fixed
+### popup.\*
 
 - 이미지 선택 취소 시 파일 유지되도록 로직 개선
 
 ## [0.7.3] - 2025-04-17
 
-### Changed
+### popup.\*
 
-- 클릭 시 색상만 표시되도록 UX 수정
-
-### Added
-
-- 색상 추출 기능 초안 작성 (popup.ts)
+- 색상 추출 기능 초안 작성
 
 ## [0.7.2] - 2025-04-16
 
-### Added
+### background.ts
 
-- background.ts에서 웹페이지 색 추출 기능 초안
+- 웹 페이지 색 추출 기능 초안 작성
 
-### Fixed
+### popup.\*
 
 - 한영타 변환 기능 쌍자음 처리 및 무작위 입력 오류 수정
 
 ## [0.7.1] - 2025-04-14
 
-### Changed
+### Other
 
 - 환율 검색 기능 폐기, 색 추출 기능으로 대체
 
 ## [0.7.0] - 2025-04-12
 
-### Added
+### popup.\*
 
 - 통합 주소 검색 기능 구현 완료
 
 ## [0.6.5] - 2025-04-11
 
-### Added
+### popup.\*
 
 - 주소 검색 결과 DOM 요소 출력 기능 초안
 
 ## [0.6.4] - 2025-04-09
 
-### Fixed
+### popup.\*
 
 - 단위 변환 뷰/검색 관련 버그 수정
 
 ## [0.6.3] - 2025-04-08
 
-### Changed
+### popup.\*
 
 - 모든 `innerHTML`을 `innerText`로 변경
-
-### Fixed
-
 - 온도 단위 버그 및 필드 초기화 문제 해결
 
 ## [0.6.2] - 2025-04-07
 
-### Added
+### popup.\*
 
 - 상세 주소 입력 및 검증 로직 추가
 - 주소 검색 로직을 도로명-지번 변환에서 통합 주소 검색으로 변경
 
 ## [0.6.1] - 2025-04-05
 
-### Added
+### popup.\*
 
 - 한영타 변환 기능 구현 및 색 추출 기능 1차 완성
 
 ## [0.5.0] - 2025-03-23 - 2025-03-31
 
-### Added
+### popup.\*
 
 - 진수 변환 기능, 단위 변환 UI, 글자 수 세기, 대소문자 변환 등 핵심 기능들 초안 개발
 
 ## [0.1.0] - 2025-03-17 - 2025-03-22
 
-### Added
+### Other
 
-- 프로젝트 초기 구성, TypeScript + Vite 환경 세팅, 아이콘, popup 페이지 기본 구조
+- 프로젝트 초기 구성, TypeScript + Vite 환경 세팅, 아이콘, popup 페이지 기본 구조 작성

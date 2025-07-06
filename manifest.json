@@ -2,26 +2,15 @@
   "manifest_version": 3,
   "name": "Webtools Lite",
   "version": "1.0",
-  "description": "글자 수 세기, 대소문자 변환 등 간단한 도구들을 제공합니다.",
-  "permissions": [
-    "contextMenus",
-    "scripting",
-    "tabs",
-    "activeTab",
-    "storage",
-    "notifications"
+  "description": "웹 페이지에서 유용하게 활용할 수 있는 다기능 도구 모음 확장 프로그램입니다.",
+  "permissions": ["contextMenus", "scripting", "activeTab"],
+  "host_permissions": [
+    "https://api.projectwj.uk/jusorequest?q=*",
+    "https://api.projectwj.uk/jusorequest/tkrequest"
   ],
-  "host_permissions": ["https://api.projectwj.uk/jusorequest*"],
   "action": {
     "default_popup": "src/popup/popup.html"
   },
-  "content_scripts": [
-    {
-      "matches": ["<all_urls>"],
-      "js": ["src/content.js"],
-      "run_at": "document_idle"
-    }
-  ],
   "background": {
     "service_worker": "src/background.js",
     "type": "module"

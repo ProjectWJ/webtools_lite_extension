@@ -12,8 +12,8 @@ export default defineConfig({
         popup: "src/popup/popup.html",
         setting: "src/setting/setting.html",
         background: "src/background.ts",
-        content: "src/content.ts",
-        help: "src/help/help.html", // 라우팅 해줘야 동작
+        // content: "src/content.ts", 현재 미사용 상태. 업데이트 시 꼭 주석 해제하기
+        // help: "src/help/help.html", 현재는 더미
         colorpicker: "src/colorpicker/colorpicker.html",
         importbulma: resolve("src/import-bulma.ts"),
       },

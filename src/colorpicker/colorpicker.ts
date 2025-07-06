@@ -1,4 +1,5 @@
-// import "bulma/css/bulma.min.css";
+// import "../import-bulma";
+// bulma로 css 통일 예정
 
 // 페이지 로드 시 이미지 출력
 window.addEventListener("DOMContentLoaded", () => {
