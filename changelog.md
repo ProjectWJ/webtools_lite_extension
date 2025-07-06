@@ -2,6 +2,24 @@
 
 # 📦 Changelog
 
+## [1.0.0] - 2025-07-07
+
+### privacy.html
+
+- 변경 고지 의무에 changelog 링크 추가
+
+### note.txt
+
+- 더 이상 github에 푸시하지 않음
+
+### readme.md
+
+- 지원 브라우저 내용 수정
+
+### Other
+
+- 배포 시작
+
 ## [0.12.1] - 2025-07-07
 
 ### privacy.html
