@@ -330,20 +330,20 @@ function copyAction(e: MouseEvent) {
     if (pickedColorRGBA.innerText === "RGBA:") return;
     const copyValue = pickedColorRGBA.innerText.substring(6);
     navigator.clipboard.writeText(copyValue).then(() => {
-      rgbaCopyImage.src = "/check.png";
+      rgbaCopyImage.src = "/img/check.png";
 
       setTimeout(() => {
-        rgbaCopyImage.src = "/copy.png";
+        rgbaCopyImage.src = "/img/copy.png";
       }, 2000);
     });
   } else {
     if (pickedColorHEX.innerText === "HEX:") return;
     const copyValue = pickedColorHEX.innerText.substring(5);
     navigator.clipboard.writeText(copyValue).then(() => {
-      hexCopyImage.src = "/check.png";
+      hexCopyImage.src = "/img/check.png";
 
       setTimeout(() => {
-        hexCopyImage.src = "/copy.png";
+        hexCopyImage.src = "/img/copy.png";
       }, 2000);
     });
   }

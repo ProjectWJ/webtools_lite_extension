@@ -2378,10 +2378,10 @@ function roadAddressCopy(e: Event) {
         if (!copyImg) return;
 
         // 2초간 체크 이미지 보이기
-        copyImg.src = "/check.png";
+        copyImg.src = "/img/check.png";
 
         setTimeout(() => {
-          copyImg.src = "/copy.png";
+          copyImg.src = "/img/copy.png";
         }, 3000);
       })
       .catch((err) => {

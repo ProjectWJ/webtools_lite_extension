@@ -26,8 +26,8 @@ export default defineConfig({
     viteStaticCopy({
       targets: [
         {
-          src: "public/*",
-          dest: ".", // dist에 그대로 복사
+          src: "img/*",
+          dest: "img",
         },
         {
           src: "manifest.json",

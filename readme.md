@@ -70,12 +70,13 @@
 ## 📦 로컬 설치 방법
 
 1. 이 저장소의 [Releases](https://github.com/ProjectWJ/webtools_lite_extension) 링크로 이동 후 원하는 버전을 다운로드합니다.
-2. 각 브라우저별 확장 관리 페이지로 이동합니다.
+2. 압축을 풉니다. 이 때 한 폴더 안에 assets, img, src, manifest.json이 있어야 합니다.
+3. 각 브라우저별 확장 관리 페이지로 이동합니다.
    - Chrome: chrome://extensions/
    - Edge: edge://extensions/
    - Brave: brave://extensions/
-3. Chrome, Brave 브라우저의 우측 상단, Edge 브라우저의 좌측 중단에 위치한 **개발자 모드를 활성화**합니다.
-4. "압축 해제된 확장 프로그램을 로드"를 클릭하고 다운받은 폴더를 선택합니다.
+4. Chrome, Brave 브라우저의 우측 상단, Edge 브라우저의 좌측 중단에 위치한 **개발자 모드를 활성화**합니다.
+5. "압축 해제된 확장 프로그램을 로드"를 클릭하고 manifest.json 파일이 위치한 폴더를 선택합니다.
 
 <br />
 
