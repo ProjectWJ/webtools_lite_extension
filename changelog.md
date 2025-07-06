@@ -8,12 +8,17 @@
 
 - `setting.html` 정보 패널 작성
 - `colorpicker.html` 하단에 누락된 이메일 주소 추가
-- LICENSE 문서 추가 및 이용약관 문서 폐기
+- `colorpicker.html` 하단에 라이센스 링크 추가
+- 라이센스 문서(LICENSE) root에 추가
 
 ### Changed
 
 - 업데이트 문서명 update-history.md -> changelog.md로 변경
 - changelog.md 내용 정리
+
+### Deleted
+
+- 이용약관 문서 삭제
 
 ## [0.10.4] - 2025-07-05
 
