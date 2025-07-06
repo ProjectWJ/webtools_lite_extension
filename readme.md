@@ -46,17 +46,17 @@
 
 ## 🌍 지원 브라우저
 
-| 브라우저 | 지원 여부                    | 최소 지원 버전                   |
-| -------- | ---------------------------- | -------------------------------- |
-| Chrome   | <div align="center">✅</div> | v88 이상                         |
-| Edge     | <div align="center">✅</div> | v88 이상                         |
-| Brave    | <div align="center">✅</div> | v1.20 이상                       |
-| Opera    | <div align="center">⚠️</div> | 공식 미지원(일부 동작할 수 있음) |
-| Firefox  | <div align="center">❌</div> | 미지원                           |
-| Safari   | <div align="center">❌</div> | 미지원                           |
+| 브라우저 | 지원 여부                    | 비고                           |
+| -------- | ---------------------------- | ------------------------------ |
+| Chrome   | <div align="center">✅</div> | 지원 중                        |
+| Edge     | <div align="center">✅</div> | 지원 중                        |
+| Brave    | <div align="center">✅</div> | 지원 중                        |
+| Opera    | <div align="center">⚠️</div> | 미지원이나 일부 동작할 수 있음 |
+| Firefox  | <div align="center">❌</div> | 지원 계획 없음                 |
+| Safari   | <div align="center">❌</div> | 지원 계획 없음                 |
 
 > ℹ️ 이 확장 프로그램은 **Manifest V3(MV3)** 기반으로 개발되었습니다.  
-> 크로뮴 기반 브라우저라도 **MV2 환경에서는 정상적으로 동작하지 않을 수 있습니다.**
+> 크로뮴 기반 브라우저라도 MV2 환경이거나, 오래된 버전을 사용하는 경우 정상적으로 동작하지 않을 수 있습니다.
 
 <br />
 
