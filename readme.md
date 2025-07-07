@@ -69,7 +69,7 @@
 
 ## 📦 로컬 설치 방법
 
-1. 이 저장소의 [Releases](https://github.com/ProjectWJ/webtools_lite_extension) 링크로 이동 후 원하는 버전을 다운로드합니다.
+1. 이 저장소의 [Releases](https://github.com/ProjectWJ/webtools_lite_extension/releases) 링크로 이동 후 원하는 버전을 다운로드합니다.
 2. 압축을 풉니다. 이 때 한 폴더 안에 assets, img, src, manifest.json이 있어야 합니다.
 3. 각 브라우저별 확장 관리 페이지로 이동합니다.
    - Chrome: chrome://extensions/
