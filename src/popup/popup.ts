@@ -2465,8 +2465,11 @@ async function roadAddressSearchAction(nextPageNum: number = 1) {
       setTimeout(roadAddressSearchAction, 1500);
     } else {
       jusoSearchResultMessage
-        ? (jusoSearchResultMessage.innerText = "요청 실패")
-        : alert("API 요청 실패");
+        ? (jusoSearchResultMessage.innerText =
+            "팝업 페이지를 닫았다 다시 연 뒤 재시도해주세요.\n같은 현상이 반복되면 주소정보누리집을 이용해주세요.")
+        : alert(
+            "팝업 페이지를 닫았다 다시 연 뒤 재시도해주세요. 같은 현상이 반복되면 주소정보누리집을 이용해주세요."
+          );
       console.error("주소 검색 API 요청 실패:", error);
       roadAddressSearchBtnToggle(false);
       return;

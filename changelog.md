@@ -2,6 +2,18 @@
 
 # 📦 Changelog
 
+## [1.0.1] - 2025-07-11
+
+## privacy.html
+
+- [개인정보처리방침 수정](https://github.com/ProjectWJ/webtools_lite_extension/commits/main/docs/privacy.html)
+
+## popup.ts
+
+- 통합 주소 검색에서 API 요청 실패 시 안내 문구 수정
+
+> 요청 실패 -> 팝업 페이지를 닫았다 다시 연 뒤 재시도해주세요. 같은 현상이 반복되면 주소정보누리집을 이용해주세요.
+
 ## [1.0.0] - 2025-07-07
 
 ### privacy.html
