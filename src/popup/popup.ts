@@ -1853,7 +1853,22 @@ function chojungjongSlice(input: string): string[][] | undefined {
         inputState = "jung";
       }
 
-      // 종성만 있는 상태(ex: ㄵ)에서 중성 입력한 경우(ex: ㄴ재)
+      // 복자음 종성만 있는 상태(ex: ㅀ)에서 초성 입력한 경우(ex: ㅀㄷ. ㄷ를 초성으로 처리)
+      else if (
+        cho === "" &&
+        jung === "" &&
+        jong !== "" &&
+        jong.length === 2 &&
+        korFirst.includes(input[i])
+      ) {
+        result.push(["", "", jong[0] + jong[1]]);
+        cho = input[i];
+        jung = "";
+        jong = "";
+        inputState = "cho";
+      }
+
+      // 복자음 종성만 있는 상태(ex: ㄵ)에서 중성 입력한 경우(ex: ㄴ재)
       else if (
         cho === "" &&
         jung === "" &&
