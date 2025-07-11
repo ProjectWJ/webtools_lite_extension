@@ -30,16 +30,8 @@ function charCount(tab: chrome.tabs.Tab): void {
     {
       target: { tabId: tab.id! },
       func: () => {
-        const selection: Selection | null = window.getSelection();
-        if (!selection || selection.rangeCount === 0) return "";
-
-        const range: Range = selection.getRangeAt(0);
-        const fragment: DocumentFragment = range.cloneContents();
-        const div: HTMLDivElement = document.createElement("div");
-        div.appendChild(fragment);
-
-        // 선택된 텍스트의 끝 공백까지 포함한 정확한 값
-        return div.textContent || "";
+        const selection = window.getSelection();
+        return selection ? selection.toString() : "";
       },
     },
     (injectionResults) => {

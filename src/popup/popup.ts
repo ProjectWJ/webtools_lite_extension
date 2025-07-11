@@ -256,6 +256,8 @@ function characterCountAction() {
       textWithoutSpaces,
       0
     )} byte`;
+
+    console.log([...textValue].map((c) => c.charCodeAt(0)));
   }
 }
 
