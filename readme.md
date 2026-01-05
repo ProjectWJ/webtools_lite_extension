@@ -4,6 +4,15 @@
 
 웹 페이지에서 유용하게 활용할 수 있는 다기능 도구 모음 확장 프로그램입니다.
 
+<br />
+
+<p align="center">
+   <img height="670" alt="preview_1" src="https://github.com/user-attachments/assets/27ee6cfa-8d5f-46c5-8650-83d05dd34c1e">
+   <img height="670" alt="preview_2" src="https://github.com/user-attachments/assets/efceddf6-f4ba-4c09-936b-38eb96d008ad">
+</p>
+
+<br />
+
 ## ✨ 주요 기능
 
 ### 📌 우클릭 메뉴
@@ -44,6 +53,35 @@
 
 <br />
 
+## 📁 주 디렉토리 구조
+
+```
+docs ------------------------ 이용약관, 개인정보처리방침
+ ┗ privacy.html
+src
+ ┣ colorpicker -------------- 색 추출 기능 전담 페이지
+ ┃ ┣ colorpicker.css
+ ┃ ┣ colorpicker.html
+ ┃ ┗ colorpicker.ts
+ ┣ help --------------------- 도움말 문서(미사용)
+ ┃ ┣ help.css
+ ┃ ┣ help.html
+ ┃ ┗ help.ts
+ ┣ popup -------------------- 팝업 페이지 기능 담당
+ ┃ ┣ popup.css
+ ┃ ┣ popup.html
+ ┃ ┣ popup.scss
+ ┃ ┗ popup.ts
+ ┣ setting ------------------ 설정, 정보 페이지
+ ┃ ┣ setting.css
+ ┃ ┣ setting.html
+ ┃ ┗ setting.ts
+ ┣ background.ts ------------ 우클릭, 단축키 지원 기능 담당
+ ┣ content.ts
+ ┗ import-bulma.ts
+```
+<br />
+
 ## 🌍 지원 브라우저
 
 | 브라우저 | 지원 여부                    | 비고                           |
@@ -57,13 +95,6 @@
 
 > ℹ️ 이 확장 프로그램은 **Manifest V3(MV3)** 기반으로 개발되었습니다.  
 > 크로뮴 기반 브라우저라도 MV2 환경이거나, 오래된 버전을 사용하는 경우 정상적으로 동작하지 않을 수 있습니다.
-
-<br />
-
-## 🧩 스토어 설치 방법(현재 불가능)
-
-1. [Webtools Lite Extension](https://chromewebstore.google.com/?hl=ko) 스토어 링크로 이동합니다.
-2. 페이지 우측의 다운로드(확장 추가) 버튼을 클릭합니다.
 
 <br />
 
@@ -84,6 +115,8 @@
 
 - 📝 [업데이트 내역](https://github.com/ProjectWJ/webtools_lite_extension/blob/main/changelog.md)
 - 🔒 [개인정보처리방침](https://webtools-docs.projectwj.uk/privacy)
+
+<br />
 
 ---
 
