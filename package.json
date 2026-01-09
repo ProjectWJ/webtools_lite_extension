@@ -1,6 +1,6 @@
 {
   "name": "webtools-lite",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "scripts": {
     "dev": "vite build --watch",
     "build": "vite build"
